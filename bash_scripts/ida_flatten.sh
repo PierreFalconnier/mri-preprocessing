@@ -44,7 +44,7 @@ for subj_path in "$SRC_DIR"/*; do
                 echo "  Session : $ses_date"
                 echo "  Source  : $inst_path"
 
-                find "$inst_path" -type f -iname "*.dcm" -exec cp -n {} "$ses_out/" \;
+                find "$inst_path" -type f -exec cp -n {} "$ses_out/" \;
             done
         done
     done

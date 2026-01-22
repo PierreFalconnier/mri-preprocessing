@@ -19,7 +19,8 @@ while IFS= read -r -d '' zipfile; do
     echo "    → into: $zipdir"
 
     if unzip -o -qq "$zipfile" -d "$zipdir"; then
-        rm -f "$zipfile"
+        # rm -f "$zipfile"
+        echo "    ✔ Extraction successful"
     else
         echo "Extraction failed: $zipfile" >&2
     fi
