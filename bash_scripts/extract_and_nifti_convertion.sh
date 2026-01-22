@@ -25,9 +25,8 @@ find "$SRC_DIR" -type f -iname "*.zip" | while read -r zipfile; do
   unzip -qq "$zipfile" -d "$tmpdir"
 
   # Merge extracted contents into original directory
-  shopt -s dotglob
-  mv "$tmpdir"/* "$zipdir"/
-  shopt -u dotglob
+  rsync -a "$tmpdir"/ "$zipdir"/
+
 
   rm -rf "$tmpdir"
   rm -f "$zipfile"
