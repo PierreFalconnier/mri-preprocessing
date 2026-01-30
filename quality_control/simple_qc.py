@@ -25,11 +25,24 @@ def find_t1w_images(bids_root):
 
 
 def load_json_sidecar(nifti_path):
-    json_path = nifti_path.with_suffix("").with_suffix(".json")
-    if json_path.exists():
-        with open(json_path, "r") as f:
+    json_path = nifti_path.with_suffix(".json")
+
+    if not json_path.exists():
+        return {}
+
+    try:
+        with open(json_path, "r", encoding="utf-8", errors="replace") as f:
             return json.load(f)
-    return {}
+    except json.JSONDecodeError as e:
+        return {
+            "_json_error": f"JSONDecodeError: {e}",
+            "_json_path": str(json_path),
+        }
+    except Exception as e:
+        return {
+            "_json_error": f"Exception: {e}",
+            "_json_path": str(json_path),
+        }
 
 
 def efc(img, framemask=None, decimals=4):
@@ -58,8 +71,13 @@ def efc(img, framemask=None, decimals=4):
 
 
 def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=True):
+    if "sub-" in nifti_path.parents[2].name:  # to handles cases where session dir exist
+        dataset_name = str(nifti_path.parents[3].name)
+    else:
+        dataset_name = str(nifti_path.parents[2].name)
+
     record = {
-        "dataset": str(nifti_path.parents[2].name),
+        "dataset": dataset_name,
         "path": str(nifti_path),
         "error": None,
     }
@@ -69,12 +87,17 @@ def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=Tr
         img_nii = nib.load(str(nifti_path))
         header = img_nii.header
         data_3d = img_nii.get_fdata()
+
+        sidecar = load_json_sidecar(nifti_path)
+
+        record["tesla"] = sidecar.get("MagneticFieldStrength")
+        record["manufacturer"] = sidecar.get("Manufacturer")
+        record["model"] = sidecar.get("ManufacturersModelName")
+
+        if "_json_error" in sidecar:
+            record["json_error"] = sidecar["_json_error"]
     except Exception as e:
         record["error"] = str(e)
-        return record
-
-    # --- BIDS sidecar ---
-    sidecar = load_json_sidecar(nifti_path)
 
     # --- Geometry / header stats ---
     dims = img_nii.shape[:3]
@@ -105,36 +128,51 @@ def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=Tr
     # --- Maskless intensity metrics ---
     data = np.nan_to_num(data_3d, nan=0.0, posinf=0.0, neginf=0.0).reshape(-1)
 
+    # keep finite
     data = data[np.isfinite(data)]
 
     if data.size == 0:
         record["error"] = "empty image"
         return record
 
-    # Robust MAD
-    med = np.median(data)
-    mad_val = float(np.median(np.abs(data - med)))
+    # separate non-zero voxels / low values
 
-    # Histogram-based entropy
-    hist, _ = np.histogram(data, bins=hist_bins, density=True)
+    # nz = data[data != 0]
+    low = np.percentile(data, 1)
+    nz = data[data > low]
+
+    if nz.size == 0:
+        record["error"] = "all-zero image"
+        return record
+
+    # Robust MAD
+    med = np.median(nz)
+    mad_val = float(np.median(np.abs(nz - med)))
+
+    # Histogram-based entropy (non-zero only)
+    hist, _ = np.histogram(nz, bins=hist_bins, density=True)
     probs = hist[hist > 0]
     entropy = float(-np.sum(probs * np.log2(probs))) if probs.size else 0.0
 
     record.update(
         {
+            # geometry-related counts
             "n_voxels": int(data.size),
-            "n_nonzero": int((data != 0).sum()),
-            "nonzero_frac": float((data != 0).mean()),
-            "mean": float(np.mean(data)),
+            "n_nonzero": int(nz.size),
+            "nonzero_frac": float(nz.size / data.size),
+            "min": float(np.min(data)),
+            "max": float(np.max(data)),
+            # intensity stats (non-zero)
+            "mean": float(np.mean(nz)),
             "median": float(med),
-            "std": float(np.std(data)),
+            "std": float(np.std(nz)),
             "mad": mad_val,
-            "kurtosis": float(kurtosis(data)),
-            "skewness": float(skew(data)),
-            "p01": float(np.percentile(data, 1)),
-            "p05": float(np.percentile(data, 5)),
-            "p95": float(np.percentile(data, 95)),
-            "p99": float(np.percentile(data, 99)),
+            "kurtosis": float(kurtosis(nz)),
+            "skewness": float(skew(nz)),
+            "p01": float(np.percentile(nz, 1)),
+            "p05": float(np.percentile(nz, 5)),
+            "p95": float(np.percentile(nz, 95)),
+            "p99": float(np.percentile(nz, 99)),
             "entropy": entropy,
         }
     )
@@ -228,6 +266,9 @@ def detect_outliers(
             "dim_z",
             "file_size_mb",
             # intensity / QA
+            "min",
+            "max",
+            "median",
             "mean",
             "std",
             "mad",
@@ -360,12 +401,24 @@ def run_qc_multiprocessing(
 
 
 def main():
+    n_processes = 10
     bids_path = "/run/media/falconnier/Elements1/BIDS_datasets_selection"
-    qc_csv_dir = Path("./qc_results")
+    dirpath = Path(__file__).parent.resolve()
+    qc_csv_dir = dirpath / "qc_results"
+
+    print("The qc results will be saved to:", qc_csv_dir)
     qc_csv_dir.mkdir(parents=True, exist_ok=True)
     # iterate over directories
     for dataset_dir in tqdm(Path(bids_path).iterdir(), desc="Datasets"):
         if not dataset_dir.is_dir():
+            continue
+
+        # if a csv file already exists for this dataset, skip it
+        existing_csvs = list(
+            qc_csv_dir.glob(f"{dataset_dir.name}_t1w_qc_metrics_*.csv")
+        )
+        if existing_csvs:
+            print(f"Skipping dataset (CSV exists): {dataset_dir.name}")
             continue
 
         print(f"Processing dataset: {dataset_dir.name}")
@@ -373,9 +426,10 @@ def main():
         t1w_files = find_t1w_images(dataset_dir)
         print(f"Found {len(t1w_files)} T1w images")
 
-        df = run_qc_multiprocessing(t1w_files, 10, 1, True)
+        df = run_qc_multiprocessing(t1w_files, n_processes, 1, True)
 
         # Save to CSV with timestamp
+        print(f"Saving QC metrics to {qc_csv_dir}")
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         df.to_csv(
             qc_csv_dir / f"{dataset_dir.name}_t1w_qc_metrics_{timestamp}.csv",

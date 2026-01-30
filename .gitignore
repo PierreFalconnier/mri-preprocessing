@@ -1,5 +1,5 @@
 processing_old
 .~lock*
 test.py
-qc_results/
+# qc_results/
 __pycache__/
