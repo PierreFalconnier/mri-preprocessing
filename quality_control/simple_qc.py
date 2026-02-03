@@ -56,6 +56,8 @@ def efc(img, framemask=None, decimals=4):
 
     # Calculate the total image energy
     b_max = np.sqrt((img[framemask == 0] ** 2).sum())
+    if (img[framemask == 0] <= 0).any():
+        return np.nan
 
     # Calculate EFC (add 1e-16 to the image data to keep log happy)
     return round(
@@ -97,7 +99,9 @@ def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=Tr
         if "_json_error" in sidecar:
             record["json_error"] = sidecar["_json_error"]
     except Exception as e:
+        print(e)
         record["error"] = str(e)
+        return record
 
     # --- Geometry / header stats ---
     dims = img_nii.shape[:3]
@@ -400,9 +404,9 @@ def run_qc_multiprocessing(
     return pd.DataFrame(records)
 
 
-def main():
-    n_processes = 10
-    bids_path = "/run/media/falconnier/Elements1/BIDS_datasets_selection"
+def compute_stats():
+    n_processes = 6
+    bids_path = "/run/media/falconnier/Elements/BIDS_datasets_selection"
     dirpath = Path(__file__).parent.resolve()
     qc_csv_dir = dirpath / "qc_results"
 
@@ -437,5 +441,44 @@ def main():
         )
 
 
+def compute_detect_outliers():
+    dirpath = Path(__file__).parent.resolve()
+    qc_csv_dir = dirpath / "qc_results"
+    qc_csv_outlier_dir = dirpath / "qc_outliers"
+    qc_csv_outlier_dir.mkdir(parents=True, exist_ok=True)
+
+    qc_csv_files = list(qc_csv_dir.glob("*_t1w_qc_metrics_*.csv"))
+    for qc_csv_file in qc_csv_files:
+        print(f"Detecting outliers in: {qc_csv_file.name}")
+        df = pd.read_csv(qc_csv_file)
+        outliers_df = detect_outliers(df)
+
+        # Save outliers to CSV
+        outlier_csv_path = qc_csv_outlier_dir / (qc_csv_file.stem + "_outliers.csv")
+        outliers_df.to_csv(outlier_csv_path, index=False)
+        print(f"Outliers saved to: {outlier_csv_path}")
+
+
+def visual_check():
+    dirpath = Path(__file__).parent.resolve()
+    qc_csv_outlier_dir = dirpath / "qc_outliers"
+
+    qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
+    total_outliers = 0
+
+    for qc_csv_file in qc_csv_files:
+        print(f"Detecting outliers in: {qc_csv_file.name}")
+
+        df = pd.read_csv(qc_csv_file)
+        num_outliers = df["path"].nunique()
+
+        print(num_outliers)
+        total_outliers += num_outliers
+
+    print("Total outliers detected:", total_outliers)
+
+
 if __name__ == "__main__":
-    main()
+    compute_stats()
+    compute_detect_outliers()
+    # visual_check()

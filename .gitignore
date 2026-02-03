@@ -3,3 +3,4 @@ processing_old
 test.py
 # qc_results/
 __pycache__/
+upload_girder.py
