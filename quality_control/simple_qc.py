@@ -1,9 +1,13 @@
 # Core
 # import datetime
 import json
+import math
+import shutil
 from datetime import datetime
 from multiprocessing import Pool, cpu_count
 from pathlib import Path
+
+import ants
 
 # Plotting
 import matplotlib.pyplot as plt
@@ -20,7 +24,7 @@ from tqdm import tqdm
 
 def find_t1w_images(bids_root):
     bids_root = Path(bids_root)
-    t1w_files = list(bids_root.rglob("*T1*.nii*"))
+    t1w_files = list(bids_root.rglob("*T1w*.nii*"))
     return sorted(t1w_files)
 
 
@@ -190,6 +194,102 @@ def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=Tr
     return record
 
 
+def plot_histograms_grid(
+    df,
+    keys,
+    bins=30,
+    dropna=True,
+    max_cols=4,
+    figsize_per_plot=(4, 3),
+    percentile_low=1,
+    percentile_high=99,
+):
+    """
+    Plot histograms for multiple dataframe columns in a single figure,
+    with percentile markers for numeric variables.
+    """
+
+    keys = [k for k in keys if k in df.columns]
+    if not keys:
+        raise ValueError("None of the provided keys exist in the dataframe")
+
+    n = len(keys)
+    n_cols = min(max_cols, n)
+    n_rows = math.ceil(n / n_cols)
+
+    fig, axes = plt.subplots(
+        n_rows,
+        n_cols,
+        figsize=(figsize_per_plot[0] * n_cols, figsize_per_plot[1] * n_rows),
+        squeeze=False,
+    )
+
+    axes = axes.flatten()
+
+    for ax, key in zip(axes, keys):
+        data = df[key]
+
+        if dropna:
+            data = data.dropna()
+
+        if data.empty:
+            ax.set_title(f"{key} (no data)")
+            ax.axis("off")
+            continue
+
+        # Try numeric conversion
+        is_numeric = True
+        try:
+            data = pd.to_numeric(data)
+        except Exception:
+            is_numeric = False
+
+        if is_numeric:
+            values = data.values
+
+            ax.hist(values, bins=min(bins, len(values)))
+            ax.set_ylabel("Count")
+
+            # Percentiles
+            p_low = np.percentile(values, percentile_low)
+            p_high = np.percentile(values, percentile_high)
+
+            ax.axvline(p_low, linestyle="--", linewidth=1)
+            ax.axvline(p_high, linestyle="--", linewidth=1)
+
+            ax.text(
+                p_low,
+                ax.get_ylim()[1] * 0.9,
+                f"{percentile_low}%",
+                rotation=90,
+                va="top",
+                ha="right",
+            )
+            ax.text(
+                p_high,
+                ax.get_ylim()[1] * 0.9,
+                f"{percentile_high}%",
+                rotation=90,
+                va="top",
+                ha="left",
+            )
+
+        else:
+            counts = data.value_counts()
+            ax.bar(counts.index.astype(str), counts.values)
+            ax.tick_params(axis="x", rotation=45)
+
+        ax.set_title(key)
+        ax.grid(True, alpha=0.3)
+
+    # Hide unused subplots
+    for ax in axes[len(keys) :]:
+        ax.axis("off")
+
+    fig.tight_layout()
+    plt.show()
+
+
 def plot_histogram(df, key, bins=20, dropna=True, eps=1e-8):
     if key not in df.columns:
         raise ValueError(f"Key '{key}' not found in dataframe")
@@ -247,30 +347,29 @@ def detect_outliers(
     df,
     metrics=None,
     groupby_cols=("dataset", "tesla", "model"),
-    z_thresh=3.0,
-    iqr_factor=1.5,
-    mad_factor=4,
+    z_thresh=5,
+    iqr_factor=2.5,
+    mad_factor=6,
     file_size_min_mb=4.0,
-    max_thickness=1.3,
-    min_dimension=100,
+    max_thickness=1.25,
+    min_dimension=120,
 ):
     """
     Detect outliers in MRI QC metrics using multiple strategies + user-defined criteria.
     Returns a long-form dataframe with one row per detected outlier.
+    default settings are quite strict to avoid false positives.
     """
 
     if metrics is None:
         metrics = [
-            # geometry
-            "voxel_x_mm",
-            "voxel_y_mm",
-            "voxel_z_mm",
-            "dim_x",
-            "dim_y",
-            "dim_z",
+            # "voxel_x_mm",
+            # "voxel_y_mm",
+            # "voxel_z_mm",
+            # "dim_x",
+            # "dim_y",
+            # "dim_z",
             "file_size_mb",
-            # intensity / QA
-            "min",
+            # "min",
             "max",
             "median",
             "mean",
@@ -279,14 +378,14 @@ def detect_outliers(
             "entropy",
             "efc",
             "nonzero_frac",
-            "n_voxels",
+            # "n_voxels",
             "n_nonzero",
             "kurtosis",
             "skewness",
-            "p01",
-            "p05",
-            "p95",
-            "p99",
+            # "p01",
+            # "p05",
+            # "p95",
+            # "p99",
         ]
 
     outlier_records = []
@@ -306,7 +405,7 @@ def detect_outliers(
 
             values = data.values
 
-            # ---------- ±3 sigma ----------
+            # ---------- sigma ----------
             mu = np.mean(values)
             sigma = np.std(values)
             z_mask = (
@@ -334,6 +433,12 @@ def detect_outliers(
                 else np.zeros_like(values, dtype=bool)
             )
 
+            # ---------- Percentile-based ----------
+            p01 = np.percentile(values, 1)
+            p99 = np.percentile(values, 99)
+
+            percentile_mask = (values < p01) | (values > p99)
+
             # ---------- Additional rules ----------
             additional_mask = np.zeros_like(values, dtype=bool)
 
@@ -350,7 +455,9 @@ def detect_outliers(
                 additional_mask = values < min_dimension
 
             # Combine all masks
-            final_mask = z_mask | iqr_mask | mad_mask | additional_mask
+            final_mask = (
+                z_mask | iqr_mask | mad_mask | additional_mask | percentile_mask
+            )
 
             # ---------- Collect ----------
             for idx, is_out in enumerate(final_mask):
@@ -370,7 +477,8 @@ def detect_outliers(
                         "z_sigma": bool(z_mask[idx]),
                         "iqr": bool(iqr_mask[idx]),
                         "mad": bool(mad_mask[idx]),
-                        "threshold_rule": bool(additional_mask[idx]),  # NEW COLUMN
+                        "percentile": bool(percentile_mask[idx]),
+                        "threshold_rule": bool(additional_mask[idx]),
                     }
                 )
 
@@ -404,9 +512,8 @@ def run_qc_multiprocessing(
     return pd.DataFrame(records)
 
 
-def compute_stats():
+def compute_stats(bids_path="/run/media/falconnier/Elements/BIDS_datasets_selection"):
     n_processes = 6
-    bids_path = "/run/media/falconnier/Elements/BIDS_datasets_selection"
     dirpath = Path(__file__).parent.resolve()
     qc_csv_dir = dirpath / "qc_results"
 
@@ -445,6 +552,8 @@ def compute_detect_outliers():
     dirpath = Path(__file__).parent.resolve()
     qc_csv_dir = dirpath / "qc_results"
     qc_csv_outlier_dir = dirpath / "qc_outliers"
+
+    shutil.rmtree(qc_csv_outlier_dir, ignore_errors=True)
     qc_csv_outlier_dir.mkdir(parents=True, exist_ok=True)
 
     qc_csv_files = list(qc_csv_dir.glob("*_t1w_qc_metrics_*.csv"))
@@ -459,26 +568,127 @@ def compute_detect_outliers():
         print(f"Outliers saved to: {outlier_csv_path}")
 
 
-def visual_check():
+def visual_check_stats():
     dirpath = Path(__file__).parent.resolve()
-    qc_csv_outlier_dir = dirpath / "qc_outliers"
 
-    qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
-    total_outliers = 0
+    # qc_csv_outlier_dir = dirpath / "qc_outliers"
+    # qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
+
+    qc_csv_outlier_dir = dirpath / "qc_results"
+    qc_csv_files = list(qc_csv_outlier_dir.glob("*.csv"))
 
     for qc_csv_file in qc_csv_files:
-        print(f"Detecting outliers in: {qc_csv_file.name}")
+        print(f"CSV FILE: {qc_csv_file.name}")
 
         df = pd.read_csv(qc_csv_file)
-        num_outliers = df["path"].nunique()
+        metrics_to_plot = [
+            "tesla",
+            "dim_x",
+            "dim_y",
+            "dim_z",
+            "voxel_x_mm",
+            "voxel_y_mm",
+            "voxel_z_mm",
+            "file_size_mb",
+            "n_voxels",
+            "n_nonzero",
+            "nonzero_frac",
+            "min",
+            "max",
+            "mean",
+            "median",
+            "std",
+            "mad",
+            "kurtosis",
+            "skewness",
+            "p01",
+            "p05",
+            "p95",
+            "p99",
+            "entropy",
+            "efc",
+        ]
 
-        print(num_outliers)
-        total_outliers += num_outliers
+        plot_histograms_grid(df, metrics_to_plot, bins=40)
 
-    print("Total outliers detected:", total_outliers)
+
+# def trunc_path(path_str):
+#     path_str.split("/")[-3:]
+
+
+def outlier_visual_check_image():
+    dirpath = Path(__file__).parent.resolve()
+    qc_csv_outlier_dir = dirpath / "qc_outliers"
+    qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
+    for qc_csv_file in qc_csv_files:
+        # print(f"CSV FILE: {qc_csv_file.name}")
+
+        df = pd.read_csv(qc_csv_file)
+        # print(df[df["z_sigma"] | df["threshold_rule"]]["path"].nunique())
+        path_df = df[df["z_sigma"] | df["threshold_rule"]]["path"]
+        path_df = df[df["threshold_rule"]]["path"]
+        path_df = df[df["z_sigma"]]["path"]
+        # drop duplicates
+        path_df = path_df.drop_duplicates()
+        path_list = list(path_df)
+
+        if len(path_list) == 0:
+            continue
+
+        path1 = Path(path_list[0])
+        path2 = Path(str(path1).replace("Elements1", "Elements"))
+        chosen_path = path2 if path2.exists() else path1
+        img = ants.image_read(str(chosen_path))
+        # ants.plot(img, axis=0)
+        # ants.plot(img, axis=1)
+        # ants.plot(img, axis=2)
+
+        arr = img.numpy()
+        print(arr.shape)
+        print(chosen_path)
+
+        fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+
+        axes[0].imshow(arr[arr.shape[0] // 2, :, :], cmap="gray")
+        axes[0].set_title("axis 0")
+
+        axes[1].imshow(arr[:, arr.shape[1] // 2, :], cmap="gray")
+        axes[1].set_title("axis 1")
+
+        axes[2].imshow(arr[:, :, arr.shape[2] // 2], cmap="gray")
+        axes[2].set_title("axis 2")
+
+        for ax in axes:
+            ax.axis("off")
+
+        plt.tight_layout()
+        plt.show()
 
 
 if __name__ == "__main__":
     compute_stats()
     compute_detect_outliers()
-    # visual_check()
+    # visual_check_stats()
+    # outlier_visual_check_image()
+
+    # dirpath = Path.cwd()
+
+    # qc_csv_outlier_dir = dirpath / "qc_outliers"
+    # qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
+    # outliers = pd.concat(pd.read_csv(f) for f in qc_csv_files)
+    # outliers.reset_index(drop=True, inplace=True)
+
+    # # filter if threshold_rule or z_sigma is true
+    # outliers_filtered = outliers[outliers["threshold_rule"] | outliers["z_sigma"]]
+    # # in the path column, split with "/" and remove the 5 first parts
+    # outliers_filtered["path"] = outliers_filtered["path"].apply(
+    #     lambda path_str: "/".join(path_str.split("/")[6:])
+    # )
+    # # remove duplicates
+    # outliers_filtered = outliers_filtered.drop_duplicates(subset=["path"])
+    # # save the filtered outliers to a csv file
+    # outliers_filtered.to_csv("filtered_outliers_before_preprocessing.csv", index=False)
+    # # save the paths to a text file
+    # outliers_filtered["path"].to_csv(
+    #     "filtered_outliers_paths_before_preprocessing.txt", index=False, header=False
+    # )
