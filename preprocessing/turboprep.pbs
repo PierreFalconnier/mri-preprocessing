@@ -1,0 +1,25 @@
+#!/bin/bash
+#PBS -N turboprep
+#PBS -l walltime=00:05:00
+#PBS -l nodes=1:ppn=2
+#PBS -l mem=16gb
+#PBS -o turboprep.$PBS_JOBID.out
+#PBS -e turboprep.$PBS_JOBID.err
+#PBS -m ae
+
+set -euo pipefail
+
+cd "$PBS_O_WORKDIR"
+
+# Safety checks
+: "${SUF:?Missing SUF}"
+: "${SCRIPT_DIR:?Missing SCRIPT_DIR}"
+: "${PYTHON:?Missing PYTHON}"
+: "${PIPELINE:?Missing PIPELINE}"
+: "${TEMPLATE:?Missing TEMPLATE}"
+
+"$PYTHON" "$PIPELINE" \
+  --inputs  "$SCRIPT_DIR/inputs_chunk_${SUF}" \
+  --outputs "$SCRIPT_DIR/outputs_chunk_${SUF}" \
+  --template "$TEMPLATE" \
+  --threads "$PBS_NP"
