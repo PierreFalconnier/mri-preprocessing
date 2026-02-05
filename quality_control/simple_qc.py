@@ -1,7 +1,7 @@
 # Core
 # import datetime
+import argparse
 import json
-import math
 import shutil
 from datetime import datetime
 from multiprocessing import Pool, cpu_count
@@ -18,6 +18,7 @@ import numpy as np
 
 # Data handling
 import pandas as pd
+from histo_qc import plot_histograms_grid
 from scipy.stats import kurtosis, skew
 from tqdm import tqdm
 
@@ -162,6 +163,11 @@ def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=Tr
     probs = hist[hist > 0]
     entropy = float(-np.sum(probs * np.log2(probs))) if probs.size else 0.0
 
+    # overlap with mni brain mask
+    # TODO
+    # mni_template_path = Path(__file__).parent / "mni_icbm152_template.nii.gz"
+    # try:
+
     record.update(
         {
             # geometry-related counts
@@ -194,155 +200,6 @@ def extract_t1w_stats_with_metrics(nifti_path, hist_bins=256, compute_metrics=Tr
     return record
 
 
-def plot_histograms_grid(
-    df,
-    keys,
-    bins=30,
-    dropna=True,
-    max_cols=4,
-    figsize_per_plot=(4, 3),
-    percentile_low=1,
-    percentile_high=99,
-):
-    """
-    Plot histograms for multiple dataframe columns in a single figure,
-    with percentile markers for numeric variables.
-    """
-
-    keys = [k for k in keys if k in df.columns]
-    if not keys:
-        raise ValueError("None of the provided keys exist in the dataframe")
-
-    n = len(keys)
-    n_cols = min(max_cols, n)
-    n_rows = math.ceil(n / n_cols)
-
-    fig, axes = plt.subplots(
-        n_rows,
-        n_cols,
-        figsize=(figsize_per_plot[0] * n_cols, figsize_per_plot[1] * n_rows),
-        squeeze=False,
-    )
-
-    axes = axes.flatten()
-
-    for ax, key in zip(axes, keys):
-        data = df[key]
-
-        if dropna:
-            data = data.dropna()
-
-        if data.empty:
-            ax.set_title(f"{key} (no data)")
-            ax.axis("off")
-            continue
-
-        # Try numeric conversion
-        is_numeric = True
-        try:
-            data = pd.to_numeric(data)
-        except Exception:
-            is_numeric = False
-
-        if is_numeric:
-            values = data.values
-
-            ax.hist(values, bins=min(bins, len(values)))
-            ax.set_ylabel("Count")
-
-            # Percentiles
-            p_low = np.percentile(values, percentile_low)
-            p_high = np.percentile(values, percentile_high)
-
-            ax.axvline(p_low, linestyle="--", linewidth=1)
-            ax.axvline(p_high, linestyle="--", linewidth=1)
-
-            ax.text(
-                p_low,
-                ax.get_ylim()[1] * 0.9,
-                f"{percentile_low}%",
-                rotation=90,
-                va="top",
-                ha="right",
-            )
-            ax.text(
-                p_high,
-                ax.get_ylim()[1] * 0.9,
-                f"{percentile_high}%",
-                rotation=90,
-                va="top",
-                ha="left",
-            )
-
-        else:
-            counts = data.value_counts()
-            ax.bar(counts.index.astype(str), counts.values)
-            ax.tick_params(axis="x", rotation=45)
-
-        ax.set_title(key)
-        ax.grid(True, alpha=0.3)
-
-    # Hide unused subplots
-    for ax in axes[len(keys) :]:
-        ax.axis("off")
-
-    fig.tight_layout()
-    plt.show()
-
-
-def plot_histogram(df, key, bins=20, dropna=True, eps=1e-8):
-    if key not in df.columns:
-        raise ValueError(f"Key '{key}' not found in dataframe")
-
-    data = df[key]
-
-    if dropna:
-        data = data.dropna()
-
-    if len(data) == 0:
-        print(f"[WARN] No data available for '{key}'")
-        return
-
-    # Attempt numeric conversion
-    is_numeric = True
-    try:
-        data = pd.to_numeric(data)
-    except (ValueError, TypeError):
-        is_numeric = False
-
-    plt.figure()
-
-    if is_numeric:
-        data_min = data.min()
-        data_max = data.max()
-
-        # Zero or near-zero range → constant value
-        if np.isclose(data_min, data_max, atol=eps):
-            plt.bar([str(round(float(data_min), 4))], [len(data)])
-            plt.xlabel(key)
-            plt.ylabel("Count")
-            plt.title(f"{key} (constant value)")
-        else:
-            # Safe bin count
-            effective_bins = min(bins, len(data))
-            plt.hist(data, bins=effective_bins)
-            plt.xlabel(key)
-            plt.ylabel("Count")
-            plt.title(f"Histogram of {key}")
-    else:
-        # Categorical fallback
-        counts = data.value_counts()
-        plt.bar(counts.index.astype(str), counts.values)
-        plt.xlabel(key)
-        plt.ylabel("Count")
-        plt.title(f"Distribution of {key}")
-        plt.xticks(rotation=45, ha="right")
-
-    plt.grid(True, alpha=0.3)
-    plt.tight_layout()
-    plt.show()
-
-
 def detect_outliers(
     df,
     metrics=None,
@@ -353,6 +210,7 @@ def detect_outliers(
     file_size_min_mb=4.0,
     max_thickness=1.25,
     min_dimension=120,
+    min_mni_overlap=0.95,
 ):
     """
     Detect outliers in MRI QC metrics using multiple strategies + user-defined criteria.
@@ -454,6 +312,10 @@ def detect_outliers(
             if metric in ["dim_x", "dim_y", "dim_z"]:
                 additional_mask = values < min_dimension
 
+            # mni overlap threshold
+            if metric == "mni_overlap":
+                additional_mask = values < min_mni_overlap
+
             # Combine all masks
             final_mask = (
                 z_mask | iqr_mask | mad_mask | additional_mask | percentile_mask
@@ -512,10 +374,10 @@ def run_qc_multiprocessing(
     return pd.DataFrame(records)
 
 
-def compute_stats(bids_path="/run/media/falconnier/Elements/BIDS_datasets_selection"):
-    n_processes = 6
+def compute_stats(bids_path, qc_csv_dir=None, n_processes=6):
     dirpath = Path(__file__).parent.resolve()
-    qc_csv_dir = dirpath / "qc_results"
+    if qc_csv_dir is None:
+        qc_csv_dir = dirpath / "qc_results"
 
     print("The qc results will be saved to:", qc_csv_dir)
     qc_csv_dir.mkdir(parents=True, exist_ok=True)
@@ -548,10 +410,24 @@ def compute_stats(bids_path="/run/media/falconnier/Elements/BIDS_datasets_select
         )
 
 
-def compute_detect_outliers():
+def compute_detect_outliers(
+    qc_csv_dir=None,
+    qc_csv_outlier_dir=None,
+    metrics=None,
+    groupby_cols=("dataset", "tesla", "model"),
+    z_thresh=5,
+    iqr_factor=2.5,
+    mad_factor=6,
+    file_size_min_mb=4.0,
+    max_thickness=1.25,
+    min_dimension=120,
+):
+
     dirpath = Path(__file__).parent.resolve()
-    qc_csv_dir = dirpath / "qc_results"
-    qc_csv_outlier_dir = dirpath / "qc_outliers"
+    if qc_csv_dir is None:
+        qc_csv_dir = dirpath / "qc_results"
+    if qc_csv_outlier_dir is None:
+        qc_csv_outlier_dir = dirpath / "qc_outliers"
 
     shutil.rmtree(qc_csv_outlier_dir, ignore_errors=True)
     qc_csv_outlier_dir.mkdir(parents=True, exist_ok=True)
@@ -560,7 +436,17 @@ def compute_detect_outliers():
     for qc_csv_file in qc_csv_files:
         print(f"Detecting outliers in: {qc_csv_file.name}")
         df = pd.read_csv(qc_csv_file)
-        outliers_df = detect_outliers(df)
+        outliers_df = detect_outliers(
+            df,
+            metrics=None,
+            groupby_cols=("dataset", "tesla", "model"),
+            z_thresh=5,
+            iqr_factor=2.5,
+            mad_factor=6,
+            file_size_min_mb=4.0,
+            max_thickness=1.25,
+            min_dimension=120,
+        )
 
         # Save outliers to CSV
         outlier_csv_path = qc_csv_outlier_dir / (qc_csv_file.stem + "_outliers.csv")
@@ -568,14 +454,15 @@ def compute_detect_outliers():
         print(f"Outliers saved to: {outlier_csv_path}")
 
 
-def visual_check_stats():
+def visual_check_stats(qc_csv_dir=None):
     dirpath = Path(__file__).parent.resolve()
 
-    # qc_csv_outlier_dir = dirpath / "qc_outliers"
-    # qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
+    if qc_csv_dir is None:
+        qc_csv_dir = dirpath / "qc_results"
+        # qc_csv_outlier_dir = dirpath / "qc_outliers"
+        # qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
 
-    qc_csv_outlier_dir = dirpath / "qc_results"
-    qc_csv_files = list(qc_csv_outlier_dir.glob("*.csv"))
+    qc_csv_files = list(qc_csv_dir.glob("*.csv"))
 
     for qc_csv_file in qc_csv_files:
         print(f"CSV FILE: {qc_csv_file.name}")
@@ -612,13 +499,10 @@ def visual_check_stats():
         plot_histograms_grid(df, metrics_to_plot, bins=40)
 
 
-# def trunc_path(path_str):
-#     path_str.split("/")[-3:]
-
-
-def outlier_visual_check_image():
+def outlier_visual_check_image(qc_csv_outlier_dir=None):
     dirpath = Path(__file__).parent.resolve()
-    qc_csv_outlier_dir = dirpath / "qc_outliers"
+    if qc_csv_outlier_dir is None:
+        qc_csv_outlier_dir = dirpath / "qc_outliers"
     qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
     for qc_csv_file in qc_csv_files:
         # print(f"CSV FILE: {qc_csv_file.name}")
@@ -665,30 +549,103 @@ def outlier_visual_check_image():
         plt.show()
 
 
+def qc_outlier_to_txt(
+    qc_csv_outlier_dir=None,
+    qc_txt_path=None,
+    num_level_to_trunc=6,
+    keys_to_filter=["threshold_rule", "z_sigma"],
+    save_outliers_csv=False,
+):
+    dirpath = Path(__file__).parent.resolve()
+    if qc_csv_outlier_dir is None:
+        qc_csv_outlier_dir = dirpath / "qc_outliers"
+
+    if qc_txt_path is None:
+        qc_txt_path = dirpath / "qc_outliers.txt"
+        qc_csv_path = dirpath / "qc_outliers.csv"
+
+    qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
+    outliers = pd.concat(pd.read_csv(f) for f in qc_csv_files)
+    outliers.reset_index(drop=True, inplace=True)
+
+    # filer
+    outliers_filtered = outliers[
+        np.logical_or.reduce([outliers[key] for key in keys_to_filter])
+    ]
+
+    # in the path column, split with "/" and remove the 5 first parts
+    # remove duplicates
+    outliers_filtered["path"] = outliers_filtered["path"].apply(
+        lambda path_str: "/".join(path_str.split("/")[num_level_to_trunc:])
+    )
+    outliers_filtered = outliers_filtered.drop_duplicates(subset=["path"])
+
+    # save the filtered outliers to a csv file and txt
+    if save_outliers_csv:
+        outliers_filtered.to_csv(qc_csv_path, index=False)
+
+    outliers_filtered["path"].to_csv(
+        qc_txt_path,
+        index=False,
+        header=False,
+    )
+
+
 if __name__ == "__main__":
-    compute_stats()
-    compute_detect_outliers()
-    # visual_check_stats()
-    # outlier_visual_check_image()
+    # argparsing
+    parser = argparse.ArgumentParser(
+        description="Run QC on T1w images in a BIDS dataset"
+    )
+    parser.add_argument(
+        "--bids_path",
+        type=str,
+        default="/run/media/falconnier/Elements/BIDS_datasets_selection",
+        help="Path to the root of the BIDS dataset",
+    )
+    parser.add_argument(
+        "--qc_csv_dir",
+        type=str,
+        default=None,
+        help="Path to the directory containing QC CSV files",
+    )
+    parser.add_argument(
+        "--qc_csv_outlier_dir",
+        type=str,
+        default=None,
+        help="Path to the directory to save QC outlier CSV files",
+    )
+    parser.add_argument(
+        "--n_processes",
+        type=int,
+        default=6,
+        help="Number of processes to use for QC computation",
+    )
+    parser.add_argument(
+        "--qc_txt_path",
+        type=str,
+        default=None,
+        help="Path to the QC outliers text file",
+    )
+    args = parser.parse_args()
 
-    # dirpath = Path.cwd()
+    # run
+    compute_stats(
+        bids_path=args.bids_path,
+        qc_csv_dir=args.qc_csv_dir,
+        n_processes=args.n_processes,
+    )
+    compute_detect_outliers(
+        qc_csv_dir=args.qc_csv_dir,
+        qc_csv_outlier_dir=args.qc_csv_outlier_dir,
+        z_thresh=5,
+        file_size_min_mb=4.0,
+        max_thickness=1.25,
+        min_dimension=120,
+    )
 
-    # qc_csv_outlier_dir = dirpath / "qc_outliers"
-    # qc_csv_files = list(qc_csv_outlier_dir.glob("*_outliers.csv"))
-    # outliers = pd.concat(pd.read_csv(f) for f in qc_csv_files)
-    # outliers.reset_index(drop=True, inplace=True)
-
-    # # filter if threshold_rule or z_sigma is true
-    # outliers_filtered = outliers[outliers["threshold_rule"] | outliers["z_sigma"]]
-    # # in the path column, split with "/" and remove the 5 first parts
-    # outliers_filtered["path"] = outliers_filtered["path"].apply(
-    #     lambda path_str: "/".join(path_str.split("/")[6:])
-    # )
-    # # remove duplicates
-    # outliers_filtered = outliers_filtered.drop_duplicates(subset=["path"])
-    # # save the filtered outliers to a csv file
-    # outliers_filtered.to_csv("filtered_outliers_before_preprocessing.csv", index=False)
-    # # save the paths to a text file
-    # outliers_filtered["path"].to_csv(
-    #     "filtered_outliers_paths_before_preprocessing.txt", index=False, header=False
-    # )
+    qc_outlier_to_txt(
+        qc_csv_outlier_dir=args.qc_csv_outlier_dir,
+        qc_txt_path=args.qc_txt_path,
+        keys_to_filter=["threshold_rule"],
+        save_outliers_csv=False,
+    )

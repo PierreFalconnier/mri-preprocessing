@@ -334,6 +334,21 @@ wheels = [
 ]
 
 [[package]]
+name = "intensity-normalization"
+version = "3.0.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "nibabel" },
+    { name = "numpy" },
+    { name = "scikit-fuzzy" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/20/04/dbe39ab62c5c1f58cc870295e380a4f5f0f6e11f35b90bfdc03065442ceb/intensity_normalization-3.0.1.tar.gz", hash = "sha256:7797fe520fed6bd4508e4dc9c07995250afc83dde09737fb21c98bc4b780d6d4", size = 50792, upload-time = "2025-07-21T23:57:36.72Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/cf/0d/c500b783db899589433868b753e7839bdea616c0ac381d87bffa56b6e090/intensity_normalization-3.0.1-py3-none-any.whl", hash = "sha256:777594a247a15ec419d158fe939327db993aa7c63d7815820ad5a8804787cb46", size = 28032, upload-time = "2025-07-21T23:57:35.156Z" },
+]
+
+[[package]]
 name = "itk"
 version = "5.4.5"
 source = { registry = "https://pypi.org/simple" }
@@ -605,6 +620,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "antspyx" },
     { name = "girder-client" },
+    { name = "intensity-normalization" },
     { name = "itk" },
     { name = "matplotlib" },
     { name = "nibabel" },
@@ -620,6 +636,7 @@ dependencies = [
 requires-dist = [
     { name = "antspyx", specifier = ">=0.6.1" },
     { name = "girder-client", specifier = ">=3.2.11" },
+    { name = "intensity-normalization", specifier = ">=3.0.1" },
     { name = "itk", specifier = ">=5.4.5" },
     { name = "matplotlib", specifier = ">=3.10.8" },
     { name = "nibabel", specifier = ">=5.3.3" },
@@ -1005,6 +1022,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/f3/61/d7545dafb7ac2230c70d38d31cbfe4cc64f7144dc41f6e4e4b78ecd9f5bb/requests-toolbelt-1.0.0.tar.gz", hash = "sha256:7681a0a3d047012b5bdc0ee37d7f8f07ebe76ab08caeccfc3921ce23c88d5bc6", size = 206888, upload-time = "2023-05-01T04:11:33.229Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3f/51/d4db610ef29373b879047326cbf6fa98b6c1969d6f6dc423279de2b1be2c/requests_toolbelt-1.0.0-py2.py3-none-any.whl", hash = "sha256:cccfdd665f0a24fcf4726e690f65639d272bb0637b9b92dfd91a5568ccf6bd06", size = 54481, upload-time = "2023-05-01T04:11:28.427Z" },
+]
+
+[[package]]
+name = "scikit-fuzzy"
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/1c/eeffa327ecf44e11fdd312b2b8cf5a7ac7f6cd2956646980893dc4aa56d8/scikit_fuzzy-0.5.0.tar.gz", hash = "sha256:2ee5340523aa7635ca568b9d8029c7738d05f9ea550fc89d4054b4cb50f34e7f", size = 958406, upload-time = "2024-08-22T22:20:45.697Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9d/06/da70811f95c4a3bada55e7b20c957548a4d9bc21150916f0c024286d67c7/scikit_fuzzy-0.5.0-py2.py3-none-any.whl", hash = "sha256:e456c365146bc5c58d9f593f4127ac783112e2daf89f87b12c6ef3c38e4087dd", size = 920817, upload-time = "2024-08-22T22:20:43.447Z" },
 ]
 
 [[package]]

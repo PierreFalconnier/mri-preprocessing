@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "antspyx>=0.6.1",
     "girder-client>=3.2.11",
+    "intensity-normalization>=3.0.1",
     "itk>=5.4.5",
     "matplotlib>=3.10.8",
     "nibabel>=5.3.3",
