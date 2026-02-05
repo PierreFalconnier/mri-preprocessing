@@ -25,6 +25,11 @@ OUTPUTS_TXT="$SCRIPT_DIR/outputs.txt"
 INPUTS_CHUNK_PREFIX="$SCRIPT_DIR/inputs_chunk_"
 OUTPUTS_CHUNK_PREFIX="$SCRIPT_DIR/outputs_chunk_"
 
+echo "Cleaning up existing temporary txt files"
+rm -f "$INPUTS_TXT" "$OUTPUTS_TXT" \
+      "${INPUTS_CHUNK_PREFIX}"* \
+      "${OUTPUTS_CHUNK_PREFIX}"*
+
 find "$SRC_DIR" -type f -iname "*t1w*.nii.gz" > "$INPUTS_TXT"
 sed "s|$SRC_DIR|$DST_DIR|" "$INPUTS_TXT" > "$OUTPUTS_TXT"
 
