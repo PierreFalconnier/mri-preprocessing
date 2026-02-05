@@ -2,8 +2,8 @@
 
 import argparse
 import os
-from multiprocessing import Pool
 from datetime import datetime
+from multiprocessing import Pool
 
 import nibabel as nib
 import numpy as np
