@@ -5,3 +5,4 @@ test.py
 __pycache__/
 upload_girder.py
 qc_results_save
+logs

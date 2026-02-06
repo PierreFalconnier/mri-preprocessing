@@ -1,4 +1,4 @@
-# script from https://github.com/LemuelPuglisi/turboprep/blob/main/turboprep-multiple.py
+# original script from https://github.com/LemuelPuglisi/turboprep/blob/main/turboprep-multiple.py
 
 import argparse
 import os

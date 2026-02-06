@@ -8,22 +8,18 @@ if [[ $# -ne 4 ]]; then
     exit 1
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMP_DIR=$HOME/Documents/mri-preprocessing/preprocessing/tmp
+mkdir -p "$TEMP_DIR"
 
 SRC_DIR="$1"
 DST_DIR="$2"
 NUM_JOBS="$3"
 TURBO_PREP_PBS="$4"
 
-# configurable paths 
-PYTHON="$HOME/Documents/mri-preprocessing/.venv/bin/python"
-PIPELINE="$HOME/Documents/mri-preprocessing/turboprep-multiple-v2.py"
-TEMPLATE="$HOME/Documents/mri-preprocessing/MNI_templates/MNI152_T1_1mm_brain.nii.gz"
-
-INPUTS_TXT="$SCRIPT_DIR/inputs.txt"
-OUTPUTS_TXT="$SCRIPT_DIR/outputs.txt"
-INPUTS_CHUNK_PREFIX="$SCRIPT_DIR/inputs_chunk_"
-OUTPUTS_CHUNK_PREFIX="$SCRIPT_DIR/outputs_chunk_"
+INPUTS_TXT="$TEMP_DIR/inputs.txt"
+OUTPUTS_TXT="$TEMP_DIR/outputs.txt"
+INPUTS_CHUNK_PREFIX="$TEMP_DIR/inputs_chunk_"
+OUTPUTS_CHUNK_PREFIX="$TEMP_DIR/outputs_chunk_"
 
 echo "Cleaning up existing temporary txt files"
 rm -f "$INPUTS_TXT" "$OUTPUTS_TXT" \
@@ -36,7 +32,6 @@ sed "s|$SRC_DIR|$DST_DIR|" "$INPUTS_TXT" > "$OUTPUTS_TXT"
 N=$(wc -l < "$INPUTS_TXT")
 K=$NUM_JOBS
 L=$(( (N + K - 1) / K ))
-
 echo "Total files: $N, Jobs: $K, Lines per job: $L"
 
 split -l "$L" "$INPUTS_TXT"  "$INPUTS_CHUNK_PREFIX"
@@ -45,9 +40,8 @@ split -l "$L" "$OUTPUTS_TXT" "$OUTPUTS_CHUNK_PREFIX"
 for f in "${INPUTS_CHUNK_PREFIX}"*; do
     suf=${f#"$INPUTS_CHUNK_PREFIX"}
     echo "Submitting job for chunk $suf"
-
     qsub \
-      -v SUF="$suf",SCRIPT_DIR="$SCRIPT_DIR",PYTHON="$PYTHON",PIPELINE="$PIPELINE",TEMPLATE="$TEMPLATE" \
+      -v SUF="$suf",TEMP_DIR="$TEMP_DIR" \
       "$TURBO_PREP_PBS"
 done
 
