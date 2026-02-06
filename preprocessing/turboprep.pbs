@@ -4,7 +4,7 @@ set -euo pipefail
 job_number=$(echo $PBS_JOBID | cut -d'.' -f1)
 
 #PBS -N turboprep
-#PBS -l walltime=00:10:00
+#PBS -l walltime=48:00:00
 #PBS -l nodes=1:ppn=2
 #PBS -l mem=32gb
 #PBS -o turboprep-${job_number}.out
@@ -26,12 +26,12 @@ job_number=$(echo $PBS_JOBID | cut -d'.' -f1)
 
 # Navigate to the project directory
 cd "$HOME/Documents/mri-preprocessing/"
-source .venv/bin/activate
+# source .venv/bin/activate
 export PYTHONUNBUFFERED=1
 export HYDRA_FULL_ERROR=1
 
 # Run the pipeline using the variables passed via qsub -v
-python preprocessing/turboprep-multiple-v2.py \
+uv run python preprocessing/turboprep-multiple-v2.py \
   --inputs "$IN_FILE" \
   --outputs "$OUT_FILE" \
   --template MNI_templates/MNI152_T1_1mm_brain.nii.gz \
