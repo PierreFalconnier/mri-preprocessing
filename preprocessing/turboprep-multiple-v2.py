@@ -77,10 +77,12 @@ if __name__ == "__main__":
     regtype = args.registration_type
     keepint = args.keep
 
-    assert os.path.exists(inp_file), "input file doesn't exist"
-    assert os.path.exists(out_file), "output file doesn't exist"
-    assert os.path.exists(template), "template image file doesn't exist"
-    assert nbc_file is None or os.path.exists(nbc_file), "no-bfc file doesn't exist"
+    assert os.path.exists(inp_file), f"{inp_file} input file doesn't exist"
+    assert os.path.exists(out_file), f"{out_file} output file doesn't exist"
+    assert os.path.exists(template), f"{template} template image file doesn't exist"
+    assert nbc_file is None or os.path.exists(nbc_file), (
+        f"{nbc_file} no-bfc file doesn't exist"
+    )
 
     print("🚀 reading input files")
 
