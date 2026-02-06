@@ -13,10 +13,10 @@ set -euo pipefail
 
 # by default on clreatis cluster, the job starts in the home directory
 # cd "$PBS_O_WORKDIR" # where the qsub ticket was submitted from
-cd Documents/mri-preprocessing/
+# cd Documents/mri-preprocessing/
 
 
-./.venv/bin/python preprocessing/turboprep-multiple-v2.py \
+$HOME/Documents/mri-preprocessing/.venv/bin/python $HOME/Documents/mri-preprocessing/preprocessing/turboprep-multiple-v2.py \
   --inputs  "$TEMP_DIR/inputs_chunk_${SUF}" \
   --outputs "$TEMP_DIR/outputs_chunk_${SUF}" \
   --template MNI_templates/MNI152_T1_1mm_brain.nii.gz \
