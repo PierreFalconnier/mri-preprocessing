@@ -575,7 +575,8 @@ def qc_outlier_to_txt(
 
     # in the path column, split with "/" and remove the 5 first parts
     # remove duplicates
-    outliers_filtered["path"] = outliers_filtered["path"].apply(
+    outliers_filtered = outliers_filtered.copy()
+    outliers_filtered.loc[:, "path"] = outliers_filtered["path"].apply(
         lambda path_str: "/".join(path_str.split("/")[num_level_to_trunc:])
     )
     outliers_filtered = outliers_filtered.drop_duplicates(subset=["path"])
