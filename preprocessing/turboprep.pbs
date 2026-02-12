@@ -16,14 +16,6 @@ job_number=$(echo $PBS_JOBID | cut -d'.' -f1)
 # by default, the job starts in the home directory
 # cd "$PBS_O_WORKDIR" # where the qsub ticket was submitted from
 
-# # ANTs
-# export PATH=$HOME/ants-2.6.5/bin:$PATH
-
-# # FreeSurfer
-# export FREESURFER_HOME=$HOME/freesurfer
-# echo $FREESURFER_HOME
-# source $FREESURFER_HOME/SetUpFreeSurfer.sh
-
 # Navigate to the project directory
 cd "$HOME/Documents/mri-preprocessing/"
 # source .venv/bin/activate
@@ -31,8 +23,8 @@ export PYTHONUNBUFFERED=1
 export HYDRA_FULL_ERROR=1
 
 # Run the pipeline using the variables passed via qsub -v
-uv run python preprocessing/turboprep-multiple-v2.py \
+uv run python $HOME/Documents/mri-preprocessing/preprocessing/turboprep-multiple-v2.py \
   --inputs "$IN_FILE" \
   --outputs "$OUT_FILE" \
-  --template MNI_templates/MNI152_T1_1mm_brain.nii.gz \
+  --template $HOME/Documents/mri-preprocessing/MNI_templates/MNI152_T1_1mm_brain.nii.gz \
   --threads "$PBS_NP"
