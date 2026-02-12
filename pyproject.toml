@@ -6,4 +6,5 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "intensity-normalization==2.2.4",
+    "openpyxl>=3.1.5",
 ]
