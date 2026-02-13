@@ -40,7 +40,7 @@ split -a 2 -d -l "$L" "$OUTPUTS_TXT" "$OUTPUTS_CHUNK_PREFIX"
 
 # Loop through the generated input chunks
 for input_chunk in "${INPUTS_CHUNK_PREFIX}"*; do
-    # Identify the suffix (e.g., 00, 01) to find the matching output chunk
+    # Identify the suffix to find the matching output chunk
     suffix="${input_chunk#$INPUTS_CHUNK_PREFIX}"
     output_chunk="${OUTPUTS_CHUNK_PREFIX}${suffix}"
     echo "Submitting job for:"

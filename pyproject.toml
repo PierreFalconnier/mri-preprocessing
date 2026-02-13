@@ -6,4 +6,5 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "intensity-normalization==2.2.4",
+    "tqdm>=4.67.3",
 ]
