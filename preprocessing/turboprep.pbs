@@ -11,7 +11,7 @@
 # cd "$PBS_O_WORKDIR" # where the qsub ticket was submitted from
 
 # Navigate to the project directory
-# cd "$HOME/Documents/mri-preprocessing/"
+cd "$HOME/Documents/mri-preprocessing/"
 # source .venv/bin/activate
 # export PYTHONUNBUFFERED=1
 # export HYDRA_FULL_ERROR=1
