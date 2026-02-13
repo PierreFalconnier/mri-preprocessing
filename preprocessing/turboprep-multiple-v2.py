@@ -177,23 +177,39 @@ if __name__ == "__main__":
         if input_path != corrected_path:
             log_file = os.path.join(os.path.dirname(corrected_path), "n4log.txt")
             try:
-                # Read input image
-                img = sitk.ReadImage(input_path)
+                # Read input image in float32 (CLI uses full precision)
+                inputImage = sitk.ReadImage(input_path, sitk.sitkFloat32)
+                image = inputImage
 
-                # Set up the N4 corrector
+                # CLI N4 default: use mask of entire image if none provided
+                maskImage = sitk.OtsuThreshold(inputImage, 0, 1, 200)
+
+                # Apply shrink factor exactly like CLI -s
+                if shrinkf > 1:
+                    shrinkVec = [shrinkf] * inputImage.GetDimension()
+                    image = sitk.Shrink(inputImage, shrinkVec)
+                    maskImage = sitk.Shrink(maskImage, shrinkVec)
+
+                # Set up N4 corrector
                 corrector = sitk.N4BiasFieldCorrectionImageFilter()
-                corrector.SetShrinkFactor(shrinkf)
-                corrector.SetVerbose(True)  # Verbose output
+                corrector.SetVerbose(True)  # replicates -v output
 
-                # Redirect stdout to log file
+                # Default CLI iterations: 50x50x30x20 (typical default)
+                corrector.SetMaximumNumberOfIterations([50, 50, 30, 20])
+
+                # Execute N4 correction
                 with open(log_file, "w") as f:
                     old_stdout = os.sys.stdout
                     os.sys.stdout = f
-                    img_corrected = corrector.Execute(img)
+                    corrected_image = corrector.Execute(image, maskImage)
                     os.sys.stdout = old_stdout
 
+                # Compute full-resolution corrected image to match CLI output
+                log_bias_field = corrector.GetLogBiasFieldAsImage(inputImage)
+                corrected_image_full = inputImage / sitk.Exp(log_bias_field)
+
                 # Write corrected image
-                sitk.WriteImage(img_corrected, corrected_path)
+                sitk.WriteImage(corrected_image_full, corrected_path)
 
             except Exception as e:
                 print(f"N4 correction failed: {e}")
@@ -201,7 +217,7 @@ if __name__ == "__main__":
                     del outputs_dict[input_path]
                 continue
 
-            # Check that output file exists
+            # Check output exactly like your original code
             if not os.path.exists(corrected_path):
                 print("N4 correction has failed.")
                 if input_path in outputs_dict:
