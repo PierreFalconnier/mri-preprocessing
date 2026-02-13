@@ -6,6 +6,8 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "intensity-normalization==2.2.4",
+    "matplotlib>=3.10.8",
     "openpyxl>=3.1.5",
+    "seaborn>=0.13.2",
     "tqdm>=4.67.3",
 ]

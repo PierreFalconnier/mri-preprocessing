@@ -9,12 +9,13 @@ fi
 TEMP_DIR=$HOME/Documents/mri-preprocessing/preprocessing/tmp
 mkdir -p "$TEMP_DIR"
 
+LOGS_DIR=$HOME/Documents/mri-preprocessing/logs
+mkdir -p "$LOGS_DIR"
+
 SRC_DIR="$1"
 DST_DIR="$2"
 NUM_JOBS="$3"
 TURBO_PREP_PBS="$4"
-
-mkdir -p "$HOME/Documents/mri-preprocessing/logs"
 
 INPUTS_TXT="$TEMP_DIR/inputs.txt"
 OUTPUTS_TXT="$TEMP_DIR/outputs.txt"
@@ -46,6 +47,18 @@ for input_chunk in "${INPUTS_CHUNK_PREFIX}"*; do
     echo "Submitting job for:"
     echo "input: $input_chunk"
     echo "output: $output_chunk"
+
+    JOB_NAME="turbo_prep_${suffix}"
+    OUT_LOG="${LOGS_DIR}/${JOB_NAME}.out"
+    ERR_LOG="${LOGS_DIR}/${JOB_NAME}.err"
+
     # Pass the chunk paths as environment variables to the PBS script
-    qsub -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" "$TURBO_PREP_PBS"
+    qsub -N "$JOB_NAME" \
+         -o "$OUT_LOG" \
+         -e "$ERR_LOG" \
+         -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" \
+         "$TURBO_PREP_PBS"
+
+    # qsub -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" "$TURBO_PREP_PBS"
+
 done
