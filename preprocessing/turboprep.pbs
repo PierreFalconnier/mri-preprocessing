@@ -1,4 +1,8 @@
 # !/bin/bash
+
+echo "PBS script started"
+
+
 # set -euo pipefail
 
 #PBS -l walltime=48:00:00

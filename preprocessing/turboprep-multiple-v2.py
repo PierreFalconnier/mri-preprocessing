@@ -1,7 +1,9 @@
 # script adapted from https://github.com/LemuelPuglisi/turboprep/blob/main/turboprep-multiple.py
 
 import argparse
+import logging
 import os
+import sys
 from datetime import datetime
 from multiprocessing import Pool
 
@@ -10,6 +12,12 @@ import numpy as np
 from intensity_normalization.normalize.whitestripe import WhiteStripeNormalize
 from intensity_normalization.typing import Modality
 from tqdm import tqdm
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
+)
 
 NPROC = int(os.environ.get("PBS_NP") or os.cpu_count() or 1)
 
@@ -127,6 +135,9 @@ if __name__ == "__main__":
     #######################################################################
 
     print("🚀 Bias-field correction + skull stripping + registration to template")
+    logging.info(
+        "loginfo : 🚀 Bias-field correction + skull stripping + registration to template"
+    )
 
     for input_path in tqdm(list(outputs_dict.keys())):
         input_outputs = outputs_dict[input_path]
