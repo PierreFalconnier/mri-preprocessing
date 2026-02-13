@@ -177,37 +177,54 @@ if __name__ == "__main__":
         print("Bias Field Correction")
         if input_path != corrected_path:
             try:
-                # 1. Load the image
-                input_image = sitk.ReadImage(input_path)
+                # 1. Load the original image in Float32
+                input_image = sitk.ReadImage(input_path, sitk.sitkFloat32)
 
-                # 2. Convert to Float32 (N4 requires floating point images)
-                image = sitk.Cast(input_image, sitk.sitkFloat32)
+                # 2. Create the mask (matching ANTs CLI behavior for N4)
+                # Note: The manual says N4 uses the whole image if no mask is provided,
+                # but the SimpleITK example uses Otsu. To match CLI exactly without
+                # a provided mask, we create a 'all-ones' mask or an Otsu mask.
+                mask_image = sitk.OtsuThreshold(input_image, 0, 1, 200)
 
-                # 3. Create a mask (CLI creates a default mask for non-zero pixels if none provided)
-                mask = sitk.OtsuThreshold(image, 0, 1)
+                # 3. Handle the Shrink Factor (The -s parameter)
+                shrink_factor = int(shrinkf)
+                if shrink_factor > 1:
+                    # We shrink both to perform the heavy math at low resolution
+                    shrunk_image = sitk.Shrink(
+                        input_image, [shrink_factor] * input_image.GetDimension()
+                    )
+                    shrunk_mask = sitk.Shrink(
+                        mask_image, [shrink_factor] * input_image.GetDimension()
+                    )
+                else:
+                    shrunk_image = input_image
+                    shrunk_mask = mask_image
 
                 # 4. Configure the N4 Filter
                 corrector = sitk.N4BiasFieldCorrectionImageFilter()
 
-                # The -s (shrink factor) from CLI
-                # This reduces resolution to speed up computation
-                shrink_factor = int(shrinkf)
-                if shrink_factor > 1:
-                    image = sitk.Shrink(image, [shrink_factor] * image.GetDimension())
-                    mask = sitk.Shrink(mask, [shrink_factor] * mask.GetDimension())
+                # Default convergence in CLI is [50x50x50x50, 0.0]
+                # This matches the -c option in your command description
+                corrector.SetMaximumNumberOfIterations([50] * 4)
 
-                # 5. Execute
-                # Note: To match CLI defaults: 4 iterations at 3 levels [50, 50, 50, 50]
-                corrected_image = corrector.Execute(input_image, mask)
+                # 5. Execute on the SHRUNK image
+                # This prevents the size mismatch error
+                _ = corrector.Execute(shrunk_image, shrunk_mask)
 
-                # 6. Save result
-                sitk.WriteImage(corrected_image, corrected_path)
+                # 6. Reconstruct the Full Resolution Bias Field
+                # This is the "secret sauce" to get the exact CLI result:
+                # We project the low-res bias field back onto the high-res original spacing.
+                log_bias_field = corrector.GetLogBiasFieldAsImage(input_image)
+                corrected_image_full_resolution = input_image / sitk.Exp(log_bias_field)
 
-                # Optional: Log parameters to file to mimic your "> n4log.txt"
-                with open(
-                    os.path.join(os.path.dirname(corrected_path), "n4log.txt"), "w"
-                ) as f:
-                    f.write(f"Processed {input_path}\nShrink Factor: {shrinkf}")
+                # 7. Write the output
+                sitk.WriteImage(corrected_image_full_resolution, corrected_path)
+
+                # Optional: Save the log like "> n4log.txt"
+                log_file = os.path.join(os.path.dirname(corrected_path), "n4log.txt")
+                with open(log_file, "w") as f:
+                    f.write(f"N4BiasFieldCorrection executed on {input_path}\n")
+                    f.write(f"Shrink Factor: {shrinkf}\n")
 
             except Exception as e:
                 print(f"N4 correction has failed: {e}")
