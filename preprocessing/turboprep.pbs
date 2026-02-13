@@ -13,7 +13,7 @@
 # Navigate to the project directory
 cd "$HOME/Documents/mri-preprocessing/"
 # source .venv/bin/activate
-# export PYTHONUNBUFFERED=1
+export PYTHONUNBUFFERED=1
 # export HYDRA_FULL_ERROR=1
 
 # Run the pipeline using the variables passed via qsub -v
