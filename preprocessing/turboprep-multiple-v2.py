@@ -9,6 +9,7 @@ from multiprocessing import Pool
 
 import nibabel as nib
 import numpy as np
+import SimpleITK as sitk
 from intensity_normalization.normalize.whitestripe import WhiteStripeNormalize
 from intensity_normalization.typing import Modality
 from tqdm import tqdm
@@ -157,19 +158,55 @@ if __name__ == "__main__":
         if not os.path.exists(os.path.dirname(brain_path)):
             os.makedirs(os.path.dirname(brain_path))
 
+        # print("Bias Field Correction")
+        # if input_path != corrected_path:
+        #     os.system(
+        #         "N4BiasFieldCorrection -d 3 "
+        #         f"-i {input_path} "
+        #         f"-o {corrected_path} "
+        #         f"-s {shrinkf} -v > {os.path.join(os.path.dirname(corrected_path), 'n4log.txt')}"
+        #     )
+
+        # if not os.path.exists(corrected_path):
+        #     print("N4 correction has failed.")
+        #     del outputs_dict[input_path]
+        #     continue
+
+        # using simpleITK
         print("Bias Field Correction")
         if input_path != corrected_path:
-            os.system(
-                "N4BiasFieldCorrection -d 3 "
-                f"-i {input_path} "
-                f"-o {corrected_path} "
-                f"-s {shrinkf} -v > {os.path.join(os.path.dirname(corrected_path), 'n4log.txt')}"
-            )
+            log_file = os.path.join(os.path.dirname(corrected_path), "n4log.txt")
+            try:
+                # Read input image
+                img = sitk.ReadImage(input_path)
 
-        if not os.path.exists(corrected_path):
-            print("N4 correction has failed.")
-            del outputs_dict[input_path]
-            continue
+                # Set up the N4 corrector
+                corrector = sitk.N4BiasFieldCorrectionImageFilter()
+                corrector.SetShrinkFactor(shrinkf)
+                corrector.SetVerbose(True)  # Verbose output
+
+                # Redirect stdout to log file
+                with open(log_file, "w") as f:
+                    old_stdout = os.sys.stdout
+                    os.sys.stdout = f
+                    img_corrected = corrector.Execute(img)
+                    os.sys.stdout = old_stdout
+
+                # Write corrected image
+                sitk.WriteImage(img_corrected, corrected_path)
+
+            except Exception as e:
+                print(f"N4 correction failed: {e}")
+                if input_path in outputs_dict:
+                    del outputs_dict[input_path]
+                continue
+
+            # Check that output file exists
+            if not os.path.exists(corrected_path):
+                print("N4 correction has failed.")
+                if input_path in outputs_dict:
+                    del outputs_dict[input_path]
+                continue
 
         print("SynthStrip")
         os.system(
