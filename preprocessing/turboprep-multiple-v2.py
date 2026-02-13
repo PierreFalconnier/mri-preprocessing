@@ -20,7 +20,8 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 
-NPROC = int(os.environ.get("PBS_NP") or os.cpu_count() or 1)
+# NPROC = int(os.environ.get("PBS_NP") or os.cpu_count() or 1)
+NPROC = int(os.cpu_count() or 1)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -175,53 +176,50 @@ if __name__ == "__main__":
         # using simpleITK
         print("Bias Field Correction")
         if input_path != corrected_path:
-            log_file = os.path.join(os.path.dirname(corrected_path), "n4log.txt")
             try:
-                # Read input image in float32 (CLI uses full precision)
-                inputImage = sitk.ReadImage(input_path, sitk.sitkFloat32)
-                image = inputImage
+                # 1. Load the image
+                input_image = sitk.ReadImage(input_path)
 
-                # CLI N4 default: use mask of entire image if none provided
-                maskImage = sitk.OtsuThreshold(inputImage, 0, 1, 200)
+                # 2. Convert to Float32 (N4 requires floating point images)
+                image = sitk.Cast(input_image, sitk.sitkFloat32)
 
-                # Apply shrink factor exactly like CLI -s
-                if shrinkf > 1:
-                    shrinkVec = [shrinkf] * inputImage.GetDimension()
-                    image = sitk.Shrink(inputImage, shrinkVec)
-                    maskImage = sitk.Shrink(maskImage, shrinkVec)
+                # 3. Create a mask (CLI creates a default mask for non-zero pixels if none provided)
+                mask = sitk.OtsuThreshold(image, 0, 1)
 
-                # Set up N4 corrector
+                # 4. Configure the N4 Filter
                 corrector = sitk.N4BiasFieldCorrectionImageFilter()
 
-                # Default CLI iterations: 50x50x30x20 (typical default)
-                corrector.SetMaximumNumberOfIterations([50, 50, 30, 20])
+                # The -s (shrink factor) from CLI
+                # This reduces resolution to speed up computation
+                shrink_factor = int(shrinkf)
+                if shrink_factor > 1:
+                    image = sitk.Shrink(image, [shrink_factor] * image.GetDimension())
+                    mask = sitk.Shrink(mask, [shrink_factor] * mask.GetDimension())
 
-                # Execute N4 correction
-                with open(log_file, "w") as f:
-                    old_stdout = os.sys.stdout
-                    os.sys.stdout = f
-                    corrected_image = corrector.Execute(image, maskImage)
-                    os.sys.stdout = old_stdout
+                # 5. Execute
+                # Note: To match CLI defaults: 4 iterations at 3 levels [50, 50, 50, 50]
+                corrected_image = corrector.Execute(input_image, mask)
 
-                # Compute full-resolution corrected image to match CLI output
-                log_bias_field = corrector.GetLogBiasFieldAsImage(inputImage)
-                corrected_image_full = inputImage / sitk.Exp(log_bias_field)
+                # 6. Save result
+                sitk.WriteImage(corrected_image, corrected_path)
 
-                # Write corrected image
-                sitk.WriteImage(corrected_image_full, corrected_path)
+                # Optional: Log parameters to file to mimic your "> n4log.txt"
+                with open(
+                    os.path.join(os.path.dirname(corrected_path), "n4log.txt"), "w"
+                ) as f:
+                    f.write(f"Processed {input_path}\nShrink Factor: {shrinkf}")
 
             except Exception as e:
-                print(f"N4 correction failed: {e}")
+                print(f"N4 correction has failed: {e}")
                 if input_path in outputs_dict:
                     del outputs_dict[input_path]
                 continue
 
-            # Check output exactly like your original code
-            if not os.path.exists(corrected_path):
-                print("N4 correction has failed.")
-                if input_path in outputs_dict:
-                    del outputs_dict[input_path]
-                continue
+        if not os.path.exists(corrected_path):
+            print("N4 correction has failed.")
+            if input_path in outputs_dict:
+                del outputs_dict[input_path]
+            continue
 
         print("SynthStrip")
         os.system(
