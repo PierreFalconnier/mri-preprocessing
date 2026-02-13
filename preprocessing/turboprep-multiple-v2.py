@@ -7,7 +7,6 @@ import sys
 from datetime import datetime
 from multiprocessing import Pool
 
-import ants
 import nibabel as nib
 import numpy as np
 from intensity_normalization.normalize.whitestripe import WhiteStripeNormalize
@@ -159,60 +158,18 @@ if __name__ == "__main__":
         if not os.path.exists(os.path.dirname(brain_path)):
             os.makedirs(os.path.dirname(brain_path))
 
-        # print("Bias Field Correction")
-        # if input_path != corrected_path:
-        #     os.system(
-        #         "N4BiasFieldCorrection -d 3 "
-        #         f"-i {input_path} "
-        #         f"-o {corrected_path} "
-        #         f"-s {shrinkf} -v > {os.path.join(os.path.dirname(corrected_path), 'n4log.txt')}"
-        #     )
-
-        # if not os.path.exists(corrected_path):
-        #     print("N4 correction has failed.")
-        #     del outputs_dict[input_path]
-        #     continue
-
-        # using python implementation of N4 bias field correction (ANTsPy)
-        print("Bias Field Correction (using ANTsPy)")
+        print("Bias Field Correction")
         if input_path != corrected_path:
-            try:
-                # 1. Load the image
-                input_image = ants.image_read(input_path)
-
-                # 2. Run N4 Bias Field Correction
-                # To match your CLI: -s shrink_factor, -c [50x50x50x50, 0.0]
-                corrected_image = ants.n4_bias_field_correction(
-                    input_image,
-                    shrink_factor=int(shrinkf),
-                    convergence={
-                        "iters": [50, 50, 50, 50],
-                        "tol": 0.0,  # CLI default is 0.0
-                    },
-                    # Default B-spline mesh in CLI is 1x1x1 (one element over domain)
-                    # ANTsPy default is often 200mm spacing; spline_param=None mimics CLI defaults.
-                    spline_param=None,
-                    verbose=True,
-                )
-
-                # 3. Save the result
-                ants.image_write(corrected_image, corrected_path)
-
-                # 4. Handle logging (similar to your "> n4log.txt")
-                log_file = os.path.join(os.path.dirname(corrected_path), "n4log.txt")
-                with open(log_file, "w") as f:
-                    f.write(f"ANTsPy N4 correction completed for {input_path}")
-
-            except Exception as e:
-                print(f"N4 correction has failed: {e}")
-                if input_path in outputs_dict:
-                    del outputs_dict[input_path]
-                continue
+            os.system(
+                "N4BiasFieldCorrection -d 3 "
+                f"-i {input_path} "
+                f"-o {corrected_path} "
+                f"-s {shrinkf} -v > {os.path.join(os.path.dirname(corrected_path), 'n4log.txt')}"
+            )
 
         if not os.path.exists(corrected_path):
             print("N4 correction has failed.")
-            if input_path in outputs_dict:
-                del outputs_dict[input_path]
+            del outputs_dict[input_path]
             continue
 
         print("SynthStrip")
