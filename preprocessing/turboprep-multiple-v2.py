@@ -7,9 +7,9 @@ import sys
 from datetime import datetime
 from multiprocessing import Pool
 
+import ants
 import nibabel as nib
 import numpy as np
-import SimpleITK as sitk
 from intensity_normalization.normalize.whitestripe import WhiteStripeNormalize
 from intensity_normalization.typing import Modality
 from tqdm import tqdm
@@ -173,58 +173,35 @@ if __name__ == "__main__":
         #     del outputs_dict[input_path]
         #     continue
 
-        # using simpleITK
-        print("Bias Field Correction")
+        # using python implementation of N4 bias field correction (ANTsPy)
+        print("Bias Field Correction (using ANTsPy)")
         if input_path != corrected_path:
             try:
-                # 1. Load the original image in Float32
-                input_image = sitk.ReadImage(input_path, sitk.sitkFloat32)
+                # 1. Load the image
+                input_image = ants.image_read(input_path)
 
-                # 2. Create the mask (matching ANTs CLI behavior for N4)
-                # Note: The manual says N4 uses the whole image if no mask is provided,
-                # but the SimpleITK example uses Otsu. To match CLI exactly without
-                # a provided mask, we create a 'all-ones' mask or an Otsu mask.
-                mask_image = sitk.OtsuThreshold(input_image, 0, 1, 200)
+                # 2. Run N4 Bias Field Correction
+                # To match your CLI: -s shrink_factor, -c [50x50x50x50, 0.0]
+                corrected_image = ants.n4_bias_field_correction(
+                    input_image,
+                    shrink_factor=int(shrinkf),
+                    convergence={
+                        "iters": [50, 50, 50, 50],
+                        "tol": 0.0,  # CLI default is 0.0
+                    },
+                    # Default B-spline mesh in CLI is 1x1x1 (one element over domain)
+                    # ANTsPy default is often 200mm spacing; spline_param=None mimics CLI defaults.
+                    spline_param=None,
+                    verbose=True,
+                )
 
-                # 3. Handle the Shrink Factor (The -s parameter)
-                shrink_factor = int(shrinkf)
-                if shrink_factor > 1:
-                    # We shrink both to perform the heavy math at low resolution
-                    shrunk_image = sitk.Shrink(
-                        input_image, [shrink_factor] * input_image.GetDimension()
-                    )
-                    shrunk_mask = sitk.Shrink(
-                        mask_image, [shrink_factor] * input_image.GetDimension()
-                    )
-                else:
-                    shrunk_image = input_image
-                    shrunk_mask = mask_image
+                # 3. Save the result
+                ants.image_write(corrected_image, corrected_path)
 
-                # 4. Configure the N4 Filter
-                corrector = sitk.N4BiasFieldCorrectionImageFilter()
-
-                # Default convergence in CLI is [50x50x50x50, 0.0]
-                # This matches the -c option in your command description
-                corrector.SetMaximumNumberOfIterations([50] * 4)
-
-                # 5. Execute on the SHRUNK image
-                # This prevents the size mismatch error
-                _ = corrector.Execute(shrunk_image, shrunk_mask)
-
-                # 6. Reconstruct the Full Resolution Bias Field
-                # This is the "secret sauce" to get the exact CLI result:
-                # We project the low-res bias field back onto the high-res original spacing.
-                log_bias_field = corrector.GetLogBiasFieldAsImage(input_image)
-                corrected_image_full_resolution = input_image / sitk.Exp(log_bias_field)
-
-                # 7. Write the output
-                sitk.WriteImage(corrected_image_full_resolution, corrected_path)
-
-                # Optional: Save the log like "> n4log.txt"
+                # 4. Handle logging (similar to your "> n4log.txt")
                 log_file = os.path.join(os.path.dirname(corrected_path), "n4log.txt")
                 with open(log_file, "w") as f:
-                    f.write(f"N4BiasFieldCorrection executed on {input_path}\n")
-                    f.write(f"Shrink Factor: {shrinkf}\n")
+                    f.write(f"ANTsPy N4 correction completed for {input_path}")
 
             except Exception as e:
                 print(f"N4 correction has failed: {e}")
@@ -394,4 +371,5 @@ if __name__ == "__main__":
     ):
         pass
 
+    print("🚀 finish.")
     print("🚀 finish.")
