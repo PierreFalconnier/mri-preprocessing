@@ -1,5 +1,5 @@
-#!/bin/bash
-set -euo pipefail
+# !/bin/bash
+# set -euo pipefail
 
 #PBS -l walltime=48:00:00
 #PBS -l nodes=1:ppn=2
@@ -11,10 +11,10 @@ set -euo pipefail
 # cd "$PBS_O_WORKDIR" # where the qsub ticket was submitted from
 
 # Navigate to the project directory
-cd "$HOME/Documents/mri-preprocessing/"
+# cd "$HOME/Documents/mri-preprocessing/"
 # source .venv/bin/activate
-export PYTHONUNBUFFERED=1
-export HYDRA_FULL_ERROR=1
+# export PYTHONUNBUFFERED=1
+# export HYDRA_FULL_ERROR=1
 
 # Run the pipeline using the variables passed via qsub -v
 uv run python $HOME/Documents/mri-preprocessing/preprocessing/turboprep-multiple-v2.py \
