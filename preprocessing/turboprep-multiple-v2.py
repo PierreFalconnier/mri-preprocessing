@@ -192,7 +192,6 @@ if __name__ == "__main__":
 
                 # Set up N4 corrector
                 corrector = sitk.N4BiasFieldCorrectionImageFilter()
-                corrector.SetVerbose(True)  # replicates -v output
 
                 # Default CLI iterations: 50x50x30x20 (typical default)
                 corrector.SetMaximumNumberOfIterations([50, 50, 30, 20])
