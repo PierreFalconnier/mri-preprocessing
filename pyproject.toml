@@ -7,4 +7,5 @@ requires-python = ">=3.12"
 dependencies = [
     "intensity-normalization==2.2.4",
     "openpyxl>=3.1.5",
+    "tqdm>=4.67.3",
 ]
