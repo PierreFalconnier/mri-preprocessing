@@ -14,8 +14,8 @@ mkdir -p "$LOGS_DIR"
 
 SRC_DIR="$1"
 DST_DIR="$2"
-NUM_JOBS="$3"
-TURBO_PREP_PBS="$4"
+TURBO_PREP_PBS="$3"
+NUM_JOBS="$4"
 
 INPUTS_TXT="$TEMP_DIR/inputs.txt"
 OUTPUTS_TXT="$TEMP_DIR/outputs.txt"
