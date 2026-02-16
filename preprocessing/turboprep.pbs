@@ -7,7 +7,7 @@ echo "PBS script started"
 
 #PBS -l walltime=96:00:00
 #PBS -l nodes=1:ppn=1
-#PBS -l mem=8gb
+#PBS -l mem=4gb
 #PBS -m ae
 #PBS -M pierre.falconnier@creatis.insa-lyon.fr
 
@@ -21,7 +21,7 @@ export PYTHONUNBUFFERED=1
 # export HYDRA_FULL_ERROR=1
 
 # Run the pipeline using the variables passed via qsub -v
-uv run python -u $HOME/Documents/mri-preprocessing/preprocessing/turboprep-multiple-v3.py \
+uv run python -u $HOME/Documents/mri-preprocessing/preprocessing/turboprep-multiple-v2.py \
   --inputs "$IN_FILE" \
   --outputs "$OUT_FILE" \
   --template $HOME/Documents/mri-preprocessing/MNI_templates/MNI152_T1_1mm_brain.nii.gz \
