@@ -164,6 +164,7 @@ if __name__ == "__main__":
                 "N4BiasFieldCorrection -d 3 "
                 f"-i {input_path} "
                 f"-o {corrected_path} "
+                "-c [ 50x50x50x50,1e-7 ] "
                 f"-s {shrinkf} -v > {os.path.join(os.path.dirname(corrected_path), 'n4log.txt')}"
             )
 
