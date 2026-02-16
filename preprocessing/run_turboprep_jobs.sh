@@ -36,8 +36,8 @@ K=$NUM_JOBS
 L=$(( (N + K - 1) / K ))
 echo "Total files: $N, Jobs: $K, Lines per job: $L"
 
-split -a 2 -d -l "$L" "$INPUTS_TXT"  "$INPUTS_CHUNK_PREFIX"
-split -a 2 -d -l "$L" "$OUTPUTS_TXT" "$OUTPUTS_CHUNK_PREFIX"
+split -a 5 -d -l "$L" "$INPUTS_TXT"  "$INPUTS_CHUNK_PREFIX"
+split -a 5 -d -l "$L" "$OUTPUTS_TXT" "$OUTPUTS_CHUNK_PREFIX"
 
 # Loop through the generated input chunks
 for input_chunk in "${INPUTS_CHUNK_PREFIX}"*; do
