@@ -6,7 +6,7 @@ echo "PBS script started"
 # set -euo pipefail
 
 #PBS -l walltime=24:00:00
-#PBS -l nodes=1:ppn=4,mem=32gb
+##PBS -l nodes=1:ppn=4,mem=32gb
 #PBS -m ae
 #PBS -M pierre.falconnier@creatis.insa-lyon.fr
 
