@@ -160,25 +160,28 @@ if __name__ == "__main__":
             os.makedirs(os.path.dirname(brain_path))
 
         print("Bias Field Correction")
-        if input_path != corrected_path:
-            subprocess.run(
-                [
-                    "N4BiasFieldCorrection",
-                    "-d",
-                    "3",
-                    "-i",
-                    input_path,
-                    "-o",
-                    corrected_path,
-                    "-s",
-                    str(shrinkf),
-                    "-v",
-                ],
-                stdout=open(
-                    os.path.join(os.path.dirname(corrected_path), "n4log.txt"), "w"
-                ),
-                stderr=subprocess.STDOUT,
-            )
+        if not os.path.exists(corrected_path):
+            if input_path != corrected_path:
+                subprocess.run(
+                    [
+                        "N4BiasFieldCorrection",
+                        "-d",
+                        "3",
+                        "-i",
+                        input_path,
+                        "-o",
+                        corrected_path,
+                        "-s",
+                        str(shrinkf),
+                        "-v",
+                    ],
+                    stdout=open(
+                        os.path.join(os.path.dirname(corrected_path), "n4log.txt"), "w"
+                    ),
+                    stderr=subprocess.STDOUT,
+                )
+        else:
+            print("Corrected file already exists. Skipping N4.")
 
         if not os.path.exists(corrected_path):
             print("N4 correction has failed.")
