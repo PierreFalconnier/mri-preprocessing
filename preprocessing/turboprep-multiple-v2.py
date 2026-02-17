@@ -161,7 +161,11 @@ if __name__ == "__main__":
             os.makedirs(os.path.dirname(brain_path))
 
         print("Bias Field Correction")
-        if not os.path.exists(corrected_path):
+        if (
+            not os.path.exists(corrected_path)
+            and not os.path.exists(skullstrip_path)
+            and not os.path.exists(registered_path)
+        ):
             if input_path != corrected_path:
                 subprocess.run(
                     [
@@ -189,43 +193,56 @@ if __name__ == "__main__":
             del outputs_dict[input_path]
             continue
 
-        print("SynthStrip")
-        subprocess.run(
-            [
-                "mri_synthstrip",
-                "-i",
-                corrected_path,
-                "-o",
-                skullstrip_path,
-            ],
-            stdout=open(
-                os.path.join(os.path.dirname(skullstrip_path), "synthstriplog.txt"), "w"
-            ),
-            stderr=subprocess.STDOUT,
-        )
+        if not os.path.exists(skullstrip_path) and not os.path.exists(registered_path):
+            print("SynthStrip")
+            subprocess.run(
+                [
+                    "mri_synthstrip",
+                    "-i",
+                    corrected_path,
+                    "-o",
+                    skullstrip_path,
+                ],
+                stdout=open(
+                    os.path.join(os.path.dirname(skullstrip_path), "synthstriplog.txt"),
+                    "w",
+                ),
+                stderr=subprocess.STDOUT,
+            )
+        else:
+            print("Skull-stripped file already exists. Skipping SynthStrip.")
 
-        print("Registration to template")
-        subprocess.run(
-            [
-                "antsRegistrationSyNQuick.sh",
-                "-d",
-                "3",
-                "-f",
-                template,
-                "-m",
-                skullstrip_path,
-                "-o",
-                registered_pref,
-                "-n",
-                str(threads),
-                "-t",
-                regtype,
-            ],
-            stdout=open(
-                os.path.join(os.path.dirname(registered_pref), "antsreglog.txt"), "w"
-            ),
-            stderr=subprocess.STDOUT,
-        )
+        if not os.path.exists(skullstrip_path):
+            print("SynthStrip has failed.")
+            del outputs_dict[input_path]
+            continue
+
+        if not os.path.exists(registered_path):
+            print("Registration to template")
+            subprocess.run(
+                [
+                    "antsRegistrationSyNQuick.sh",
+                    "-d",
+                    "3",
+                    "-f",
+                    template,
+                    "-m",
+                    skullstrip_path,
+                    "-o",
+                    registered_pref,
+                    "-n",
+                    str(threads),
+                    "-t",
+                    regtype,
+                ],
+                stdout=open(
+                    os.path.join(os.path.dirname(registered_pref), "antsreglog.txt"),
+                    "w",
+                ),
+                stderr=subprocess.STDOUT,
+            )
+        else:
+            print("Registered file already exists. Skipping registration.")
 
         if not os.path.exists(registered_path):
             print("Affine registration has failed.")
