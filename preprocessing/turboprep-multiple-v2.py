@@ -237,10 +237,18 @@ if __name__ == "__main__":
                 os.remove(registered_pref + "InverseWarped.nii.gz")
                 if corrected_path != input_path:
                     os.remove(corrected_path)
-            os.rename(
-                registered_pref + "0GenericAffine.mat",
-                os.path.join(os.path.dirname(registered_pref), "affine_transf.mat"),
-            )
+
+            src = registered_pref + "0GenericAffine.mat"
+            dst = os.path.join(os.path.dirname(registered_pref), "affine_transf.mat")
+
+            if os.path.exists(src):
+                if not os.path.exists(dst):
+                    os.replace(src, dst)  # atomic + safe overwrite if needed
+                else:
+                    # Destination already exists — remove source if leftover
+                    os.remove(src)
+            else:
+                print(f"Warning: expected affine file not found: {src}")
 
     #######################################################
     # Semantic segmentation with SynthSeg                 #

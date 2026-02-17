@@ -28,8 +28,10 @@ rm -f "$INPUTS_TXT" "$OUTPUTS_TXT" \
       "${OUTPUTS_CHUNK_PREFIX}"*
 
 echo "Listing files to process..."
+# List all input files
 find "$SRC_DIR" -type f -iname "*t1w*.nii.gz" > "$INPUTS_TXT"
-sed "s|$SRC_DIR|$DST_DIR|" "$INPUTS_TXT" > "$OUTPUTS_TXT"
+# Replace SRC_DIR with DST_DIR and remove .nii.gz at the end
+sed "s|$SRC_DIR|$DST_DIR|; s|\.nii\.gz$||" "$INPUTS_TXT" > "$OUTPUTS_TXT"
 
 N=$(wc -l < "$INPUTS_TXT")
 K=$NUM_JOBS
