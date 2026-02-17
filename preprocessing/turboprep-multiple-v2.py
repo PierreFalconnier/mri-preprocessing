@@ -161,13 +161,6 @@ if __name__ == "__main__":
 
         print("Bias Field Correction")
         if input_path != corrected_path:
-            # os.system(
-            #     "N4BiasFieldCorrection -d 3 "
-            #     f"-i {input_path} "
-            #     f"-o {corrected_path} "
-            #     "-c [ 50x50x50x50,1e-7 ] "
-            #     f"-s {shrinkf} -v > {os.path.join(os.path.dirname(corrected_path), 'n4log.txt')}"
-            # )
             subprocess.run(
                 [
                     "N4BiasFieldCorrection",
@@ -193,10 +186,6 @@ if __name__ == "__main__":
             continue
 
         print("SynthStrip")
-        # os.system(
-        #     f"mri_synthstrip -i {corrected_path} "
-        #     f"-o {skullstrip_path} > {os.path.join(os.path.dirname(skullstrip_path), 'synthstriplog.txt')}"
-        # )
         subprocess.run(
             [
                 "mri_synthstrip",
@@ -212,12 +201,6 @@ if __name__ == "__main__":
         )
 
         print("Registration to template")
-        # os.system(
-        #     "antsRegistrationSyNQuick.sh -d 3 "
-        #     f"-f {template} -m {skullstrip_path} "
-        #     f"-o {registered_pref} -n {threads} "
-        #     f"-t {regtype} > {os.path.join(os.path.dirname(registered_pref), 'antsreglog.txt')}"
-        # )
         subprocess.run(
             [
                 "antsRegistrationSyNQuick.sh",
@@ -289,14 +272,6 @@ if __name__ == "__main__":
             for _, seg in reg_seg_pairs:
                 f.write(seg + "\n")
 
-        # os.system(
-        #     "mri_synthseg "
-        #     f"--i {temp_input} "
-        #     f"--o {temp_output} "
-        #     f"--fast "
-        #     f"--threads {threads} "
-        #     f"--cpu > {os.path.join(os.path.dirname(reg_seg_pairs[0][1]), 'synthseglog.txt')}"
-        # )
         subprocess.run(
             [
                 "mri_synthseg",
