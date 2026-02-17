@@ -46,9 +46,9 @@ for input_chunk in "${INPUTS_CHUNK_PREFIX}"*; do
     # Identify the suffix to find the matching output chunk
     suffix="${input_chunk#$INPUTS_CHUNK_PREFIX}"
     output_chunk="${OUTPUTS_CHUNK_PREFIX}${suffix}"
-    echo "Submitting job for:"
-    echo "input: $input_chunk"
-    echo "output: $output_chunk"
+    echo "Submitting job for input: $input_chunk"
+    # echo "input: $input_chunk"
+    # echo "output: $output_chunk"
 
     JOB_NAME="turbo_prep_${suffix}"
     OUT_LOG="${LOGS_DIR}/${JOB_NAME}.out"
@@ -59,9 +59,5 @@ for input_chunk in "${INPUTS_CHUNK_PREFIX}"*; do
          -o "$OUT_LOG" \
          -e "$ERR_LOG" \
          -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" \
-        #  -l nodes=1:ppn=1,mem=16gb \
          "$TURBO_PREP_PBS"
-
-    # qsub -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" "$TURBO_PREP_PBS"
-
 done
