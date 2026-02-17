@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 #PBS -l nodes=1:ppn=1,mem=16gb
-#PBS -l walltime=5:59:00
+#PBS -l walltime=5:5:00
 ##PBS -m ae
 ##PBS -M pierre.falconnier@creatis.insa-lyon.fr
 
