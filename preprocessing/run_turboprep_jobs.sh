@@ -59,7 +59,7 @@ for input_chunk in "${INPUTS_CHUNK_PREFIX}"*; do
          -o "$OUT_LOG" \
          -e "$ERR_LOG" \
          -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" \
-         -l nodes=1:ppn=1,mem=16gb \
+         -l nodes=1:ppn=1,mem=24gb \
          "$TURBO_PREP_PBS"
 
     # qsub -v "IN_FILE=$input_chunk,OUT_FILE=$output_chunk" "$TURBO_PREP_PBS"
