@@ -21,7 +21,8 @@ logging.basicConfig(
 )
 
 # NPROC = int(os.environ.get("PBS_NP") or os.cpu_count() or 1)
-NPROC = int(os.cpu_count())
+# NPROC = int(os.cpu_count())
+NPROC = 2
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
