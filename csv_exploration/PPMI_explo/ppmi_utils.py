@@ -1,4 +1,7 @@
+import re
+
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -71,7 +74,7 @@ def plot_bar(df, col, title=None, figsize=(6, 4), annotate=True):
     counts = df[col].value_counts(dropna=False).sort_values(ascending=False)
 
     # Replace NaN index with "Missing"
-    labels = counts.index.to_series().fillna("Missing").astype(str)
+    labels = counts.index.to_series().fillna("MISSING VALUES (NA)").astype(str)
 
     plt.figure(figsize=figsize)
     ax = sns.barplot(x=labels, y=counts.values, palette="viridis")
@@ -314,3 +317,21 @@ cohort_map = {
     7: "Genetic Registry - PD",
     8: "Genetic Registry - Unaffected",
 }
+
+
+def visit_sort_key(visit):
+    if pd.isna(visit):
+        return np.inf  # put NaN at the end
+
+    if visit == "Baseline":
+        return 0
+
+    if visit == "Symptomatic Therapy":
+        return -1  # or choose where you want it
+
+    # Extract month number
+    match = re.search(r"Month (\d+)", visit)
+    if match:
+        return int(match.group(1))
+
+    return np.inf
