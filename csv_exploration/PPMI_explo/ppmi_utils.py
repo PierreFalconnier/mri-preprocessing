@@ -5,7 +5,6 @@ import seaborn as sns
 
 def load_ppmi_csvs(base_dir, remove_date_suffix=True):
     data_dict = {}
-
     for csv_path in base_dir.rglob("*.csv"):
         if csv_path.exists():
             df = pd.read_csv(csv_path, low_memory=False)
@@ -20,18 +19,12 @@ def load_ppmi_csvs(base_dir, remove_date_suffix=True):
             data_dict[clean_name] = df
         else:
             print(f"Missing: {csv_path.name}")
-
     return data_dict
 
 
-def build_visit_backbone(ppmi_data, exclude_keys=("idaSearch",)):
-
+def build_visit_backbone(ppmi_data):
     visit_tables = []
-
     for name, df in ppmi_data.items():
-        if name in exclude_keys:
-            continue
-
         if set(["PATNO", "EVENT_ID"]).issubset(df.columns):
             visit_tables.append((name, df.copy()))
 
@@ -40,50 +33,72 @@ def build_visit_backbone(ppmi_data, exclude_keys=("idaSearch",)):
 
     # Start with first visit-level table
     name, backbone = visit_tables[0]
-    # print(f"Backbone: {name} | {backbone.shape}")
 
     for name, df in visit_tables[1:]:
         backbone = backbone.merge(
             df, on=["PATNO", "EVENT_ID"], how="outer", suffixes=("", f"_{name}")
         )
-        # print(f"Merged visit table: {name} | Shape: {backbone.shape}")
 
     return backbone
 
 
-def add_subject_level_tables(backbone, ppmi_data, exclude_keys=("idaSearch",)):
+def add_subject_level_tables(backbone, ppmi_data):
 
     for name, df in ppmi_data.items():
-        if name in exclude_keys:
-            continue
-
         # Only PATNO but no EVENT_ID
         if "PATNO" in df.columns and "EVENT_ID" not in df.columns:
             backbone = backbone.merge(
                 df, on="PATNO", how="left", suffixes=("", f"_{name}")
             )
-            # print(f"Added subject table: {name} | Shape: {backbone.shape}")
 
     return backbone
 
 
-def merge_ppmi_tables(ppmi_data, exclude_keys=("idaSearch",)):
-
-    backbone = build_visit_backbone(ppmi_data, exclude_keys=exclude_keys)
-    master_df = add_subject_level_tables(backbone, ppmi_data, exclude_keys=exclude_keys)
-
+def merge_ppmi_tables(ppmi_data):
+    backbone = build_visit_backbone(ppmi_data)
+    master_df = add_subject_level_tables(backbone, ppmi_data)
     return master_df
 
 
-def plot_hist(df, col):
+def plot_bar(df, col, title=None, figsize=(6, 4), annotate=True):
+    """
+    Bar plot for categorical column with counts annotated on top.
+    Includes missing values as 'Missing'.
+    """
+    if not title:
+        title = f"Counts of {col}"
+
+    counts = df[col].value_counts(dropna=False).sort_values(ascending=False)
+
+    # Replace NaN index with "Missing"
+    labels = counts.index.to_series().fillna("Missing").astype(str)
+
+    plt.figure(figsize=figsize)
+    ax = sns.barplot(x=labels, y=counts.values, palette="viridis")
+
+    plt.title(title)
+    plt.xlabel(col)
+    plt.ylabel("Count")
+    plt.xticks(rotation=45, ha="right")
+
+    if annotate:
+        for i, v in enumerate(counts.values):
+            if v > 0:
+                ax.text(i, v + 0.5, str(v), ha="center", va="bottom", fontsize=8)
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_hist(df, col, title=None):
+    if not title:
+        title = f"Distribution of {col}"
     plt.figure(figsize=(6, 4))
 
     # Plot histogram
-    ax = sns.histplot(
-        df[col].dropna(), bins=30, kde=False
-    )  # disable KDE for counts clarity
+    ax = sns.histplot(df[col], bins=30, kde=False)  # disable KDE for counts clarity
 
-    plt.title(f"Histogram of {col}")
+    plt.title(title)
     plt.xlabel(col)
     plt.ylabel("Count")
 
@@ -235,3 +250,67 @@ event_id_to_visit = {
 }
 
 visit_to_event_id = {v: k for k, v in event_id_to_visit.items()}
+
+
+fields = [
+    "Acquisition Plane",
+    "Slice Thickness",
+    "Matrix Z",
+    "Acquisition Type",
+    "Manufacturer",
+    "Mfg Model",
+    "Field Strength",
+    "Weighting",
+]
+
+numeric_fields = ["Slice Thickness", "Matrix Z", "Field Strength"]
+
+
+def parse_imaging_protocol(text):
+    if pd.isna(text):
+        return {}
+
+    items = text.split(";")
+    parsed = {}
+
+    for item in items:
+        if "=" in item:
+            key, value = item.split("=", 1)
+            parsed[key.strip()] = value.strip()
+
+    return parsed
+
+
+primdiag_map = {
+    1: "Idiopathic PD",
+    10: "Motor neuron disease with parkinsonism",
+    11: "Multiple system atrophy",
+    12: "Neuroleptic-induced parkinsonism",
+    13: "Normal pressure hydrocephalus",
+    14: "Progressive supranuclear palsy",
+    15: "Psychogenic parkinsonism",
+    16: "Vascular parkinsonism",
+    17: "No PD nor other neurological disorder",
+    18: "Spinocerebellar Ataxia (SCA)",
+    2: "Alzheimer's disease",
+    23: "Prodromal non-motor PD",
+    24: "Prodromal motor PD",
+    25: "Prodromal Synucleinopathy (e.g., RBD)",
+    3: "Frontotemporal dementia",
+    4: "Corticobasal syndrome",
+    5: "Dementia with Lewy bodies",
+    6: "Dopa-responsive dystonia",
+    7: "Essential tremor",
+    8: "Hemiparkinson/hemiatrophy syndrome",
+    9: "Juvenile autosomal recessive parkinsonism",
+    97: "Other neurological disorder(s)",
+}
+
+cohort_map = {
+    1: "Parkinson's Disease",
+    2: "Healthy Control",
+    3: "SWEDD",
+    4: "Prodromal",
+    7: "Genetic Registry - PD",
+    8: "Genetic Registry - Unaffected",
+}
