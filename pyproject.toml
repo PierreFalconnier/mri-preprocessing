@@ -10,6 +10,7 @@ dependencies = [
     "matplotlib>=3.10.8",
     "matplotlib-inline>=0.2.1",
     "openpyxl>=3.1.5",
+    "ppmi-downloader>=0.7.6",
     "seaborn>=0.13.2",
     "tqdm>=4.67.3",
 ]
