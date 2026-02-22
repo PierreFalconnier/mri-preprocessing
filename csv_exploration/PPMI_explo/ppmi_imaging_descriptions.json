@@ -259,7 +259,7 @@
         "rsmriRL"
     ],
     "anat": {
-        "T1w": [
+        "MT": [
             "2 NM-GRE",
             "2-Sagittal 3D Accelerated MPRAGE",
             "2D GRE - MT",
@@ -283,7 +283,9 @@
             "2D-GRE-MT",
             "2DGRE-MT",
             "2D_GRE-MT",
-            "2D_GRE_MT",
+            "2D_GRE_MT"
+        ],
+        "T1w": [
             "3D  T1w",
             "3D  T1w,",
             "3D SAG",

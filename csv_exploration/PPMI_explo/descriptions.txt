@@ -1,6 +1,5 @@
 SAG 3D MPRAGE
 RESTING STATE FMRI ep2d_fid_basic_bold
-AX T2 GRE MT
 3D T2 FLAIR
 3D T2 FLAIR_ND
 EM
@@ -30,16 +29,19 @@ Brain Tomo
 Reconstructed DaTSCAN <- Brain Tomo
 Reconstructed DaTSCAN <- PPMI 2.0
 3D T1 _weighted
+2D GRE-MT
 rsfMRI_RL
 rsfMRI_L_R
 ep2d_bold_rest
 rsfMRI_PA
 rsfMRI_AP
 Symbia PPMI 2.0
+DTI_revB0_AP
 3D T1-weighted
 rsfMRI_LR
 Invicro Brain SPECT
 Reconstructed DaTSCAN <- Invicro Brain SPECT
+2D GRE-NM_MT
 R1-3
 Reconstructed DaTSCAN <- R1-3
 TOMO
@@ -55,6 +57,7 @@ SAG FSPGR 3D VOLUMETRIC T1
 Invicro_I-123_SPECT
 Reconstructed DaTSCAN <- Invicro_I-123_SPECT
 3D_T1-weighted
+2D_GRE-MT
 3D_T2_FLAIR
 Invicro DaTScan PPMI2.0
 Reconstructed DaTSCAN <- Invicro DaTScan PPMI2.0
@@ -68,6 +71,7 @@ DATSCAN_SPECT
 Reconstructed DaTSCAN <- DATSCAN_SPECT
 Resting State fMRI R>L_ ACPC
 Resting State fMRI L>R_ACPC
+2D GRE-MT_ACPC
 [BR-DY_CTAC] Tau Brain Dyn
 Reconstructed DaTSCAN <- I123 DaTScan
 [BR-DY_CTAC] VMAT Brain Dyn
@@ -84,6 +88,7 @@ rsfMRI_AP  (no music, awake, eyes open)
 228PD201
 Reconstructed DaTSCAN <- 228PD201
 3D-T1-weighted_SAGITAL
+2D GRE-NM
 3D T2 FLAIR_SAGITAL
 rsfMRI_LR_split_1
 rsfMRI_RL_split_1
@@ -99,7 +104,9 @@ PPMI DATSCAN
 Reconstructed DaTSCAN <- PPMI DATSCAN
 BRAIN NAC
 3D_Brain_VIEW_FLAIR_SAG
+NM - MT
 3D_Brain_VIEW_FLAIR_SAG **
+DTI_revB0_AP_S16_DIS2D
 Datscan
 Reconstructed DaTSCAN <- Datscan
 DaTSCAN Studie
@@ -115,6 +122,7 @@ Reconstructed DaTSCAN <- PPMI
 3-DAT
 I-123 DatScan
 T1-weighted, 3D VOLUMETRIC
+2D GRE - MT
 Ax rsfMRI FREQ R_L
 Invicro_DATscan_SPECT
 Reconstructed DaTSCAN <- Invicro_DATscan_SPECT
@@ -122,10 +130,12 @@ rsFMRI_RL EYES OPEN
 rsFMRI_LR EYES OPEN
 3D T1-WEIGHTED MPRAGE
 3D T1 MPRAGE
+2D GRE MT
 ep2d_BOLD_LR
 ep2d_BOLD_RL
 rsfmriLR
 rsmriRL
+2D GRE-NMMT
 3D SAG FLAIR
 2-DAT
 Reconstructed DaTSCAN <- 2-DAT
@@ -176,6 +186,7 @@ rsfMRI BOLD_LR
 3D T2 SPC FLAIR
 3D SAG T1 MPRAGE
 Sag 3D T1 MPRAGE
+DTI_revb0_AP
 3D SAG T2 SPC FLAIR
 SPECT 1.85/128
 Reconstructed DaTSCAN <- SPECT 1.85/128
@@ -186,7 +197,12 @@ Hirn DAT
 SUM
 3D T2 SPC FLAIR C9C1HN007
 rsfMRI_AP Q9R1007332
+DTI_revb0_AP #4 Q9R1007332
+DTI_revb0_AP #3 Q9R1007332
+DTI_revb0_AP #2 Q9R1007332
+DTI_revb0_AP #1 Q9R1007332
 3D SAG T2 SPC FLAIR Q9R1007332
+2D GRE-MT Q9R1007332
 rsfMRI_PA Q9R1007332
 SAG 3D T1 MPRAGE Q9R1007332
 Reconstructed DaTSCAN <- Invicro_DATscan_I-123_SPECT
@@ -210,7 +226,6 @@ Reconstructed DaTSCAN <- TomoKSchale 60
 TomoKSchale 30
 Reconstructed DaTSCAN <- TomoKSchale 30
 axial spgr
-*AX FSE T2
 Dat-Scan SPECT
 Resting State fMRI (FS-L)
 Repeat Resting State fMRI (FS-R)
@@ -227,12 +242,18 @@ rs fMRI _L-R
 rs fMRI _R-L
 TomoKSchale 60-1
 Reconstructed DaTSCAN <- TomoKSchale 60-1
+2D GRE-MT OBL PAR TO AC PC LINES COVER THALA TO BOT OF 3 VENTICL
 TOMO1
 Split from rsfMRI_LR
 Split from rsfMRI_RL
 SAG 3D T2 FLAIR (CUBE)
+2D GRE-MT 1
 PPMI Brain
 Reconstructed DaTSCAN <- PPMI Brain
+2D GRE-MT 2
+2D GRE-MT 3
+2D GRE-MT 4
+2D GRE-MT 5
 Brain Tomo [Isotope (A) - Recon - NoAC ]
 Reconstructed DaTSCAN <- Brain Tomo [Isotope (A) - Recon - NoAC ]
 I 123 DaTscan
@@ -250,12 +271,13 @@ AV 133 Delay 4i/16s
 RSFMRI_RL
 RSFMRI_LR
 MPRAGE
+2D-GRE-MT
 DummySeriesDesc!
 Reconstructed DaTSCAN <- DummySeriesDesc!
-T2
 T1
 Sagittal 3D Accelerated MPRAGE
 SAG 3D FLAIR_updated
+2D GRE MT MTC-NO
 BOLD_RS ACPC_LINE
 repeat_BOLD_RS ACPC_LINE
 Reconstructed DaTSCAN <- I-123 DatScan
@@ -268,6 +290,7 @@ rsfMRI_AP_ACPC
 Split from Split from rsfMRI_PA
 3DT1weighted
 3DT2FLAIR
+2DGRE-MT
 WE DATscan I123
 Reconstructed DaTSCAN <- WE DATscan I123
 INVICRO_PPMI 2.0_I123_SPECT
@@ -313,35 +336,8 @@ PPMI DAT
 rsfMRI_AP_split_1
 rsfMRI_PA_split_1
 MPRAGE GRAPPA
-T2 in T1-anatomical space <- MPRAGE GRAPPA
-T1-anatomical <- MPRAGE GRAPPA
-Axial PD-T2 TSE FS
-T2 in corrected EPI space for I416907 <- Axial PD-T2 TSE FS
 ep2d_RESTING_STATE
-DTI_gated
-RGB color map-MRI <- DTI_gated
-DTI Full Tensors-MRI <- DTI_gated
-EigenVal1-EPI <- DTI_gated
-EigenVal1-MRI <- DTI_gated
-EigenVal2-EPI <- DTI_gated
-FA map-MRI <- DTI_gated
-MD map-EPI <- DTI_gated
-4D DWI <- DTI_gated
-EigenVal2-MRI <- DTI_gated
-RGB color map-EPI <- DTI_gated
-EigenVal0-EPI <- DTI_gated
-DTI Full Tensors-EPI <- DTI_gated
-EigenVectors-EPI <- DTI_gated
-EigenVectors-MRI <- DTI_gated
-MD map-MRI <- DTI_gated
-EigenVal0-MRI <- DTI_gated
-EPI Corrected B0 map <- DTI_gated
-FA map-EPI <- DTI_gated
 MPRAGE_GRAPPA
-T2 in T1-anatomical space <- MPRAGE_GRAPPA
-T1-anatomical <- MPRAGE_GRAPPA
-AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I665272 <- AXIAL PD-T2 TSE FS
 MPRAGE_GRAPPA_ADNI
 3D T1-weighted_MPR_cor
 3D T1-weighted_MPR_tra
@@ -361,10 +357,6 @@ rsfMRI R-L  PHASE ENCODE !!!!
 PA-DAT
 MRI MAGNETIC RESONANCE EXAM
 SAG MPRAGE GRAPPA
-T2 in T1-anatomical space <- SAG MPRAGE GRAPPA
-T1-anatomical <- SAG MPRAGE GRAPPA
-Axial PD-T2-FS TSE
-T2 in corrected EPI space for I449529 <- Axial PD-T2-FS TSE
 MPRAGE_
 fMRI_ep2d_bold_RL_AC-PC LINE_OJOS ABIERTOS
 fMRI_ep2d_bold_LR
@@ -374,7 +366,6 @@ Reconstructed DaTSCAN <- PPMI Brain 2.0
 DATSCAN_SPECT-1
 TOMO PPMI
 Reconstructed DaTSCAN <- TOMO PPMI
-SG T2WI DS
 RPT 2 rsfMRI_LR
 DaTScan
 Reconstructed DaTSCAN <- DaTScan
@@ -383,10 +374,9 @@ rsfMRI_LR (Eyes Open)  L>>R
 rsfMRI_RL (Eyes Open)  R>>L
 [BR_CTAC] VMAT Brain Dyn
 [BR_NAC] VMAT Brain Dyn
+DTI_revB0_AP_S9_DIS2D
 Reconstructed DaTSCAN <- TOMO1
 MPRAGE GRAPPA 2
-T2 in corrected EPI space for I581035 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864499 <- Axial PD-T2 TSE FS
 MPRAGE ADNI
 Split from rsfMRI_RL - USE
 Split from rsfMRI_LR - USE
@@ -409,11 +399,11 @@ Reconstructed DaTSCAN <- TomoKSchale 30 - anon
 Reconstructed DaTSCAN <- PPMI 2.0 DATSCAN
 RSFMRI_RL ANGLE TO AC PC
 RSFMRI_LR ANGLE TO AC PC
-T2 in corrected EPI space for I473072 <- Axial PD-T2-FS TSE
+2D-GRE MT
 3D FLAIR
 3D_T2w_FLAIR
 3D_T1w__IR_FSPGR
-*Ax T2 FSE
+2D_GRE_MT
 Invicro SPARX3
 Reconstructed DaTSCAN <- Invicro SPARX3
 3D T1-weighted_MPR_Tra
@@ -421,7 +411,6 @@ Reconstructed DaTSCAN <- Invicro SPARX3
 Tomo Datscan
 Reconstructed DaTSCAN <- Tomo Datscan
 AV 133 Delay 4i/16s -Unfiltered
-Ax PD /T2
 FSPGR 3D SAG
 Reconstructed DaTSCAN <- PA-DAT
 2-Sagittal 3D Accelerated MPRAGE
@@ -451,6 +440,7 @@ SAG 3D MPRAGE RPT COIL ARTIFACT
 Brain DAT SCAN
 6x5_PPMI_SV2A (AC)
 DAT SCAN
+DTI_revB0_AP_S12_DIS2D
 Invicro_DaTscan_SPECT
 30 min delay dynamic All Pass_C05-05 (AC)
 BRAIN SPECT
@@ -485,7 +475,6 @@ Reconstructed DaTSCAN <- Raw DataR2S
 Raw brain4
 AX 3D FSPGR straight brain lab
 Ax 3D SWAN GRE straight
-T2-weighted traceons ac-pc
 Raw DataR2
 Reconstructed DaTSCAN <- Raw DataR2
 Raw DataR1S
@@ -518,101 +507,51 @@ Reconstructed DaTSCAN <- SPECT CO57
 TRANS-CO57
 0073100_1
 Reconstructed DaTSCAN <- 0073100_1
-Axial PD-T2 TSE
-T2 in corrected EPI space for I353354 <- Axial PD-T2 TSE
 007-3101_1
 Reconstructed DaTSCAN <- 007-3101_1
 EM80
 EM50
-T2 in corrected EPI space for I449542 <- Axial PD-T2 TSE FS
 Sag MPRAGE GRAPPA
-T1-anatomical <- Sag MPRAGE GRAPPA
-T2 in T1-anatomical space <- Sag MPRAGE GRAPPA
 PPMI AV-133
 007-3101_2
 Reconstructed DaTSCAN <- 007-3101_2
-T2 in corrected EPI space for I226368 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226369 <- Axial PD-T2 TSE
 007-3102_1
 Reconstructed DaTSCAN <- 007-3102_1
 007-3102_2
 Reconstructed DaTSCAN <- 007-3102_2
-T2 in corrected EPI space for I378208 <- Axial PD-T2 TSE FS
 007-3102_3
 Reconstructed DaTSCAN <- 007-3102_3
 007-3102_4
 Reconstructed DaTSCAN <- 007-3102_4
 007-3103_1
 Reconstructed DaTSCAN <- 007-3103_1
-T2 in corrected EPI space for I226395 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226396 <- Axial PD-T2 TSE
 007-3104_1
 Reconstructed DaTSCAN <- 007-3104_1
-T2 in corrected EPI space for I301551 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301555 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226400 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226401 <- Axial PD-T2 TSE
 007-3105_1
 Reconstructed DaTSCAN <- 007-3105_1
-T2 in corrected EPI space for I301560 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301561 <- Axial PD-T2 TSE
 007-3105_2
 Reconstructed DaTSCAN <- 007-3105_2
-T2 in corrected EPI space for I372315 <- Axial PD-T2 TSE FS
 007-3105_3
 Reconstructed DaTSCAN <- 007-3105_3
 007-3105_4
 Reconstructed DaTSCAN <- 007-3105_4
-T2 in corrected EPI space for I235248 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I235250 <- Axial PD-T2 TSE
 007-3106_1
 Reconstructed DaTSCAN <- 007-3106_1
-T2 in corrected EPI space for I301566 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301567 <- Axial PD-T2 TSE
-4D DWI <- DTI
-EPI Corrected B0 map <- DTI
-EigenVal0-EPI <- DTI
-EigenVal1-EPI <- DTI
-EigenVal2-EPI <- DTI
-EigenVectors-EPI <- DTI
-FA map-EPI <- DTI
-DTI Full Tensors-EPI <- DTI
-MD map-EPI <- DTI
-RGB color map-EPI <- DTI
-EigenVal0-MRI <- DTI
-EigenVal1-MRI <- DTI
-EigenVal2-MRI <- DTI
-EigenVectors-MRI <- DTI
-FA map-MRI <- DTI
-DTI Full Tensors-MRI <- DTI
-MD map-MRI <- DTI
-RGB color map-MRI <- DTI
-T2 in corrected EPI space for I232142 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I232143 <- Axial PD-T2 TSE
 007-3107_1
 Reconstructed DaTSCAN <- 007-3107_1
 MPRAGE GRAPPA2
 007-3107_5
 Reconstructed DaTSCAN <- 007-3107_5
-T2 in corrected EPI space for I296432 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296434 <- Axial PD-T2 TSE
 007-3107_2
 Reconstructed DaTSCAN <- 007-3107_2
-T2 in corrected EPI space for I378213 <- Axial PD-T2 TSE FS
 007-3107-3
 Reconstructed DaTSCAN <- 007-3107-3
-T2 in corrected EPI space for I498877 <- Axial PD-T2 TSE FS
 007-3107_4
 Reconstructed DaTSCAN <- 007-3107_4
-T2 in corrected EPI space for I232160 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I232163 <- Axial PD-T2 TSE
 007-3108_1
 Reconstructed DaTSCAN <- 007-3108_1
-T2 in corrected EPI space for I315586 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I315589 <- Axial PD-T2 TSE
 007-3108_2
 Reconstructed DaTSCAN <- 007-3108_2
-T2 in corrected EPI space for I378219 <- Axial PD-T2 TSE FS
 007-3108_3
 Reconstructed DaTSCAN <- 007-3108_3
 007-3108_4
@@ -627,335 +566,146 @@ Reconstructed DaTSCAN <- 007-3110_2
 Reconstructed DaTSCAN <- 007-3110_3
 007-3110_4
 Reconstructed DaTSCAN <- 007-3110_4
-T2 in corrected EPI space for I243547 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243550 <- Axial PD-T2 TSE
 007-3111_1
 Reconstructed DaTSCAN <- 007-3111_1
-T2 in corrected EPI space for I315598 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I315595 <- Axial PD-T2 TSE
 007-3111_2
 Reconstructed DaTSCAN <- 007-3111_2
 007-3111-3
 Reconstructed DaTSCAN <- 007-3111-3
-T2 in corrected EPI space for I243565 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243566 <- Axial PD-T2 TSE
 007-3112_1
 Reconstructed DaTSCAN <- 007-3112_1
-T2 in corrected EPI space for I253866 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I253869 <- Axial PD-T2 TSE
 007-3113_1
 Reconstructed DaTSCAN <- 007-3113_1
-T2 in corrected EPI space for I337508 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I337509 <- Axial PD-T2 TSE
 007-3113_2
 Reconstructed DaTSCAN <- 007-3113_2
-T2 in corrected EPI space for I393647 <- Axial PD-T2 TSE FS
 007-3113_3
 Reconstructed DaTSCAN <- 007-3113_3
-T2 in corrected EPI space for I253902 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I253903 <- Axial PD-T2 TSE
 007-3114_1
 Reconstructed DaTSCAN <- 007-3114_1
-T2 in corrected EPI space for I353463 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I253992 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I253996 <- Axial PD-T2 TSE
 007-3115_1
 Reconstructed DaTSCAN <- 007-3115_1
-T2 in corrected EPI space for I337531 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I337533 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269442 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269445 <- Axial PD-T2 TSE
 007-3116_1
 Reconstructed DaTSCAN <- 007-3116_1
-T2 in corrected EPI space for I366131 <- Axial PD-T2 TSE FS
 007-3116_2
 Reconstructed DaTSCAN <- 007-3116_2
-T2 in corrected EPI space for I417049 <- Axial PD-T2 TSE FS
 007-3116_3
 Reconstructed DaTSCAN <- 007-3116_3
 007-3116_4
 Reconstructed DaTSCAN <- 007-3116_4
-T2 in corrected EPI space for I287848 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287844 <- Axial PD-T2 TSE
 007-3118_1
 Reconstructed DaTSCAN <- 007-3118_1
-T2 in corrected EPI space for I362553 <- Axial PD-T2 TSE FS
 007-3118_2
 Reconstructed DaTSCAN <- 007-3118_2
 007-3118_3
 Reconstructed DaTSCAN <- 007-3118_3
-T2 in corrected EPI space for I665279 <- Axial PD-T2 TSE FS
 007-3118_4
 Reconstructed DaTSCAN <- 007-3118_4
-T2 in corrected EPI space for I294936 <- Axial PD-T2 TSE
 007-3119_1
 Reconstructed DaTSCAN <- 007-3119_1
-T2 in corrected EPI space for I430145 <- Axial PD-T2 TSE FS
 007-3119-3
 Reconstructed DaTSCAN <- 007-3119-3
-T2 in corrected EPI space for I382276 <- Axial PD-T2 TSE FS
 007-3119_2
 Reconstructed DaTSCAN <- 007-3119_2
 007-3119_4
 Reconstructed DaTSCAN <- 007-3119_4
 PPMI FLORBETABEN
 REPEAT 3D_T2_FLAIR
-T2 in corrected EPI space for I305848 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I305851 <- Axial PD-T2 TSE
 007-3120-1
 Reconstructed DaTSCAN <- 007-3120-1
-T2 in corrected EPI space for I374853 <- Axial PD-T2 TSE FS
 007-3120-2
 Reconstructed DaTSCAN <- 007-3120-2
-T2 in corrected EPI space for I440105 <- Axial PD-T2 TSE FS
 007-3120_3
 Reconstructed DaTSCAN <- 007-3120_3
-T2 in corrected EPI space for I738219 <- Axial PD-T2 TSE FS
 007-3120_4
 007-3122_1
 Reconstructed DaTSCAN <- 007-3122_1
-T2 in corrected EPI space for I382286 <- Axial PD-T2 TSE FS
 007-3122_2
 Reconstructed DaTSCAN <- 007-3122_2
 007-3122_3
 Reconstructed DaTSCAN <- 007-3122_3
 007-3122_4
-T2 in corrected EPI space for I337650 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I337651 <- Axial PD-T2 TSE
 007-3123_1
 Reconstructed DaTSCAN <- 007-3123_1
-T2 in corrected EPI space for I382290 <- Axial PD-T2 TSE FS
 007-3123_2
 Reconstructed DaTSCAN <- 007-3123_2
-T2 in corrected EPI space for I440111 <- Axial PD-T2 TSE FS
 007-3123_3
 Reconstructed DaTSCAN <- 007-3123_3
-T2 in corrected EPI space for I757786 <- Axial PD-T2 TSE FS
 007-3123-4
-T2 in corrected EPI space for I337673 <- Axial PD-T2 TSE
 007-3124_1
 Reconstructed DaTSCAN <- 007-3124_1
-T2 in corrected EPI space for I387303 <- Axial PD-T2 TSE FS
 007-3124_2
 Reconstructed DaTSCAN <- 007-3124_2
-T2 in corrected EPI space for I440119 <- Axial PD-T2 TSE FS
 007-3124_3
 Reconstructed DaTSCAN <- 007-3124_3
-T2 in corrected EPI space for I757794 <- Axial PD-T2 TSE FS
 007-3124_4
-T2 in corrected EPI space for I337682 <- Axial PD-T2 TSE
 007-3125_1
 Reconstructed DaTSCAN <- 007-3125_1
-T2 in corrected EPI space for I387311 <- Axial PD-T2 TSE FS
 007-3125_2
 Reconstructed DaTSCAN <- 007-3125_2
-T2 in corrected EPI space for I440124 <- Axial PD-T2 TSE FS
 007-3125_3
 Reconstructed DaTSCAN <- 007-3125_3
-T2 in corrected EPI space for I769272 <- Axial PD-T2 TSE FS
 007-3125_4
-T2 in corrected EPI space for I337697 <- Axial PD-T2 TSE
 007-3126_1
 Reconstructed DaTSCAN <- 007-3126_1
 007-3126_2
 Reconstructed DaTSCAN <- 007-3126_2
-T2 in corrected EPI space for I440129 <- Axial PD-T2 TSE FS
 007-3126_3
 Reconstructed DaTSCAN <- 007-3126_3
-T2 in corrected EPI space for I790466 <- Axial PD-T2 TSE FS
 Sag MPRAGE GRAPPA_ND
 007-3126_4
 Reconstructed DaTSCAN <- 007-3126_4
-T2 in corrected EPI space for I337704 <- Axial PD-T2 TSE
 007-3127_1
 Reconstructed DaTSCAN <- 007-3127_1
 007-3127_4
 Reconstructed DaTSCAN <- 007-3127_4
-T2 in corrected EPI space for I337708 <- Axial PD-T2 TSE
 007-3128_1
 Reconstructed DaTSCAN <- 007-3128_1
-T2 in corrected EPI space for I395432 <- Axial PD-T2 TSE FS
 007-3128_2
 Reconstructed DaTSCAN <- 007-3128_2
-T2 in corrected EPI space for I466850 <- Axial PD-T2 TSE FS
 007-3128_3
 Reconstructed DaTSCAN <- 007-3128_3
-T2 in corrected EPI space for I808163 <- Axial PD-T2 TSE FS
 007-3128_4
 Reconstructed DaTSCAN <- 007-3128_4
-T2 in corrected EPI space for I367279 <- Axial PD-T2 TSE FS
 007-3129_1
 Reconstructed DaTSCAN <- 007-3129_1
-T2 in corrected EPI space for I355957 <- Axial PD-T2 TSE FS
 007-3130_1
 Reconstructed DaTSCAN <- 007-3130_1
-T2 in corrected EPI space for I416993 <- Axial PD-T2 TSE FS
 007-3130-2
 Reconstructed DaTSCAN <- 007-3130-2
 007-3130_3
 Reconstructed DaTSCAN <- 007-3130_3
-T2 in corrected EPI space for I831132 <- Axial PD-T2 TSE FS
-T1-anatomical <- MPRAGE GRAPPA2
-T2 in T1-anatomical space <- MPRAGE GRAPPA2
 007-3130_4
 Reconstructed DaTSCAN <- 007-3130_4
-T2 in corrected EPI space for I367285 <- Axial PD-T2 TSE FS
 007-3131_1
 Reconstructed DaTSCAN <- 007-3131_1
-T2 in corrected EPI space for I423707 <- Axial PD-T2 TSE FS
 007-3131_2
 Reconstructed DaTSCAN <- 007-3131_2
 007-3131_3
 Reconstructed DaTSCAN <- 007-3131_3
-T2 in corrected EPI space for I367291 <- Axial PD-T2 TSE FS
 007-3132_1
 Reconstructed DaTSCAN <- 007-3132_1
-T2 in corrected EPI space for I423715 <- Axial PD-T2 TSE FS
 007-3132_2
 Reconstructed DaTSCAN <- 007-3132_2
-T2 in corrected EPI space for I498888 <- Axial PD-T2 TSE FS
 007-3132_3
 Reconstructed DaTSCAN <- 007-3132_3
-T2 in corrected EPI space for I864552 <- Axial PD-T2 TSE FS
 007-3132_4
 Reconstructed DaTSCAN <- 007-3132_4
 007-3133_1
 Reconstructed DaTSCAN <- 007-3133_1
-T2 in corrected EPI space for I369008 <- Axial PD-T2 TSE FS
 007-3134_1
 Reconstructed DaTSCAN <- 007-3134_1
-T2 in corrected EPI space for I436352 <- Axial PD-T2 TSE FS
 007-3134_2
 Reconstructed DaTSCAN <- 007-3134_2
 007-3134_3
 Reconstructed DaTSCAN <- 007-3134_3
-T2 in corrected EPI space for I901144 <- Axial PD-T2 TSE FS
 007-3134_4
 Reconstructed DaTSCAN <- 007-3134_4
-T2 in corrected EPI space for I294970 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I294972 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296438 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296441 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353809 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243568 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243570 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296445 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296447 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243604 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243607 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296466 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296468 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I414608 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243695 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243706 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301576 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301580 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243730 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243733 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296471 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296473 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249256 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249257 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I334589 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I334590 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243772 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243776 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307205 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307204 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259593 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259596 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I337593 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I337594 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397583 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259598 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259602 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I265338 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I265340 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340720 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275543 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275547 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282079 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282080 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I415700 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I275552 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275555 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I369350 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282109 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282111 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357675 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287852 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287853 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I362574 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I430150 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I305912 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I305917 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I369356 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I430156 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I689580 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I301530 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301531 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I374877 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I430162 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I778954 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I305943 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I305946 <- Axial PD-T2 TSE
 DaTSCAN-R
 Reconstructed DaTSCAN <- DaTSCAN-R
-T2 in corrected EPI space for I449545 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I382294 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I315641 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I382301 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440136 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I769278 <- Axial PD-T2-FS TSE
 SAG MPRAGE GRAPPA2-NEW2016
-T2 in corrected EPI space for I344268 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402103 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440157 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I778962 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I357578 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I419326 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I440161 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I334523 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393609 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I449553 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I778965 <- Axial PD-T2-FS TSE
-EigenVal1-EPI <- DTI_gated#1
-DTI Full Tensors-EPI <- DTI_gated#1
-EigenVal2-MRI <- DTI_gated#1
-4D DWI <- DTI_gated#1
-EigenVal2-EPI <- DTI_gated#1
-EPI Corrected B0 map <- DTI_gated#1
-EigenVectors-MRI <- DTI_gated#1
-MD map-MRI <- DTI_gated#1
-EigenVal0-MRI <- DTI_gated#1
-EigenVal1-MRI <- DTI_gated#1
-RGB color map-MRI <- DTI_gated#1
-DTI Full Tensors-MRI <- DTI_gated#1
-FA map-EPI <- DTI_gated#1
-EigenVal0-EPI <- DTI_gated#1
-MD map-EPI <- DTI_gated#1
-EigenVectors-EPI <- DTI_gated#1
-RGB color map-EPI <- DTI_gated#1
-FA map-MRI <- DTI_gated#1
-T2 in corrected EPI space for I334543 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I449555 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I351038 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I412174 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I367297 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I423720 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I498895 <- Axial PD-T2-FS TSE
 AXIAL T1 3D MPRAGE
 154-3186-1-03
 154-3186-1-02
-T2 in corrected EPI space for I367305 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I468918 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I367331 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I372978 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I436362 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I491592 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I901150 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I372985 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I436376 <- Axial PD-T2-FS TSE
 0183200_1 Brain Spect
 Reconstructed DaTSCAN <- 0183200_1 Brain Spect
 Co57-I123
@@ -1027,7 +777,6 @@ Reconstructed DaTSCAN <- 018-3214_2 Brain Spect
 Reconstructed DaTSCAN <- 018-3214_3 Brain Spect
 018-3214_4 Brain Spect
 Reconstructed DaTSCAN <- 018-3214_4 Brain Spect
-Ax T2 FSE
 018-3215_1 Brain Spect
 Reconstructed DaTSCAN <- 018-3215_1 Brain Spect
 018-3216_1 Brain Spect
@@ -1150,642 +899,18 @@ DAT
 PPMI BRAIN
 Reconstructed DaTSCAN <- PPMI BRAIN
 SAG FSPGR 3D
-AX T2 DE
-T2 in corrected EPI space for I226408 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226409 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344326 <- Axial PD-T2 TSE
-Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I226415 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I226420 <- Axial PD-T2 TSE_AC/PC line
-4D DWI <- DTI_pulse gated_AC/PC line
-EPI Corrected B0 map <- DTI_pulse gated_AC/PC line
-EigenVal0-EPI <- DTI_pulse gated_AC/PC line
-EigenVal1-EPI <- DTI_pulse gated_AC/PC line
-EigenVal2-EPI <- DTI_pulse gated_AC/PC line
-EigenVectors-EPI <- DTI_pulse gated_AC/PC line
-FA map-EPI <- DTI_pulse gated_AC/PC line
-DTI Full Tensors-EPI <- DTI_pulse gated_AC/PC line
-MD map-EPI <- DTI_pulse gated_AC/PC line
-RGB color map-EPI <- DTI_pulse gated_AC/PC line
-EigenVal0-MRI <- DTI_pulse gated_AC/PC line
-EigenVal1-MRI <- DTI_pulse gated_AC/PC line
-EigenVal2-MRI <- DTI_pulse gated_AC/PC line
-EigenVectors-MRI <- DTI_pulse gated_AC/PC line
-FA map-MRI <- DTI_pulse gated_AC/PC line
-DTI Full Tensors-MRI <- DTI_pulse gated_AC/PC line
-MD map-MRI <- DTI_pulse gated_AC/PC line
-RGB color map-MRI <- DTI_pulse gated_AC/PC line
-T2 in corrected EPI space for I301590 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I301591 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I378249 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I498899 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I287854 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I287858 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I369362 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449561 <- Axial PD-T2 TSE FS
-RGB color map-EPI <- DTI_gated AC-PC LINE
-EigenVal1-EPI <- DTI_gated AC-PC LINE
-EigenVal2-MRI <- DTI_gated AC-PC LINE
-FA map-EPI <- DTI_gated AC-PC LINE
-FA map-MRI <- DTI_gated AC-PC LINE
-MD map-MRI <- DTI_gated AC-PC LINE
-EigenVal2-EPI <- DTI_gated AC-PC LINE
-EigenVal1-MRI <- DTI_gated AC-PC LINE
-DTI Full Tensors-MRI <- DTI_gated AC-PC LINE
-EigenVal0-MRI <- DTI_gated AC-PC LINE
-EigenVectors-EPI <- DTI_gated AC-PC LINE
-4D DWI <- DTI_gated AC-PC LINE
-MD map-EPI <- DTI_gated AC-PC LINE
-EigenVectors-MRI <- DTI_gated AC-PC LINE
-EPI Corrected B0 map <- DTI_gated AC-PC LINE
-DTI Full Tensors-EPI <- DTI_gated AC-PC LINE
-RGB color map-MRI <- DTI_gated AC-PC LINE
-EigenVal0-EPI <- DTI_gated AC-PC LINE
-T2 in corrected EPI space for I254016 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I254017 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I340725 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I269467 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I269469 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I365156 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I414613 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I581037 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I275558 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I275559 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I369376 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I420316 <- Axial PD-T2 TSE FS
 MPRAGE GRAPPA2(adni)
-T2 in corrected EPI space for I287859 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I287861 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I369404 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I369403 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I414617 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I615242 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I282113 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I282116 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I369413 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I287897 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I287901 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I294998 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I295001 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I402121 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I305948 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I305952 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I423725 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315647 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I315648 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I374883 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440166 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I417015 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315650 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I374715 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I449565 <- Axial PD-T2 TSE FS
 MPRAGE GRAPPA_ND
-T2 in corrected EPI space for I340582 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I340596 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I402126 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I778972 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I353383 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I497210 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340601 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I402144 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491597 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I790474 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I362458 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507362 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I362476 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I412178 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I497212 <- Axial PD-T2 TSE_AC/PC line
-Axial PD-T2 TSE_AC PC line
 SAG MPRAGE GRAPPA_ND
-T2 in corrected EPI space for I369023 <- Axial PD-T2 TSE_AC/PC line
-T2 in corrected EPI space for I419331 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I497216 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I378537 <- Axial PD-T2 TSE FS
 Reconstructed DaTSCAN <- DATSCAN Brain
+DTI_revB0_AP_
 resting state fMRI
 Straight sagittal 3D T1w ADNI
-T2 in corrected EPI space for I296476 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296479 <- Axial PD-T2 TSE
 MPRAGE T1 SAG
-T2 in T1-anatomical space <- MPRAGE T1 SAG
-T1-anatomical <- MPRAGE T1 SAG
-DTI Full Tensors-EPI <- REPEAT_DTI_GATED
-EigenVal2-MRI <- REPEAT_DTI_GATED
-EigenVal1-EPI <- REPEAT_DTI_GATED
-FA map-EPI <- REPEAT_DTI_GATED
-EigenVectors-MRI <- REPEAT_DTI_GATED
-DTI Full Tensors-MRI <- REPEAT_DTI_GATED
-RGB color map-MRI <- REPEAT_DTI_GATED
-FA map-MRI <- REPEAT_DTI_GATED
-RGB color map-EPI <- REPEAT_DTI_GATED
-EPI Corrected B0 map <- REPEAT_DTI_GATED
-EigenVal2-EPI <- REPEAT_DTI_GATED
-4D DWI <- REPEAT_DTI_GATED
-EigenVal0-MRI <- REPEAT_DTI_GATED
-MD map-EPI <- REPEAT_DTI_GATED
-EigenVal1-MRI <- REPEAT_DTI_GATED
-EigenVal0-EPI <- REPEAT_DTI_GATED
-MD map-MRI <- REPEAT_DTI_GATED
-EigenVectors-EPI <- REPEAT_DTI_GATED
-DTI_GATED
-4D DWI <- DTI_GATED
-EPI Corrected B0 map <- DTI_GATED
-EigenVal0-EPI <- DTI_GATED
-EigenVal1-EPI <- DTI_GATED
-EigenVal2-EPI <- DTI_GATED
-EigenVectors-EPI <- DTI_GATED
-FA map-EPI <- DTI_GATED
-DTI Full Tensors-EPI <- DTI_GATED
-MD map-EPI <- DTI_GATED
-RGB color map-EPI <- DTI_GATED
-EigenVal0-MRI <- DTI_GATED
-EigenVal1-MRI <- DTI_GATED
-EigenVal2-MRI <- DTI_GATED
-EigenVectors-MRI <- DTI_GATED
-FA map-MRI <- DTI_GATED
-DTI Full Tensors-MRI <- DTI_GATED
-MD map-MRI <- DTI_GATED
-RGB color map-MRI <- DTI_GATED
 3D T1-weighted  IA
-T2 in corrected EPI space for I296483 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296485 <- Axial PD-T2 TSE
-4D DWI <- REPEAT_DTI_NON GATED
-EPI Corrected B0 map <- REPEAT_DTI_NON GATED
-EigenVal0-EPI <- REPEAT_DTI_NON GATED
-EigenVal1-EPI <- REPEAT_DTI_NON GATED
-EigenVal2-EPI <- REPEAT_DTI_NON GATED
-EigenVectors-EPI <- REPEAT_DTI_NON GATED
-FA map-EPI <- REPEAT_DTI_NON GATED
-DTI Full Tensors-EPI <- REPEAT_DTI_NON GATED
-MD map-EPI <- REPEAT_DTI_NON GATED
-RGB color map-EPI <- REPEAT_DTI_NON GATED
-EigenVal0-MRI <- REPEAT_DTI_NON GATED
-EigenVal1-MRI <- REPEAT_DTI_NON GATED
-EigenVal2-MRI <- REPEAT_DTI_NON GATED
-EigenVectors-MRI <- REPEAT_DTI_NON GATED
-FA map-MRI <- REPEAT_DTI_NON GATED
-DTI Full Tensors-MRI <- REPEAT_DTI_NON GATED
-MD map-MRI <- REPEAT_DTI_NON GATED
-RGB color map-MRI <- REPEAT_DTI_NON GATED
-4D DWI <- DTI_NON GATED
-EPI Corrected B0 map <- DTI_NON GATED
-EigenVal0-EPI <- DTI_NON GATED
-EigenVal1-EPI <- DTI_NON GATED
-EigenVal2-EPI <- DTI_NON GATED
-EigenVectors-EPI <- DTI_NON GATED
-FA map-EPI <- DTI_NON GATED
-DTI Full Tensors-EPI <- DTI_NON GATED
-MD map-EPI <- DTI_NON GATED
-RGB color map-EPI <- DTI_NON GATED
-EigenVal0-MRI <- DTI_NON GATED
-EigenVal1-MRI <- DTI_NON GATED
-EigenVal2-MRI <- DTI_NON GATED
-EigenVectors-MRI <- DTI_NON GATED
-FA map-MRI <- DTI_NON GATED
-DTI Full Tensors-MRI <- DTI_NON GATED
-MD map-MRI <- DTI_NON GATED
-RGB color map-MRI <- DTI_NON GATED
-T2 in corrected EPI space for I372320 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I498906 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I296491 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296492 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301615 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I372323 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I497225 <- Axial PD-T2 TSE FS
-EigenVal2-EPI <- DTI_NON gated
-FA map-MRI <- DTI_NON gated
-4D DWI <- DTI_NON gated
-RGB color map-MRI <- DTI_NON gated
-EPI Corrected B0 map <- DTI_NON gated
-EigenVal0-EPI <- DTI_NON gated
-EigenVal1-EPI <- DTI_NON gated
-EigenVectors-MRI <- DTI_NON gated
-EigenVal1-MRI <- DTI_NON gated
-FA map-EPI <- DTI_NON gated
-EigenVectors-EPI <- DTI_NON gated
-RGB color map-EPI <- DTI_NON gated
-MD map-EPI <- DTI_NON gated
-MD map-MRI <- DTI_NON gated
-EigenVal0-MRI <- DTI_NON gated
-EigenVal2-MRI <- DTI_NON gated
-DTI Full Tensors-MRI <- DTI_NON gated
-DTI Full Tensors-EPI <- DTI_NON gated
-T2 in corrected EPI space for I369472 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296497 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296496 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393651 <- Axial PD-T2 TSE FS
-EigenVectors-MRI <- DTI_non gated repeat
-RGB color map-EPI <- DTI_non gated repeat
-MD map-MRI <- DTI_non gated repeat
-EigenVal1-EPI <- DTI_non gated repeat
-MD map-EPI <- DTI_non gated repeat
-EigenVal0-EPI <- DTI_non gated repeat
-DTI Full Tensors-MRI <- DTI_non gated repeat
-4D DWI <- DTI_non gated repeat
-EigenVal2-MRI <- DTI_non gated repeat
-FA map-MRI <- DTI_non gated repeat
-DTI Full Tensors-EPI <- DTI_non gated repeat
-FA map-EPI <- DTI_non gated repeat
-EigenVectors-EPI <- DTI_non gated repeat
-RGB color map-MRI <- DTI_non gated repeat
-EigenVal1-MRI <- DTI_non gated repeat
-EigenVal0-MRI <- DTI_non gated repeat
-EigenVal2-EPI <- DTI_non gated repeat
-EPI Corrected B0 map <- DTI_non gated repeat
-T2 in corrected EPI space for I296502 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296501 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I515220 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I307217 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307219 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357685 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397588 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I515229 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315624 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I315626 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393661 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I498914 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315627 <- Axial PD-T2 TSE
-4D DWI <- REPEAT_DTI_NONGATED
-EPI Corrected B0 map <- REPEAT_DTI_NONGATED
-EigenVal0-EPI <- REPEAT_DTI_NONGATED
-EigenVal1-EPI <- REPEAT_DTI_NONGATED
-EigenVal2-EPI <- REPEAT_DTI_NONGATED
-EigenVectors-EPI <- REPEAT_DTI_NONGATED
-FA map-EPI <- REPEAT_DTI_NONGATED
-DTI Full Tensors-EPI <- REPEAT_DTI_NONGATED
-MD map-EPI <- REPEAT_DTI_NONGATED
-RGB color map-EPI <- REPEAT_DTI_NONGATED
-EigenVal0-MRI <- REPEAT_DTI_NONGATED
-EigenVal1-MRI <- REPEAT_DTI_NONGATED
-EigenVal2-MRI <- REPEAT_DTI_NONGATED
-EigenVectors-MRI <- REPEAT_DTI_NONGATED
-FA map-MRI <- REPEAT_DTI_NONGATED
-DTI Full Tensors-MRI <- REPEAT_DTI_NONGATED
-MD map-MRI <- REPEAT_DTI_NONGATED
-RGB color map-MRI <- REPEAT_DTI_NONGATED
-T2 in corrected EPI space for I249261 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I334596 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393669 <- Axial PD-T2 TSE FS
-EigenVal1-EPI <- DTI_non gated
-EPI Corrected B0 map <- DTI_non gated
-RGB color map-EPI <- DTI_non gated
-EigenVal2-EPI <- DTI_non gated
-EigenVectors-EPI <- DTI_non gated
-4D DWI <- DTI_non gated
-DTI Full Tensors-EPI <- DTI_non gated
-FA map-EPI <- DTI_non gated
-MD map-EPI <- DTI_non gated
-EigenVal0-EPI <- DTI_non gated
-EigenVal1-MRI <- DTI_non gated
-FA map-MRI <- DTI_non gated
-EigenVal0-MRI <- DTI_non gated
-MD map-MRI <- DTI_non gated
-EigenVal2-MRI <- DTI_non gated
-EigenVectors-MRI <- DTI_non gated
-RGB color map-MRI <- DTI_non gated
-DTI Full Tensors-MRI <- DTI_non gated
-T2 in corrected EPI space for I497227 <- Axial PD-T2 TSE FS
-MD map-MRI <- DTI_Non-gated
-FA map-MRI <- DTI_Non-gated
-RGB color map-MRI <- DTI_Non-gated
-4D DWI <- DTI_Non-gated
-DTI Full Tensors-MRI <- DTI_Non-gated
-EPI Corrected B0 map <- DTI_Non-gated
-EigenVectors-MRI <- DTI_Non-gated
-FA map-EPI <- DTI_Non-gated
-EigenVal0-MRI <- DTI_Non-gated
-EigenVal0-EPI <- DTI_Non-gated
-EigenVal1-MRI <- DTI_Non-gated
-RGB color map-EPI <- DTI_Non-gated
-EigenVal2-EPI <- DTI_Non-gated
-MD map-EPI <- DTI_Non-gated
-EigenVectors-EPI <- DTI_Non-gated
-EigenVal1-EPI <- DTI_Non-gated
-EigenVal2-MRI <- DTI_Non-gated
-DTI Full Tensors-EPI <- DTI_Non-gated
-T2 in corrected EPI space for I269491 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269493 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344347 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397594 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I259609 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259612 <- Axial PD-T2 TSE
-4D DWI <- REPEAT_DTI_NON-GATED
-EPI Corrected B0 map <- REPEAT_DTI_NON-GATED
-EigenVal0-EPI <- REPEAT_DTI_NON-GATED
-EigenVal1-EPI <- REPEAT_DTI_NON-GATED
-EigenVal2-EPI <- REPEAT_DTI_NON-GATED
-EigenVectors-EPI <- REPEAT_DTI_NON-GATED
-FA map-EPI <- REPEAT_DTI_NON-GATED
-DTI Full Tensors-EPI <- REPEAT_DTI_NON-GATED
-MD map-EPI <- REPEAT_DTI_NON-GATED
-RGB color map-EPI <- REPEAT_DTI_NON-GATED
-EigenVal0-MRI <- REPEAT_DTI_NON-GATED
-EigenVal1-MRI <- REPEAT_DTI_NON-GATED
-EigenVal2-MRI <- REPEAT_DTI_NON-GATED
-EigenVectors-MRI <- REPEAT_DTI_NON-GATED
-FA map-MRI <- REPEAT_DTI_NON-GATED
-DTI Full Tensors-MRI <- REPEAT_DTI_NON-GATED
-MD map-MRI <- REPEAT_DTI_NON-GATED
-RGB color map-MRI <- REPEAT_DTI_NON-GATED
-4D DWI <- DTI_NON-GATED
-EPI Corrected B0 map <- DTI_NON-GATED
-EigenVal0-EPI <- DTI_NON-GATED
-EigenVal1-EPI <- DTI_NON-GATED
-EigenVal2-EPI <- DTI_NON-GATED
-EigenVectors-EPI <- DTI_NON-GATED
-FA map-EPI <- DTI_NON-GATED
-DTI Full Tensors-EPI <- DTI_NON-GATED
-MD map-EPI <- DTI_NON-GATED
-RGB color map-EPI <- DTI_NON-GATED
-T2 in corrected EPI space for I337598 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397623 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I259616 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259620 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357699 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393676 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I515233 <- Axial PD-T2 TSE FS
-EigenVal1-EPI <- DTI_Non gated
-EigenVectors-EPI <- DTI_Non gated
-MD map-EPI <- DTI_Non gated
-DTI Full Tensors-MRI <- DTI_Non gated
-MD map-MRI <- DTI_Non gated
-EPI Corrected B0 map <- DTI_Non gated
-EigenVal2-MRI <- DTI_Non gated
-EigenVal1-MRI <- DTI_Non gated
-RGB color map-MRI <- DTI_Non gated
-FA map-EPI <- DTI_Non gated
-RGB color map-EPI <- DTI_Non gated
-4D DWI <- DTI_Non gated
-EigenVal2-EPI <- DTI_Non gated
-EigenVal0-EPI <- DTI_Non gated
-EigenVal0-MRI <- DTI_Non gated
-FA map-MRI <- DTI_Non gated
-DTI Full Tensors-EPI <- DTI_Non gated
-EigenVectors-MRI <- DTI_Non gated
-T2 in corrected EPI space for I265353 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I369473 <- Axial PD-T2 TSE FS
-DTI Full Tensors-MRI <- REPEAT DTI_NON gated
-EPI Corrected B0 map <- REPEAT DTI_NON gated
-DTI Full Tensors-EPI <- REPEAT DTI_NON gated
-EigenVal0-MRI <- REPEAT DTI_NON gated
-RGB color map-EPI <- REPEAT DTI_NON gated
-4D DWI <- REPEAT DTI_NON gated
-MD map-EPI <- REPEAT DTI_NON gated
-EigenVal0-EPI <- REPEAT DTI_NON gated
-EigenVal2-MRI <- REPEAT DTI_NON gated
-MD map-MRI <- REPEAT DTI_NON gated
-EigenVectors-EPI <- REPEAT DTI_NON gated
-FA map-MRI <- REPEAT DTI_NON gated
-EigenVal2-EPI <- REPEAT DTI_NON gated
-EigenVal1-EPI <- REPEAT DTI_NON gated
-EigenVal1-MRI <- REPEAT DTI_NON gated
-RGB color map-MRI <- REPEAT DTI_NON gated
-EigenVectors-MRI <- REPEAT DTI_NON gated
-FA map-EPI <- REPEAT DTI_NON gated
-T2 in corrected EPI space for I259637 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I259640 <- Axial PD-T2 TSE
-4D DWI <- DTI_NONGATED
-EPI Corrected B0 map <- DTI_NONGATED
-EigenVal0-EPI <- DTI_NONGATED
-EigenVal1-EPI <- DTI_NONGATED
-EigenVal2-EPI <- DTI_NONGATED
-EigenVectors-EPI <- DTI_NONGATED
-FA map-EPI <- DTI_NONGATED
-DTI Full Tensors-EPI <- DTI_NONGATED
-MD map-EPI <- DTI_NONGATED
-RGB color map-EPI <- DTI_NONGATED
-EigenVal0-MRI <- DTI_NONGATED
-EigenVal1-MRI <- DTI_NONGATED
-EigenVal2-MRI <- DTI_NONGATED
-EigenVectors-MRI <- DTI_NONGATED
-FA map-MRI <- DTI_NONGATED
-DTI Full Tensors-MRI <- DTI_NONGATED
-MD map-MRI <- DTI_NONGATED
-RGB color map-MRI <- DTI_NONGATED
-T2 in corrected EPI space for I337601 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282118 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I355972 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I365162 <- Axial PD-T2 TSE FS
-EigenVectors-MRI <- REPEAT DTI_NON GATED
-RGB color map-MRI <- REPEAT DTI_NON GATED
-EigenVal0-MRI <- REPEAT DTI_NON GATED
-FA map-MRI <- REPEAT DTI_NON GATED
-EigenVal1-MRI <- REPEAT DTI_NON GATED
-DTI Full Tensors-MRI <- REPEAT DTI_NON GATED
-EigenVal2-MRI <- REPEAT DTI_NON GATED
-MD map-MRI <- REPEAT DTI_NON GATED
-MD map-EPI <- REPEAT DTI_NON GATED
-EigenVectors-EPI <- REPEAT DTI_NON GATED
-EigenVal1-EPI <- REPEAT DTI_NON GATED
-DTI Full Tensors-EPI <- REPEAT DTI_NON GATED
-EPI Corrected B0 map <- REPEAT DTI_NON GATED
-EigenVal2-EPI <- REPEAT DTI_NON GATED
-4D DWI <- REPEAT DTI_NON GATED
-RGB color map-EPI <- REPEAT DTI_NON GATED
-FA map-EPI <- REPEAT DTI_NON GATED
-EigenVal0-EPI <- REPEAT DTI_NON GATED
-T2 in corrected EPI space for I420322 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I689586 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I287914 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287915 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I369486 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I420329 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315655 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I315658 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I387315 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440173 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I713686 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I301535 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301536 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I430167 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I393618 <- Axial PD-T2 TSE FS
-MD map-MRI <- DTI_ NON gated REPEAT
-EigenVal0-MRI <- DTI_ NON gated REPEAT
-EigenVectors-MRI <- DTI_ NON gated REPEAT
-EigenVal1-MRI <- DTI_ NON gated REPEAT
-DTI Full Tensors-MRI <- DTI_ NON gated REPEAT
-FA map-MRI <- DTI_ NON gated REPEAT
-EigenVal2-MRI <- DTI_ NON gated REPEAT
-RGB color map-MRI <- DTI_ NON gated REPEAT
-DTI Full Tensors-EPI <- DTI_ NON gated REPEAT
-EPI Corrected B0 map <- DTI_ NON gated REPEAT
-EigenVal0-EPI <- DTI_ NON gated REPEAT
-EigenVal1-EPI <- DTI_ NON gated REPEAT
-EigenVectors-EPI <- DTI_ NON gated REPEAT
-MD map-EPI <- DTI_ NON gated REPEAT
-4D DWI <- DTI_ NON gated REPEAT
-FA map-EPI <- DTI_ NON gated REPEAT
-EigenVal2-EPI <- DTI_ NON gated REPEAT
-RGB color map-EPI <- DTI_ NON gated REPEAT
-T2 in corrected EPI space for I689595 <- Axial PD-T2 TSE FS
-EigenVal1-EPI <- DTI_Non Gated
-FA map-MRI <- DTI_Non Gated
-EigenVal1-MRI <- DTI_Non Gated
-MD map-MRI <- DTI_Non Gated
-DTI Full Tensors-MRI <- DTI_Non Gated
-4D DWI <- DTI_Non Gated
-RGB color map-MRI <- DTI_Non Gated
-FA map-EPI <- DTI_Non Gated
-RGB color map-EPI <- DTI_Non Gated
-EigenVal2-MRI <- DTI_Non Gated
-EigenVectors-MRI <- DTI_Non Gated
-EigenVal2-EPI <- DTI_Non Gated
-EPI Corrected B0 map <- DTI_Non Gated
-EigenVectors-EPI <- DTI_Non Gated
-EigenVal0-MRI <- DTI_Non Gated
-DTI Full Tensors-EPI <- DTI_Non Gated
-EigenVal0-EPI <- DTI_Non Gated
-MD map-EPI <- DTI_Non Gated
-T2 in corrected EPI space for I295071 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I295065 <- Axial PD-T2 TSE
-EigenVal0-MRI <- REPEAT_DTI_ NON GATED
-EigenVal1-MRI <- REPEAT_DTI_ NON GATED
-EigenVal2-MRI <- REPEAT_DTI_ NON GATED
-EigenVectors-MRI <- REPEAT_DTI_ NON GATED
-FA map-MRI <- REPEAT_DTI_ NON GATED
-DTI Full Tensors-MRI <- REPEAT_DTI_ NON GATED
-MD map-MRI <- REPEAT_DTI_ NON GATED
-RGB color map-MRI <- REPEAT_DTI_ NON GATED
-FA map-EPI <- REPEAT_DTI_ NON GATED
-4D DWI <- REPEAT_DTI_ NON GATED
-EPI Corrected B0 map <- REPEAT_DTI_ NON GATED
-RGB color map-EPI <- REPEAT_DTI_ NON GATED
-DTI Full Tensors-EPI <- REPEAT_DTI_ NON GATED
-MD map-EPI <- REPEAT_DTI_ NON GATED
-EigenVal0-EPI <- REPEAT_DTI_ NON GATED
-EigenVal2-EPI <- REPEAT_DTI_ NON GATED
-EigenVal1-EPI <- REPEAT_DTI_ NON GATED
-EigenVectors-EPI <- REPEAT_DTI_ NON GATED
-T2 in corrected EPI space for I393621 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440178 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I295127 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357582 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393627 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440182 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I322856 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I387322 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440188 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I757806 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I344272 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I334560 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393633 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449570 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I901171 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I334558 <- Axial PD-T2 TSE
-DTI Full Tensors-MRI <- DTI_N0N GATED
-EigenVal1-EPI <- DTI_N0N GATED
-EigenVectors-MRI <- DTI_N0N GATED
-FA map-EPI <- DTI_N0N GATED
-EigenVectors-EPI <- DTI_N0N GATED
-EigenVal2-MRI <- DTI_N0N GATED
-EigenVal0-EPI <- DTI_N0N GATED
-MD map-MRI <- DTI_N0N GATED
-RGB color map-EPI <- DTI_N0N GATED
-FA map-MRI <- DTI_N0N GATED
-4D DWI <- DTI_N0N GATED
-RGB color map-MRI <- DTI_N0N GATED
-DTI Full Tensors-EPI <- DTI_N0N GATED
-MD map-EPI <- DTI_N0N GATED
-EigenVal2-EPI <- DTI_N0N GATED
-EigenVal0-MRI <- DTI_N0N GATED
-EPI Corrected B0 map <- DTI_N0N GATED
-EigenVal1-MRI <- DTI_N0N GATED
-T2 in corrected EPI space for I351066 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I415705 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I808170 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I351083 <- Axial PD-T2 TSE FS
-EigenVal0-MRI <- DTI_non gated Repeated
-EigenVal1-MRI <- DTI_non gated Repeated
-EigenVal2-MRI <- DTI_non gated Repeated
-EigenVectors-MRI <- DTI_non gated Repeated
-FA map-MRI <- DTI_non gated Repeated
-DTI Full Tensors-MRI <- DTI_non gated Repeated
-MD map-MRI <- DTI_non gated Repeated
-RGB color map-MRI <- DTI_non gated Repeated
-4D DWI <- DTI_non gated Repeated
-EigenVectors-EPI <- DTI_non gated Repeated
-RGB color map-EPI <- DTI_non gated Repeated
-EigenVal0-EPI <- DTI_non gated Repeated
-MD map-EPI <- DTI_non gated Repeated
-EigenVal2-EPI <- DTI_non gated Repeated
-FA map-EPI <- DTI_non gated Repeated
-EPI Corrected B0 map <- DTI_non gated Repeated
-EigenVal1-EPI <- DTI_non gated Repeated
-DTI Full Tensors-EPI <- DTI_non gated Repeated
-T2 in corrected EPI space for I507381 <- Axial PD-T2 TSE FS
-RGB color map-MRI <- DTI_NON-gated
-MD map-MRI <- DTI_NON-gated
-EigenVal2-MRI <- DTI_NON-gated
-EigenVal1-EPI <- DTI_NON-gated
-EigenVal0-EPI <- DTI_NON-gated
-DTI Full Tensors-MRI <- DTI_NON-gated
-EigenVectors-MRI <- DTI_NON-gated
-EigenVal1-MRI <- DTI_NON-gated
-FA map-MRI <- DTI_NON-gated
-FA map-EPI <- DTI_NON-gated
-MD map-EPI <- DTI_NON-gated
-DTI Full Tensors-EPI <- DTI_NON-gated
-4D DWI <- DTI_NON-gated
-EigenVal2-EPI <- DTI_NON-gated
-RGB color map-EPI <- DTI_NON-gated
-EigenVal0-MRI <- DTI_NON-gated
-EPI Corrected B0 map <- DTI_NON-gated
-EigenVectors-EPI <- DTI_NON-gated
-T2 in corrected EPI space for I353394 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I415712 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I369042 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I417025 <- Axial PD-T2 TSE FS
-DTI Full Tensors-EPI <- DTI_Non gated Repeat
-EigenVal2-EPI <- DTI_Non gated Repeat
-EigenVal0-MRI <- DTI_Non gated Repeat
-4D DWI <- DTI_Non gated Repeat
-EigenVal0-EPI <- DTI_Non gated Repeat
-FA map-MRI <- DTI_Non gated Repeat
-EigenVectors-EPI <- DTI_Non gated Repeat
-EigenVal2-MRI <- DTI_Non gated Repeat
-EigenVectors-MRI <- DTI_Non gated Repeat
-EigenVal1-MRI <- DTI_Non gated Repeat
-FA map-EPI <- DTI_Non gated Repeat
-MD map-EPI <- DTI_Non gated Repeat
-RGB color map-EPI <- DTI_Non gated Repeat
-MD map-MRI <- DTI_Non gated Repeat
-EPI Corrected B0 map <- DTI_Non gated Repeat
-EigenVal1-EPI <- DTI_Non gated Repeat
-DTI Full Tensors-MRI <- DTI_Non gated Repeat
-RGB color map-MRI <- DTI_Non gated Repeat
-T2 in corrected EPI space for I475645 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I357587 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I417029 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I498918 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864592 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I367351 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I417035 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I374738 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I436383 <- Axial PD-T2 TSE FS
-DTI Full Tensors-MRI <- DTI_ non_gated
-EigenVal0-EPI <- DTI_ non_gated
-EigenVal2-EPI <- DTI_ non_gated
-EigenVal2-MRI <- DTI_ non_gated
-DTI Full Tensors-EPI <- DTI_ non_gated
-EigenVal1-MRI <- DTI_ non_gated
-EPI Corrected B0 map <- DTI_ non_gated
-EigenVectors-MRI <- DTI_ non_gated
-MD map-MRI <- DTI_ non_gated
-EigenVal1-EPI <- DTI_ non_gated
-FA map-MRI <- DTI_ non_gated
-RGB color map-EPI <- DTI_ non_gated
-EigenVectors-EPI <- DTI_ non_gated
-4D DWI <- DTI_ non_gated
-EigenVal0-MRI <- DTI_ non_gated
-RGB color map-MRI <- DTI_ non_gated
-MD map-EPI <- DTI_ non_gated
-FA map-EPI <- DTI_ non_gated
-T2 in corrected EPI space for I436389 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I498924 <- Axial PD-T2 TSE FS
 MPRAGE SAG
 Add123
 Reconstructed DaTSCAN <- Add123
-AXIAL  T2  FSE
 SAG T1 3D FSPGR
 AddR1,2,3
 R1,2,3
@@ -1795,7 +920,6 @@ Reconstructed DaTSCAN <- AddR123
 AddR789
 Reconstructed DaTSCAN <- AddR789
 R1,2,3,
-Ax FSE T2
 TX Scan 4i/16s 
 18-F florbetaben 4i/16s 
 18-F florbetaben 4i/16s  AV45
@@ -1809,7 +933,6 @@ AV 133 Initial 4i/16s
 AV 133 Delay - Iter(Brain Mode)
 AV 133 Delay 4i/16s 
 3D SAG
-sT2W/PD_TSE
 PPMI DUAL ISOTOPE BRAIN
 Reconstructed DaTSCAN <- PPMI DUAL ISOTOPE BRAIN
 MNI BRAIN AC
@@ -1817,7 +940,6 @@ PPMI FLORBETABEN 3D BRAIN
 PPMI DUAL ISOTOPE BRAIN2
 Reconstructed DaTSCAN <- PPMI DUAL ISOTOPE BRAIN2
 MPRAGEadni
-AX T2
 AddFiles
 Reconstructed DaTSCAN <- AddFiles
 AddFiles |> ECT
@@ -1826,155 +948,11 @@ PPMI-B Brain Spect UAB
 Reconstructed DaTSCAN <- PPMI-B Brain Spect UAB
 T1W_3D_FFE COR
 T1W_3D_FFE AX
-COR T2
 PPMI-Brain Spect
 Reconstructed DaTSCAN <- PPMI-Brain Spect
 BRAIN
-T2 in corrected EPI space for I305957 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I305956 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I419337 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I226427 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226428 <- Axial PD-T2 TSE
 PPMI_Florbetaben_4X5 (AC)
-T2 in corrected EPI space for I296524 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296523 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I374744 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307255 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307256 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I378357 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I482304 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I249265 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249267 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307278 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307280 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I482317 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I238002 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I238003 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226446 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I226447 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307297 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307298 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I372346 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I482324 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I226465 <- Axial PD-T2 TSE
-4D DWI <- TRIGGERED DTI
-EPI Corrected B0 map <- TRIGGERED DTI
-EigenVal0-EPI <- TRIGGERED DTI
-EigenVal1-EPI <- TRIGGERED DTI
-EigenVal2-EPI <- TRIGGERED DTI
-EigenVectors-EPI <- TRIGGERED DTI
-FA map-EPI <- TRIGGERED DTI
-DTI Full Tensors-EPI <- TRIGGERED DTI
-MD map-EPI <- TRIGGERED DTI
-RGB color map-EPI <- TRIGGERED DTI
-EigenVal0-MRI <- TRIGGERED DTI
-EigenVal1-MRI <- TRIGGERED DTI
-EigenVal2-MRI <- TRIGGERED DTI
-EigenVectors-MRI <- TRIGGERED DTI
-FA map-MRI <- TRIGGERED DTI
-DTI Full Tensors-MRI <- TRIGGERED DTI
-MD map-MRI <- TRIGGERED DTI
-RGB color map-MRI <- TRIGGERED DTI
-T2 in corrected EPI space for I296563 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I296565 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353815 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I482327 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I243777 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243781 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307302 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307304 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I372350 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I243797 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243798 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307335 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307337 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I372356 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491603 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I265357 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I265358 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344353 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I548993 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I265365 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I265368 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I315634 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402056 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I249268 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249269 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344361 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I560370 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I305961 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I305964 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I430193 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I249275 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249276 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340730 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402062 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507391 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I249278 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249282 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344380 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I249291 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340736 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I265399 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I265403 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I365199 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I615263 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I287929 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287930 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344387 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I295193 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I295196 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I423730 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I287960 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287962 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344392 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I414624 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I581099 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I287980 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287984 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I365222 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I420336 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I581118 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I295244 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I295245 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I365246 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I615275 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340606 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I419344 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I306015 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I306017 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I436392 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315660 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340614 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I412184 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340618 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I412190 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440196 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I778978 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I344276 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395441 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449579 <- Axial PD-T2 TSE FS
 MPRAGE 2 ADNI
-T2 in corrected EPI space for I778986 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340626 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I415718 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449585 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I344285 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I419354 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449610 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I365105 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I373013 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I419363 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491616 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864630 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I373032 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I436403 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507398 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I369101 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I430198 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507402 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864705 <- AXIAL PD-T2 TSE FS
-AX PD + T2
 SAG T1 3D MPRAGE
 RAW 1
 Reconstructed DaTSCAN <- RAW 1
@@ -1990,13 +968,11 @@ DATSCAN /E1
 Reconstructed DaTSCAN <- DATSCAN /E1
 RAW_1
 Reconstructed DaTSCAN <- RAW_1
-AX T2 FSE
 SAG SPGR 3D
 RAW 2
 SUM 2
 sum 1
 SAG T1 3DMPRAGE
-PD-T2 DUAL AXIAL TSE
 154-3661-1-06
 154-3661-1-05
 154-3661-1-02
@@ -2017,7 +993,6 @@ PD-T2 DUAL AXIAL TSE
 154-3668-1-02
 154-3668-1-03
 sT1W_3D_TFE
-T2W_TSE
 LP10.0,.24
 R3R4ADDFIL
 R1R2ADDFIL
@@ -2028,349 +1003,20 @@ R1R2Addfil
 Reconstructed DaTSCAN <- R1R2Addfil
 sT1W_3D_ISO
 Reconstructed DaTSCAN <- R3R4ADDFIL
-T2 in corrected EPI space for I353403 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282123 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282124 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353511 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393683 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I353411 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353550 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397627 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I282128 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282130 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I355987 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397761 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I269523 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269525 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353590 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269527 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269530 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I362578 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440200 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I549017 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I282133 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282134 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I374890 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I402065 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I282154 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I282155 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357720 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287993 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I287997 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I362587 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I414628 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I581122 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I288047 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288050 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357734 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I420340 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I288074 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288075 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I374898 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I414636 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I549036 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I288118 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288116 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288121 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288123 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353653 <- Axial PD-T2 TSE
 V19-DAT
-T2 in corrected EPI space for I288148 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288149 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301542 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301543 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357760 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301547 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I301549 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I362612 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I322875 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I365262 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I420361 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I322910 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I374905 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440208 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I337729 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I382306 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440211 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I757812 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I382340 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440216 <- Axial PD-T2 TSE FS
 Reconstructed DaTSCAN <- None Provided
-T2 in corrected EPI space for I713693 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I322934 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I382343 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440221 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I769283 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I322976 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I382348 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440229 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I738223 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I323007 <- Axial PD-T2 TSE
 I123_window
 Reconstructed DaTSCAN <- I123_window
-T2 in corrected EPI space for I382356 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I337754 <- Axial PD-T2 TSE
-T2 in T1-anatomical space <- MPRAGE GRAPPA_ND
-T1-anatomical <- MPRAGE GRAPPA_ND
-T2 in corrected EPI space for I387329 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I475651 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I757820 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I353416 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I387333 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440239 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I353424 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I355991 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I466877 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I466880 <- Axial PD-T2 TSE FS
 Reconstructed DaTSCAN <- PPMI DatScan
-T2 in corrected EPI space for I369125 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I466882 <- Axial PD-T2 TSE FS
 PPMI DatScan
-T2 in corrected EPI space for I353437 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I412197 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I951600 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I355993 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402151 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I356006 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I423736 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I468924 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I951606 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I357593 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I475657 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I269531 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269533 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307340 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I307341 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393685 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I497233 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I344288 <- Axial PD-T2 TSE
 None provided
 Reconstructed DaTSCAN <- None provided
-T2 in corrected EPI space for I269550 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269551 <- Axial PD-T2 TSE
-4D DWI <- DTI_non_gated
-EPI Corrected B0 map <- DTI_non_gated
-EigenVal0-EPI <- DTI_non_gated
-EigenVal1-EPI <- DTI_non_gated
-EigenVal2-EPI <- DTI_non_gated
-EigenVectors-EPI <- DTI_non_gated
-FA map-EPI <- DTI_non_gated
-DTI Full Tensors-EPI <- DTI_non_gated
-MD map-EPI <- DTI_non_gated
-RGB color map-EPI <- DTI_non_gated
-T2 in corrected EPI space for I340753 <- Axial PD-T2 TSE
-EigenVal0-MRI <- DTI_non_gated
-EigenVal1-MRI <- DTI_non_gated
-EigenVal2-MRI <- DTI_non_gated
-EigenVectors-MRI <- DTI_non_gated
-FA map-MRI <- DTI_non_gated
-DTI Full Tensors-MRI <- DTI_non_gated
-MD map-MRI <- DTI_non_gated
-RGB color map-MRI <- DTI_non_gated
-T2 in corrected EPI space for I393693 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I549041 <- Axial PD-T2 TSE FS
-RGB color map-EPI <- DTI_none_gated
-EigenVal1-MRI <- DTI_none_gated
-EigenVectors-EPI <- DTI_none_gated
-EigenVectors-MRI <- DTI_none_gated
-DTI Full Tensors-EPI <- DTI_none_gated
-MD map-MRI <- DTI_none_gated
-EigenVal0-EPI <- DTI_none_gated
-EigenVal2-MRI <- DTI_none_gated
-MD map-EPI <- DTI_none_gated
-EPI Corrected B0 map <- DTI_none_gated
-RGB color map-MRI <- DTI_none_gated
-DTI Full Tensors-MRI <- DTI_none_gated
-EigenVal0-MRI <- DTI_none_gated
-FA map-EPI <- DTI_none_gated
-FA map-MRI <- DTI_none_gated
-EigenVal1-EPI <- DTI_none_gated
-4D DWI <- DTI_none_gated
-EigenVal2-EPI <- DTI_none_gated
-T2 in corrected EPI space for I365111 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269554 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269557 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269559 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269560 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340760 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269564 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269565 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269571 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269572 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340792 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269575 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269577 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340799 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402073 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I515240 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I269582 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269589 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269592 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269595 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I269598 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I337609 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275577 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275574 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344404 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340630 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I351192 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I414641 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I615295 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340636 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I353716 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402077 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I581143 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340641 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I357776 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340650 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I362629 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I306024 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I306028 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440244 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I306033 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I306030 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395446 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440248 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I689610 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315664 <- Axial PD-T2 TSE
-4D DWI <- DTI_none gated
-EPI Corrected B0 map <- DTI_none gated
-EigenVal0-EPI <- DTI_none gated
-EigenVal1-EPI <- DTI_none gated
-EigenVal2-EPI <- DTI_none gated
-EigenVectors-EPI <- DTI_none gated
-FA map-EPI <- DTI_none gated
-DTI Full Tensors-EPI <- DTI_none gated
-MD map-EPI <- DTI_none gated
-RGB color map-EPI <- DTI_none gated
-EigenVal0-MRI <- DTI_none gated
-EigenVal1-MRI <- DTI_none gated
-EigenVal2-MRI <- DTI_none gated
-EigenVectors-MRI <- DTI_none gated
-FA map-MRI <- DTI_none gated
-DTI Full Tensors-MRI <- DTI_none gated
-MD map-MRI <- DTI_none gated
-RGB color map-MRI <- DTI_none gated
-T2 in corrected EPI space for I423740 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440255 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315685 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402248 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I430175 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315707 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I382364 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440260 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I738232 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315722 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395589 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440270 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I769287 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340656 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340654 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395593 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I449615 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I315737 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I393638 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I549047 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340667 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395599 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449620 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I808178 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340674 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340677 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395604 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449656 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I337770 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I395610 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I466897 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I832483 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I357615 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I412201 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I468930 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I808184 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I353444 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402268 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I466941 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I808234 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I356012 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I412205 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I468936 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I362491 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I356019 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I415722 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I473098 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864779 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I373037 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I415730 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I475667 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I357622 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I415739 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I482334 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I362496 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I367372 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I423751 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I515244 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I901178 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I238035 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I238037 <- Axial PD-T2 TSE
 HIRN-PPMI
 Reconstructed DaTSCAN <- HIRN-PPMI
-T2 in corrected EPI space for I340802 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340808 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243811 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243813 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340815 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243815 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243818 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440281 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I243821 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243822 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I340826 <- Axial PD-T2 TSE
-EigenVal1-MRI <- DTI_ungated
-RGB color map-MRI <- DTI_ungated
-RGB color map-EPI <- DTI_ungated
-EPI Corrected B0 map <- DTI_ungated
-FA map-EPI <- DTI_ungated
-FA map-MRI <- DTI_ungated
-EigenVectors-MRI <- DTI_ungated
-MD map-MRI <- DTI_ungated
-EigenVal0-MRI <- DTI_ungated
-EigenVectors-EPI <- DTI_ungated
-4D DWI <- DTI_ungated
-DTI Full Tensors-MRI <- DTI_ungated
-EigenVal2-MRI <- DTI_ungated
-DTI Full Tensors-EPI <- DTI_ungated
-EigenVal0-EPI <- DTI_ungated
-EigenVal2-EPI <- DTI_ungated
-MD map-EPI <- DTI_ungated
-EigenVal1-EPI <- DTI_ungated
-T2 in corrected EPI space for I243827 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I243828 <- Axial PD-T2 TSE
 Reconstructed DaTSCAN <- Hirn DAT
 Hirn ppmi Studie
 Reconstructed DaTSCAN <- Hirn ppmi Studie
-T2 in corrected EPI space for I414645 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I397632 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I288151 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I414653 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I288177 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288180 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I436410 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440286 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I306042 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I306044 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I449662 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340681 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397764 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340687 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I440288 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340694 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I397770 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I397778 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I340697 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I402278 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I415742 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I415753 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I436427 <- Axial PD-T2 TSE FS
+2D GRE-MT repeat
 t1_mpr_ns_sag_p2_iso
 DATScan
 Reconstructed DaTSCAN <- DATScan
@@ -2380,7 +1026,6 @@ DATScan /E1 123 Iodine 139-169
 Reconstructed DaTSCAN <- DATScan /E1 123 Iodine 139-169
 516_PPMI_4x5min (AC)
 516_PPMI_4x5min (NAC)
-t2_tse_tra
 DATScan /E2
 ECT_ECT
 Reconstructed DaTSCAN <- ECT_ECT
@@ -2391,42 +1036,28 @@ ECT_ECT_3956R
 Reconstructed DaTSCAN <- ECT_ECT_3956R
 120-4000_1
 Reconstructed DaTSCAN <- 120-4000_1
-T2 in corrected EPI space for I275627 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275628 <- Axial PD-T2 TSE
 120-4001_1
 Reconstructed DaTSCAN <- 120-4001_1
 120-4001_2
 Reconstructed DaTSCAN <- 120-4001_2
-T2 in corrected EPI space for I397638 <- Axial PD-T2 TSE FS
 120-4001_3
 Reconstructed DaTSCAN <- 120-4001_3
-T2 in corrected EPI space for I507825 <- AXIAL PD-T2 TSE FS
 120-4001_4
 Reconstructed DaTSCAN <- 120-4001_4
 018-40012_1 Brain Spect
 Reconstructed DaTSCAN <- 018-40012_1 Brain Spect
 120-4003_1
 Reconstructed DaTSCAN <- 120-4003_1
-T2 in corrected EPI space for I275713 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275714 <- Axial PD-T2 TSE
 120-4004_1
 Reconstructed DaTSCAN <- 120-4004_1
-T2 in corrected EPI space for I340853 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275770 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I275773 <- Axial PD-T2 TSE
 120-4005_1
 Reconstructed DaTSCAN <- 120-4005_1
-T2 in corrected EPI space for I340878 <- Axial PD-T2 TSE
 120-4005_2
 Reconstructed DaTSCAN <- 120-4005_2
-T2 in corrected EPI space for I397645 <- Axial PD-T2 TSE FS
 120-4005_3
 Reconstructed DaTSCAN <- 120-4005_3
-T2 in corrected EPI space for I557544 <- AXIAL PD-T2 TSE FS
 120-4005_4
 Reconstructed DaTSCAN <- 120-4005_4
-T2 in corrected EPI space for I288199 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288202 <- Axial PD-T2 TSE
 120-4006_1
 Reconstructed DaTSCAN <- 120-4006_1
 120-4007_1
@@ -2435,39 +1066,26 @@ Reconstructed DaTSCAN <- 120-4007_1
 Reconstructed DaTSCAN <- 120-4008_1
 120-4009_1
 Reconstructed DaTSCAN <- 120-4009_1
-T2 in corrected EPI space for I288212 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I288214 <- Axial PD-T2 TSE
 120-4010_1
 Reconstructed DaTSCAN <- 120-4010_1
-T2 in corrected EPI space for I340887 <- Axial PD-T2 TSE
 120-4011_1
 Reconstructed DaTSCAN <- 120-4011_1
-T2 in corrected EPI space for I402283 <- Axial PD-T2 TSE FS
 120-4011_2
 Reconstructed DaTSCAN <- 120-4011_2
-T2 in corrected EPI space for I414657 <- Axial PD-T2 TSE FS
 120-4011_3
 Reconstructed DaTSCAN <- 120-4011_3
-T2 in corrected EPI space for I713700 <- AXIAL PD-T2 TSE FS
 120-4011_4
 Reconstructed DaTSCAN <- 120-4011_4
-T2 in corrected EPI space for I344306 <- Axial PD-T2 TSE
 120-4012_1
 Reconstructed DaTSCAN <- 120-4012_1
-T2 in corrected EPI space for I351205 <- Axial PD-T2 TSE
 120-4012_2
 Reconstructed DaTSCAN <- 120-4012_2
-T2 in corrected EPI space for I402084 <- Axial PD-T2 TSE FS
 120-4012_3
 Reconstructed DaTSCAN <- 120-4012_3
-T2 in corrected EPI space for I615301 <- AXIAL PD-T2 TSE FS
 120-4012_4
 Reconstructed DaTSCAN <- 120-4012_4
-T2 in corrected EPI space for I344312 <- Axial PD-T2 TSE
 120-4013_1
 Reconstructed DaTSCAN <- 120-4013_1
-T2 in corrected EPI space for I362635 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I414661 <- Axial PD-T2 TSE FS
 120-4013_2
 Reconstructed DaTSCAN <- 120-4013_2
 120-4014_1
@@ -2476,136 +1094,90 @@ Reconstructed DaTSCAN <- 120-4014_1
 Reconstructed DaTSCAN <- 120-4016_1
 120-4017_1
 Reconstructed DaTSCAN <- 120-4017_1
-T2 in corrected EPI space for I334575 <- Axial PD-T2 TSE
 120-4018_1
 Reconstructed DaTSCAN <- 120-4018_1
-T2 in corrected EPI space for I365286 <- Axial PD-T2 TSE FS
 120-4019_1
 Reconstructed DaTSCAN <- 120-4019_1
-T2 in corrected EPI space for I362639 <- Axial PD-T2 TSE FS
 120-4019_2
 Reconstructed DaTSCAN <- 120-4019_2
-T2 in corrected EPI space for I417055 <- Axial PD-T2 TSE FS
 120-4019_3
 Reconstructed DaTSCAN <- 120-4019_3
-T2 in corrected EPI space for I665288 <- AXIAL PD-T2 TSE FS
 120-4019_4
 Reconstructed DaTSCAN <- 120-4019_4
-T2 in corrected EPI space for I334565 <- Axial PD-T2 TSE
 120-4020_1
 Reconstructed DaTSCAN <- 120-4020_1
-T2 in corrected EPI space for I362646 <- Axial PD-T2 TSE FS
 120-4020_2
 Reconstructed DaTSCAN <- 120-4020_2
-T2 in corrected EPI space for I417059 <- Axial PD-T2 TSE FS
 120-4020_3
 Reconstructed DaTSCAN <- 120-4020_3
-T2 in corrected EPI space for I713710 <- AXIAL PD-T2 TSE FS
 120-4020_4
 Reconstructed DaTSCAN <- 120-4020_4
-T2 in corrected EPI space for I334578 <- Axial PD-T2 TSE
 120-4021_1
 Reconstructed DaTSCAN <- 120-4021_1
-T2 in corrected EPI space for I362653 <- Axial PD-T2 TSE FS
 120-4021_2
 Reconstructed DaTSCAN <- 120-4021_2
-T2 in corrected EPI space for I430179 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I713717 <- AXIAL PD-T2 TSE FS
 120-4021_4
-T2 in corrected EPI space for I334582 <- Axial PD-T2 TSE
 120-4022_1
 Reconstructed DaTSCAN <- 120-4022_1
-T2 in corrected EPI space for I365292 <- Axial PD-T2 TSE FS
 120-4022_2
 Reconstructed DaTSCAN <- 120-4022_2
-T2 in corrected EPI space for I417068 <- Axial PD-T2 TSE FS
 120-4022_3
 Reconstructed DaTSCAN <- 120-4022_3
-T2 in corrected EPI space for I689634 <- AXIAL PD-T2 TSE FS
 120-4022_4
-T2 in corrected EPI space for I337786 <- Axial PD-T2 TSE
 120-4023_1
 Reconstructed DaTSCAN <- 120-4023_1
-T2 in corrected EPI space for I440294 <- Axial PD-T2 TSE FS
 120-4023_2
 Reconstructed DaTSCAN <- 120-4023_2
-T2 in corrected EPI space for I344316 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I344314 <- Axial PD-T2 TSE
 120-4024_1
 Reconstructed DaTSCAN <- 120-4024_1
-T2 in corrected EPI space for I395622 <- Axial PD-T2 TSE FS
 120-4024_2
 Reconstructed DaTSCAN <- 120-4024_2
-T2 in corrected EPI space for I449669 <- Axial PD-T2 TSE FS
 120-4024_3
 Reconstructed DaTSCAN <- 120-4024_3
-T2 in corrected EPI space for I778991 <- AXIAL PD-T2 TSE FS
 120-4024_4
 120-4025_1
 Reconstructed DaTSCAN <- 120-4025_1
-T2 in corrected EPI space for I395625 <- Axial PD-T2 TSE FS
 120-4025_2
 Reconstructed DaTSCAN <- 120-4025_2
-T2 in corrected EPI space for I449674 <- Axial PD-T2 TSE FS
 120-4025_3
 Reconstructed DaTSCAN <- 120-4025_3
 120-4025_4
 Reconstructed DaTSCAN <- 120-4025_4
-T2 in corrected EPI space for I357638 <- Axial PD-T2 TSE
 120-4026_1
 Reconstructed DaTSCAN <- 120-4026_1
-T2 in corrected EPI space for I395630 <- Axial PD-T2 TSE FS
 120-4026_2
 Reconstructed DaTSCAN <- 120-4026_2
-T2 in corrected EPI space for I449678 <- Axial PD-T2 TSE FS
 120-4026_3
 Reconstructed DaTSCAN <- 120-4026_3
-T2 in corrected EPI space for I778998 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I340702 <- Axial PD-T2 TSE
 120-4027_1
 Reconstructed DaTSCAN <- 120-4027_1
-T2 in corrected EPI space for I395635 <- Axial PD-T2 TSE FS
 120-4027_3
 Reconstructed DaTSCAN <- 120-4027_3
-T2 in corrected EPI space for I790487 <- AXIAL PD-T2 TSE FS
 120-4027_4
 Reconstructed DaTSCAN <- 120-4027_4
 T1 Repeat
-T2 in corrected EPI space for I344322 <- Axial PD-T2 TSE
 120-4029_1
 Reconstructed DaTSCAN <- 120-4029_1
-T2 in corrected EPI space for I402289 <- Axial PD-T2 TSE FS
 120-4029_2
 Reconstructed DaTSCAN <- 120-4029_2
-T2 in corrected EPI space for I468941 <- Axial PD-T2 TSE FS
 120-4029_3
 Reconstructed DaTSCAN <- 120-4029_3
-T2 in corrected EPI space for I901187 <- AXIAL PD-T2 TSE FS
 120-4029_4
 Reconstructed DaTSCAN <- 120-4029_4
-T2 in corrected EPI space for I356038 <- Axial PD-T2 TSE FS
 120-4030_1
 Reconstructed DaTSCAN <- 120-4030_1
-T2 in corrected EPI space for I415755 <- Axial PD-T2 TSE FS
 120-4030_2
 Reconstructed DaTSCAN <- 120-4030_2
-T2 in corrected EPI space for I468946 <- Axial PD-T2 TSE FS
 120-4030_3
 Reconstructed DaTSCAN <- 120-4030_3
-T2 in corrected EPI space for I901193 <- AXIAL PD-T2 TSE FS
 120-4030_4
 Reconstructed DaTSCAN <- 120-4030_4
-T2 in corrected EPI space for I362504 <- Axial PD-T2 TSE FS
 120-4031_1
 Reconstructed DaTSCAN <- 120-4031_1
-T2 in corrected EPI space for I475675 <- Axial PD-T2 TSE FS
 120-4031_2
 Reconstructed DaTSCAN <- 120-4031_2
-T2 in corrected EPI space for I367384 <- Axial PD-T2 TSE FS
 120-4032_1
 Reconstructed DaTSCAN <- 120-4032_1
-T2 in corrected EPI space for I417042 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I367397 <- Axial PD-T2 TSE FS
 120-4033_1
 Reconstructed DaTSCAN <- 120-4033_1
 120-4033_2
@@ -2614,221 +1186,95 @@ Reconstructed DaTSCAN <- 120-4033_2
 Reconstructed DaTSCAN <- 120-4033_3
 120-4033_4
 Reconstructed DaTSCAN <- 120-4033_4
-T2 in corrected EPI space for I367427 <- Axial PD-T2 TSE FS
 120-4034_1
 Reconstructed DaTSCAN <- 120-4034_1
-T2 in corrected EPI space for I423757 <- Axial PD-T2 TSE FS
 120-4034_2
 Reconstructed DaTSCAN <- 120-4034_2
-T2 in corrected EPI space for I497239 <- AXIAL PD-T2 TSE FS
 120-4034_3
 Reconstructed DaTSCAN <- 120-4034_3
-T2 in corrected EPI space for I901200 <- AXIAL PD-T2 TSE FS
 120-4034_4
 Reconstructed DaTSCAN <- 120-4034_4
-T2 in corrected EPI space for I369185 <- Axial PD-T2 TSE FS
 120-4035_1
 Reconstructed DaTSCAN <- 120-4035_1
-T2 in corrected EPI space for I423763 <- Axial PD-T2 TSE FS
 120-4035_2
 Reconstructed DaTSCAN <- 120-4035_2
-T2 in corrected EPI space for I475678 <- Axial PD-T2 TSE FS
 120-4035_3
 Reconstructed DaTSCAN <- 120-4035_3
-T2 in corrected EPI space for I901227 <- AXIAL PD-T2 TSE FS
 120-4035_4
 Reconstructed DaTSCAN <- 120-4035_4
-T2 in corrected EPI space for I362515 <- Axial PD-T2 TSE FS
 120-4036_1
 Reconstructed DaTSCAN <- 120-4036_1
-T2 in corrected EPI space for I437304 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I689638 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449682 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I853429 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I373057 <- Axial PD-T2 TSE FS
 120-4037_1
 Reconstructed DaTSCAN <- 120-4037_1
-T2 in corrected EPI space for I430204 <- Axial PD-T2 TSE FS
 120-4037_2
 Reconstructed DaTSCAN <- 120-4037_2
 MR
-T2 in corrected EPI space for I901235 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I367445 <- Axial PD-T2 TSE FS
 120-4038_1
 Reconstructed DaTSCAN <- 120-4038_1
-T2 in corrected EPI space for I430212 <- Axial PD-T2 TSE FS
 120-4038_2
 Reconstructed DaTSCAN <- 120-4038_2
-T2 in corrected EPI space for I497249 <- AXIAL PD-T2 TSE FS
 120-4038_3
 Reconstructed DaTSCAN <- 120-4038_3
 120-4038_4
 Reconstructed DaTSCAN <- 120-4038_4
-T2 in corrected EPI space for I437310 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I738237 <- AXIAL PD-T2 TSE FS
 sag mprage
-t2 cor
-T2 in corrected EPI space for I951733 <- AXIAL PD-T2 TSE FS
 P-PPMI
 4-DAT
 Reconstructed DaTSCAN <- P-PPMI
 R4,5,6
 R4-6
-Axial T2 TSE with Fat Sat
 New Haven
 Reconstructed DaTSCAN <- New Haven
-T2 in corrected EPI space for I374749 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I351150 <- Axial PD-T2 TSE FS
 CE DATSCAN -ECT
 Reconstructed DaTSCAN <- CE DATSCAN -ECT
-T2 in corrected EPI space for I356058 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I356061 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I356065 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I377936 <- Axial PD-T2 TSE FS
 SAG 3D SPGR
-AXIAL FSE T2 FS
 T1 repeat
 MPRAGE_ASO
 MPRAGE_ASO_repeat
 Reconstructed DaTSCAN <- R1R2ADDFIL
-T2 in corrected EPI space for I475688 <- Axial PD-T2 TSE FS
 MPRAGE w/ GRAPPA
-T2 in T1-anatomical space <- MPRAGE w/ GRAPPA
-T1-anatomical <- MPRAGE w/ GRAPPA
-EigenVectors-EPI <- DTI Sequence
-FA map-EPI <- DTI Sequence
-RGB color map-MRI <- DTI Sequence
-EigenVectors-MRI <- DTI Sequence
-EPI Corrected B0 map <- DTI Sequence
-MD map-MRI <- DTI Sequence
-EigenVal0-MRI <- DTI Sequence
-MD map-EPI <- DTI Sequence
-DTI Full Tensors-EPI <- DTI Sequence
-FA map-MRI <- DTI Sequence
-EigenVal1-EPI <- DTI Sequence
-RGB color map-EPI <- DTI Sequence
-DTI Full Tensors-MRI <- DTI Sequence
-EigenVal2-MRI <- DTI Sequence
-EigenVal1-MRI <- DTI Sequence
-EigenVal2-EPI <- DTI Sequence
-EigenVal0-EPI <- DTI Sequence
-4D DWI <- DTI Sequence
 PET Brain_FRAME_2
 PET Brain_FRAME_4
 PET Brain_FRAME_3
 PET Brain_FRAME_1
 CE DATSCAN_ECT
 Reconstructed DaTSCAN <- CE DATSCAN_ECT
-T2 in corrected EPI space for I353448 <- Axial PD-T2 TSE
-T2 in corrected EPI space for I437316 <- Axial PD-T2 TSE FS
-EigenVal0-MRI <- Repeat DTI Sequence
-FA map-MRI <- Repeat DTI Sequence
-MD map-MRI <- Repeat DTI Sequence
-EigenVal1-MRI <- Repeat DTI Sequence
-DTI Full Tensors-MRI <- Repeat DTI Sequence
-EigenVectors-MRI <- Repeat DTI Sequence
-RGB color map-MRI <- Repeat DTI Sequence
-EigenVal2-MRI <- Repeat DTI Sequence
-EigenVal1-EPI <- Repeat DTI Sequence
-RGB color map-EPI <- Repeat DTI Sequence
-4D DWI <- Repeat DTI Sequence
-DTI Full Tensors-EPI <- Repeat DTI Sequence
-EigenVal2-EPI <- Repeat DTI Sequence
-FA map-EPI <- Repeat DTI Sequence
-EPI Corrected B0 map <- Repeat DTI Sequence
-MD map-EPI <- Repeat DTI Sequence
-EigenVectors-EPI <- Repeat DTI Sequence
-EigenVal0-EPI <- Repeat DTI Sequence
 MPRAGE w/ GRAPPA 2
-T2 in T1-anatomical space <- MPRAGE w/ GRAPPA 2
-T1-anatomical <- MPRAGE w/ GRAPPA 2
-T2 in corrected EPI space for I713722 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I365117 <- Axial PD-T2 TSE FS
 EM 50
 EM 80
 EM 85
 EM 55
-T2 in corrected EPI space for I415762 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554246 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I951751 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I357642 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I423766 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554252 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I901270 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I357645 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I415766 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554257 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I362520 <- Axial PD-T2 TSE FS
 EM85
 EM55
-T2 in corrected EPI space for I423771 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554263 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I377943 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507832 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864813 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I369206 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I423789 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I437338 <- Axial PD-T2 TSE FS
 PET Brain_FRAME_2 (AC)
 PET Brain_FRAME_1 (AC)
 PET Brain_FRAME_3 (AC)
 PET Brain_FRAME_4 (AC)
-T2 in corrected EPI space for I554268 <- Axial PD-T2 TSE FS
 TX Scan 5min 4i/16s 
-T2 in corrected EPI space for I437346 <- Axial PD-T2 TSE FS
 TX Scan 5.5min 4i/16s 
 R,1,2,3
 measured atten - Iter(Brain Mod
-t2 weighted double echo
 measured atten 4i/16s 
 AV 133 Initial - Iter(Brain Mod
 TX Scan 4min 4i/16s 
 AC3-0344113-G6N1
-T2 in corrected EPI space for I554283 <- Axial PD-T2 TSE FS
 Ax T2* GRE
 SAG T1 MPRAGE
-AXIAL PD+T2 TSE
 tra_T1_MPRAGE
-T2 in corrected EPI space for I643379 <- AXIAL PD-T2 TSE FS
-T1-anatomical <- tra_T1_MPRAGE
-T2 in T1-anatomical space <- tra_T1_MPRAGE
-T2 in corrected EPI space for I643387 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I581155 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I377950 <- Axial PD-T2 TSE FS
 3D-T1-weighted
-T2 in corrected EPI space for I377969 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I436431 <- Axial PD-T2 TSE FS
 mprage
-T2 in corrected EPI space for I377980 <- Axial PD-T2 TSE FS
 MPRAGE SENSE2
-Axial T2-TSE with Fat Sat
-T2 in corrected EPI space for I449688 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I779006 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449693 <- Axial PD-T2 TSE FS
-T2 in T1-anatomical space <- MPRAGE ADNI
-T1-anatomical <- MPRAGE ADNI
-T2 in corrected EPI space for I507836 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I769299 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I790498 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I951799 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554315 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I951805 <- Axial PD-T2 TSE FS
 CE DATSCAN-ECT
-T2 in corrected EPI space for I901283 <- Axial PD-T2 TSE FS
 DS MNI_DATSCAN_SPECT
-T2 in corrected EPI space for I790506 <- Axial PD-T2 TSE FS
 TOMO LEHR
 Reconstructed DaTSCAN <- TOMO LEHR
 DeIdentified
 Reconstructed DaTSCAN <- DeIdentified
 DATSCAN PPMI
 Reconstructed DaTSCAN <- DATSCAN PPMI
-T2 in corrected EPI space for I757826 <- Axial PD-T2 TSE FS
 Reconstructed DaTSCAN <- 4-DAT
 MPRAGE Repeat
-Axial PD/T2
 3D Sagittal T1
-T2 in corrected EPI space for I769306 <- Axial PD-T2 TSE FS
 AV 133 Delay 4i/16s - Unfiltered
 AV 133 Delay 4i/16s - Filtered
 T1 REPEAT
@@ -2836,12 +1282,6 @@ EM-filtered
 EM-unfiltered
 DATSCAN SPECT-223
 Reconstructed DaTSCAN <- DATSCAN SPECT-223
-T2 in corrected EPI space for I440298 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I757831 <- Axial PD-T2 TSE FS
-REPEAT-Axial PD-T2 TSE
-T2 in corrected EPI space for I864865 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I466960 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I864896 <- Axial PD-T2 TSE FS
 007-50175_1
 Reconstructed DaTSCAN <- 007-50175_1
 007-50175_2
@@ -2852,57 +1292,28 @@ Reconstructed DaTSCAN <- 007-50175_3
 154-50192-2-02
 154-50192-2-03
 T1 REPEAT2
-T2 in corrected EPI space for I449709 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I853461 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449718 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I853473 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I466964 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I437351 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I951867 <- Axial PD-T2-FS TSE
-T2 in corrected EPI space for I466967 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I665300 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449724 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I790781 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491633 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I864903 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I475698 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I713727 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I498938 <- Axial PD-T2 TSE FS
 STRUC BRAVO SAG3D ARC
 018-51252_1 Brain Spect
 Reconstructed DaTSCAN <- 018-51252_1 Brain Spect
 018-51252_2 Brain Spect
 Reconstructed DaTSCAN <- 018-51252_2 Brain Spect
 018-51252_3 Brain Spect
-T2 in corrected EPI space for I507842 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491658 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I665307 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I515262 <- AXIAL PD-T2 TSE FS
 018-51625_1 Brain Spect
 Reconstructed DaTSCAN <- 018-51625_1 Brain Spect
 018-51625_2 Brain Spect
 Reconstructed DaTSCAN <- 018-51625_2 Brain Spect
 018-51625_3 Brain SPECT
-T2 in corrected EPI space for I581160 <- AXIAL PD-T2 TSE FS
 120-51632_1
 Reconstructed DaTSCAN <- 120-51632_1
 120-51632
 Reconstructed DaTSCAN <- 120-51632
 120-51632_4
-T2 in corrected EPI space for I615320 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I554326 <- Axial PD-T2 TSE FS
 018-51844_1 Brain Spect
 Reconstructed DaTSCAN <- 018-51844_1 Brain Spect
 007-51914_1
 Reconstructed DaTSCAN <- 007-51914_1
-RPT Axial PD-T2 TSE
-T2 REPEAT
 AXIAL_T2_STAR
-T2 in corrected EPI space for I689645 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I615327 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I615368 <- Axial PD-T2 TSE FS
 T1  Repeat
-T2 in corrected EPI space for I665349 <- Axial PD-T2 TSE FS
 007-52678_1
 Reconstructed DaTSCAN <- 007-52678_1
 007-52678_2
@@ -2910,95 +1321,35 @@ Reconstructed DaTSCAN <- 007-52678_2
 007-52678_4
 Reconstructed DaTSCAN <- 007-52678_4
 MPRAGE_GRAPPA2
-T2 in corrected EPI space for I831139 <- Axial PD-T2 TSE FS
 TX Scan_5min 4i/16s 
 018-54265_1 Brain Spect
 018-54265_2 Brain Spect
 Reconstructed DaTSCAN <- 018-54265_2 Brain Spect
 Accelerated Sag IR-FSPGR
-Ax T2 FSE with Fat Sat
-T2 in corrected EPI space for I757841 <- AXIAL PD-T2 TSE FS
 018-55124_1 Brain Spect
 Reconstructed DaTSCAN <- 018-55124_1 Brain Spect
 018-55124_2 Brain Spect
-T2 in corrected EPI space for I845692 <- AXIAL PD-T2 TSE FS
 120-55395_1
 Reconstructed DaTSCAN <- 120-55395_1
 120-55395_2
 Reconstructed DaTSCAN <- 120-55395_2
 T!
-T2 in corrected EPI space for I864973 <- Axial PD-T2 TSE FS
+2D GRE-MT_RPT2
 T1 REPEAT 2
 018-58454_1 Brain Spect
 Reconstructed DaTSCAN <- 018-58454_1 Brain Spect
 018-58454_2 Brain Spect
 Reconstructed DaTSCAN <- 018-58454_2 Brain Spect
-T2 Repeat
 PET Brain
 007-59507_3
-T2 repeat
-T2 in corrected EPI space for I554332 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I581181 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I901347 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I497254 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I436435 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491665 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I475723 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I615376 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I901361 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I416918 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I473110 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I436440 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I491672 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I689652 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440309 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554341 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I769314 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440312 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507848 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I738282 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440319 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I440322 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554344 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I790807 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I449728 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554351 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I790817 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I467057 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I554356 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I808258 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I507854 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I901403 <- Axial PD-T2 TSE_AC PC line
-EigenVal1-MRI <- DTI_pulse gated_AC PC line
-EigenVal0-MRI <- DTI_pulse gated_AC PC line
-DTI Full Tensors-MRI <- DTI_pulse gated_AC PC line
-DTI Full Tensors-EPI <- DTI_pulse gated_AC PC line
-EigenVal2-EPI <- DTI_pulse gated_AC PC line
-EigenVal1-EPI <- DTI_pulse gated_AC PC line
-RGB color map-EPI <- DTI_pulse gated_AC PC line
-EigenVectors-MRI <- DTI_pulse gated_AC PC line
-FA map-MRI <- DTI_pulse gated_AC PC line
-RGB color map-MRI <- DTI_pulse gated_AC PC line
-EigenVal0-EPI <- DTI_pulse gated_AC PC line
-EigenVectors-EPI <- DTI_pulse gated_AC PC line
-4D DWI <- DTI_pulse gated_AC PC line
-EPI Corrected B0 map <- DTI_pulse gated_AC PC line
-MD map-EPI <- DTI_pulse gated_AC PC line
-EigenVal2-MRI <- DTI_pulse gated_AC PC line
-MD map-MRI <- DTI_pulse gated_AC PC line
-FA map-EPI <- DTI_pulse gated_AC PC line
-T2 in corrected EPI space for I554371 <- Axial PD-T2 TSE FS
-T2 in corrected EPI space for I437374 <- Axial PD-T2 TSE FS
 120-70463_1
 Reconstructed DaTSCAN <- 120-70463_1
 120-70463_3
 PPMI_MPRAGE_GRAPPA2
-PPMI_Axial T2 TSE with Fat Sat
 018-71093_1 Brain Spect
 Reconstructed DaTSCAN <- 018-71093_1 Brain Spect
 rpt_PPMI_MPRAGE_GRAPPA2
 MPRAGE_64channel_p2
-RPT T2
 018-73115_1 Brain SPECT
 Reconstructed DaTSCAN <- 018-73115_1 Brain SPECT
 018-73935_1 Brain Spect
@@ -3008,14 +1359,7 @@ rsfMRI_L - R
 rsfMRI_R - L
 018-75524_1 Brain Spect
 Reconstructed DaTSCAN <- 018-75524_1 Brain Spect
-AXIAL PD-T2 TSE
 MPRAGE_SAG
 018-75562_1 Brain Spect
 Reconstructed DaTSCAN <- 018-75562_1 Brain Spect
-T2 in corrected EPI space for I497277 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I643410 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I951922 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I482360 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I643423 <- AXIAL PD-T2 TSE FS
-T2 in corrected EPI space for I951930 <- AXIAL PD-T2 TSE FS
 3-pl T2* FGRE
