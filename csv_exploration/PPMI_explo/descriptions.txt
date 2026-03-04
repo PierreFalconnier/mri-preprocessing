@@ -29,10 +29,10 @@ Brain Tomo
 Reconstructed DaTSCAN <- Brain Tomo
 Reconstructed DaTSCAN <- PPMI 2.0
 3D T1 _weighted
-2D GRE-MT
 rsfMRI_RL
 rsfMRI_L_R
 ep2d_bold_rest
+2D GRE-MT
 rsfMRI_PA
 rsfMRI_AP
 Symbia PPMI 2.0
@@ -57,7 +57,6 @@ SAG FSPGR 3D VOLUMETRIC T1
 Invicro_I-123_SPECT
 Reconstructed DaTSCAN <- Invicro_I-123_SPECT
 3D_T1-weighted
-2D_GRE-MT
 3D_T2_FLAIR
 Invicro DaTScan PPMI2.0
 Reconstructed DaTSCAN <- Invicro DaTScan PPMI2.0
@@ -71,7 +70,6 @@ DATSCAN_SPECT
 Reconstructed DaTSCAN <- DATSCAN_SPECT
 Resting State fMRI R>L_ ACPC
 Resting State fMRI L>R_ACPC
-2D GRE-MT_ACPC
 [BR-DY_CTAC] Tau Brain Dyn
 Reconstructed DaTSCAN <- I123 DaTScan
 [BR-DY_CTAC] VMAT Brain Dyn
@@ -97,6 +95,7 @@ Reconstructed DaTSCAN <- TOMO-1
 3D_T2_FLAIR_SAG INVICCRO T2 FLAIR
 3D T1
 REPEAT fMRI
+NM - MT
 RESTING STATE fMRI FAT SHIFT RIGHT
 RESTING STATE fMRI FAT SHIFT LEFT
 BRAIN AC
@@ -104,7 +103,6 @@ PPMI DATSCAN
 Reconstructed DaTSCAN <- PPMI DATSCAN
 BRAIN NAC
 3D_Brain_VIEW_FLAIR_SAG
-NM - MT
 3D_Brain_VIEW_FLAIR_SAG **
 DTI_revB0_AP_S16_DIS2D
 Datscan
@@ -114,6 +112,7 @@ Reconstructed DaTSCAN <- DaTSCAN Studie
 PPMI
 MPRAGE SAG IPAT ISO
 SAG FLAIR 3D
+NM-GRE
 rsfMRI R-L
 rsfMRI L-R
 1-DAT
@@ -122,7 +121,6 @@ Reconstructed DaTSCAN <- PPMI
 3-DAT
 I-123 DatScan
 T1-weighted, 3D VOLUMETRIC
-2D GRE - MT
 Ax rsfMRI FREQ R_L
 Invicro_DATscan_SPECT
 Reconstructed DaTSCAN <- Invicro_DATscan_SPECT
@@ -130,7 +128,6 @@ rsFMRI_RL EYES OPEN
 rsFMRI_LR EYES OPEN
 3D T1-WEIGHTED MPRAGE
 3D T1 MPRAGE
-2D GRE MT
 ep2d_BOLD_LR
 ep2d_BOLD_RL
 rsfmriLR
@@ -202,7 +199,6 @@ DTI_revb0_AP #3 Q9R1007332
 DTI_revb0_AP #2 Q9R1007332
 DTI_revb0_AP #1 Q9R1007332
 3D SAG T2 SPC FLAIR Q9R1007332
-2D GRE-MT Q9R1007332
 rsfMRI_PA Q9R1007332
 SAG 3D T1 MPRAGE Q9R1007332
 Reconstructed DaTSCAN <- Invicro_DATscan_I-123_SPECT
@@ -211,6 +207,7 @@ rsfMRI
 BRAIN AC-filtered
 T1 3D Volumetric Sequence
 VT1 3D Volumetric Sequence
+NM-MT
 BRAIN AC- unfiltered
 BRAIN AC- filtered
 Reconstructed DaTSCAN <- SUM
@@ -242,18 +239,12 @@ rs fMRI _L-R
 rs fMRI _R-L
 TomoKSchale 60-1
 Reconstructed DaTSCAN <- TomoKSchale 60-1
-2D GRE-MT OBL PAR TO AC PC LINES COVER THALA TO BOT OF 3 VENTICL
 TOMO1
 Split from rsfMRI_LR
 Split from rsfMRI_RL
 SAG 3D T2 FLAIR (CUBE)
-2D GRE-MT 1
 PPMI Brain
 Reconstructed DaTSCAN <- PPMI Brain
-2D GRE-MT 2
-2D GRE-MT 3
-2D GRE-MT 4
-2D GRE-MT 5
 Brain Tomo [Isotope (A) - Recon - NoAC ]
 Reconstructed DaTSCAN <- Brain Tomo [Isotope (A) - Recon - NoAC ]
 I 123 DaTscan
@@ -271,7 +262,6 @@ AV 133 Delay 4i/16s
 RSFMRI_RL
 RSFMRI_LR
 MPRAGE
-2D-GRE-MT
 DummySeriesDesc!
 Reconstructed DaTSCAN <- DummySeriesDesc!
 T1
@@ -290,7 +280,6 @@ rsfMRI_AP_ACPC
 Split from Split from rsfMRI_PA
 3DT1weighted
 3DT2FLAIR
-2DGRE-MT
 WE DATscan I123
 Reconstructed DaTSCAN <- WE DATscan I123
 INVICRO_PPMI 2.0_I123_SPECT
@@ -399,11 +388,9 @@ Reconstructed DaTSCAN <- TomoKSchale 30 - anon
 Reconstructed DaTSCAN <- PPMI 2.0 DATSCAN
 RSFMRI_RL ANGLE TO AC PC
 RSFMRI_LR ANGLE TO AC PC
-2D-GRE MT
 3D FLAIR
 3D_T2w_FLAIR
 3D_T1w__IR_FSPGR
-2D_GRE_MT
 Invicro SPARX3
 Reconstructed DaTSCAN <- Invicro SPARX3
 3D T1-weighted_MPR_Tra
@@ -1016,7 +1003,6 @@ Reconstructed DaTSCAN <- HIRN-PPMI
 Reconstructed DaTSCAN <- Hirn DAT
 Hirn ppmi Studie
 Reconstructed DaTSCAN <- Hirn ppmi Studie
-2D GRE-MT repeat
 t1_mpr_ns_sag_p2_iso
 DATScan
 Reconstructed DaTSCAN <- DATScan
