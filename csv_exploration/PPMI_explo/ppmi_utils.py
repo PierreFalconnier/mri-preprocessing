@@ -269,18 +269,39 @@ fields = [
 numeric_fields = ["Slice Thickness", "Matrix Z", "Field Strength"]
 
 
+# def parse_imaging_protocol(text):
+#     if pd.isna(text):
+#         return {}
+
+#     items = text.split(";")
+#     parsed = {}
+
+#     for item in items:
+#         if "=" in item:
+#             key, value = item.split("=", 1)
+#             parsed[key.strip()] = value.strip()
+
+#     return parsed
+
+
 def parse_imaging_protocol(text):
+    """Parse 'key=value;...' text into a dictionary."""
     if pd.isna(text):
         return {}
 
-    items = text.split(";")
     parsed = {}
-
-    for item in items:
+    for item in text.split(";"):
         if "=" in item:
             key, value = item.split("=", 1)
-            parsed[key.strip()] = value.strip()
+            key = key.strip()
+            value = value.strip()
 
+            # Try converting to numeric
+            try:
+                value_numeric = pd.to_numeric(value)
+                parsed[key] = value_numeric
+            except ValueError:
+                parsed[key] = value
     return parsed
 
 
