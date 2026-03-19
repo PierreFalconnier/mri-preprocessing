@@ -15,6 +15,14 @@ def load_ppmi_csvs(base_dir, remove_date_suffix=True):
             # Standardize columns
             df.columns = df.columns.str.strip().str.upper()
 
+            # if "EVENT_ID" not in df.columns:
+            #     print(
+            #         f"Warning: 'EVENT_ID' column not found in {csv_path.name}. This file may not be visit-level."
+            #     )
+            # print(
+            #     f"Loaded {csv_path.name} with columns EVENT ? {'EVENT_ID' in df.columns}"
+            # )
+
             # Remove trailing date part from filename
             stem = csv_path.stem
             clean_name = stem.rsplit("_", 1)[0] if remove_date_suffix else stem
