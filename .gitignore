@@ -9,3 +9,5 @@ qc_outliers
 logs
 test_scripts/
 .ppmi_config
+=4.2.0
+ppmi_clinical_imaging_merged_*
