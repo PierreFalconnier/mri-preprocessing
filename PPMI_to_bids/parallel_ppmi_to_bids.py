@@ -1,6 +1,9 @@
 # %% IMPORTS AND PATHS
 
+import argparse
+import os
 import re
+import shutil
 import subprocess
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
@@ -9,29 +12,14 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 
-root = Path("/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/extracted/raw/")
-csv_path = Path(
-    "/home/falconnier/Documents/mri-preprocessing/csv_exploration/PPMI_explo/ppmi_clinical_imaging_merged_20260325_155504.csv"
-)
-
-bids_root = Path(
-    "/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/test_PPMI_BIDS"
-)
-
 # -----------------------------
 # GLOBALS
 # -----------------------------
-
 
 RE_NEUROMELANIN = r"([nN][mM])|([gG][rR][eE].*[mM][tT])"
 
 # dwi directions
 VALID_DIRS = ["AP", "PA", "LR", "RL"]
-# DIR_RE_MAP = {
-#     # will catch: ' R L', '_RL', 'R-L', 'R > L', etc.
-#     dir: f"[ \-_]{dir[0]}[ \-_>]*{dir[1]}(?:[ \-_]|\Z)"
-#     for dir in VALID_DIRS
-# }
 DIR_RE_MAP = {
     dir: rf"[ \-_]{dir[0]}[ \-_>]*{dir[1]}(?:[ \-_]|\Z)" for dir in VALID_DIRS
 }
@@ -163,8 +151,8 @@ def build_bids_name(row):
     return None
 
 
-def process_image(args):
-    image_dir, row_dict = args
+def process_image(task):
+    image_dir, row_dict, bids_name = task
 
     sub = f"sub-{row_dict['PATNO']}"
     ses = f"ses-{row_dict['EVENT_ID']}"
@@ -172,10 +160,6 @@ def process_image(args):
 
     dest_dir = bids_root / sub / ses / mod
     dest_dir.mkdir(parents=True, exist_ok=True)
-
-    bids_name = build_bids_name(row_dict)
-    if bids_name is None:
-        return
 
     cmd = [
         "dcm2niix",
@@ -188,16 +172,75 @@ def process_image(args):
         str(image_dir),
     ]
 
+    # try:
+    #     subprocess.run(cmd, check=True, capture_output=True, text=True)
+    # except subprocess.CalledProcessError as e:
+    #     print(f"Error converting {row_dict['Image ID']}: {e.stderr}")
+
+    output_files = []
+
     try:
-        subprocess.run(cmd, check=True, capture_output=True, text=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error converting {row_dict['Image ID']}: {e.stderr}")
+        subprocess.run(
+            cmd,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+
+        # Track expected outputs (adjust pattern if needed)
+        output_files = list(Path(dest_dir).glob(f"{bids_name}*.nii*"))
+
+        if not output_files:
+            raise RuntimeError("No NIfTI files produced")
+
+    except Exception as e:
+        print(
+            f"Error converting {row_dict['Image ID']} with the expected bids name {bids_name}: {e}"
+        )
+
+        # Remove potentially corrupted outputs
+        for f in output_files:
+            f.unlink(missing_ok=True)
+
+        # Optionally remove directory if empty
+        if Path(dest_dir).exists() and not any(Path(dest_dir).iterdir()):
+            shutil.rmtree(dest_dir)
+
+        raise  # re-raise if you want upstream handling
 
 
-# %% CREATE INDEXING
+# %% MAIN
 
 
 if __name__ == "__main__":
+    # PARSE ARGUMENTS
+    parser = argparse.ArgumentParser(
+        description="Convert DICOM dataset to BIDS using dcm2niix"
+    )
+
+    parser.add_argument(
+        "--root",
+        type=Path,
+        help="Root directory containing extracted DICOM data",
+    )
+
+    parser.add_argument(
+        "--csv",
+        dest="csv_path",
+        type=Path,
+        help="Path to CSV file with metadata",
+    )
+
+    parser.add_argument(
+        "--bids-root",
+        type=Path,
+        help="Output BIDS root directory",
+    )
+    args = parser.parse_args()
+    root = args.root
+    csv_path = args.csv_path
+    bids_root = args.bids_root
+
     RUN_COUNTERS = defaultdict(int)
 
     df = pd.read_csv(csv_path, dtype=str)
@@ -206,12 +249,16 @@ if __name__ == "__main__":
         df["Image ID"].astype(str).str.strip().str.replace(r"\.0$", "", regex=True)
     )
 
+    # -----------------------------
+    # PHASE 1 — BUILD TASKS (SEQUENTIAL)
+    # -----------------------------
     tasks = []
 
-    print("Gathering tasks...")
-    for subject_dir in root.iterdir():
+    for subject_dir in tqdm(root.iterdir(), desc="Scanning subjects"):
         if not subject_dir.is_dir():
             continue
+
+        subject = subject_dir.name
 
         for seq_dir in subject_dir.iterdir():
             description = seq_dir.name
@@ -225,14 +272,28 @@ if __name__ == "__main__":
                     row = df[df["Image ID"] == image_id]
 
                     if len(row) == 0:
+                        print(
+                            f"No match in CSV for image ID {image_id} "
+                            f"(subject {subject}, description {description})"
+                        )
                         continue
 
-                    row_dict = row.iloc[0].to_dict()
-                    tasks.append((image_dir, row_dict))
+                    row = row.iloc[0]
+                    row_dict = row.to_dict()
 
-    # RUN THE CONVERSION IN PARALLEL
-    print("Running conversions in parallel...")
-    RUN_COUNTERS = defaultdict(int)
+                    # compute bids_name HERE (sequential : necessay for correct run numbering)
+                    bids_name = build_bids_name(row)
+                    if bids_name is None:
+                        continue
 
-    with ProcessPoolExecutor(max_workers=5) as executor:
+                    tasks.append((image_dir, row_dict, bids_name))
+
+    print(f"\nTotal tasks: {len(tasks)}")
+
+    # -----------------------------
+    # PHASE 2 — PARALLEL CONVERSION
+    # -----------------------------
+    max_workers = min(8, os.cpu_count())
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
         list(tqdm(executor.map(process_image, tasks), total=len(tasks)))
