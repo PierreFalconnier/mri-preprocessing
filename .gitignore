@@ -11,3 +11,4 @@ test_scripts/
 .ppmi_config
 =4.2.0
 ppmi_clinical_imaging_merged_*
+tmp
