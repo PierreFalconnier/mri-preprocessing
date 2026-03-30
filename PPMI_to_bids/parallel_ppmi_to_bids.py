@@ -5,6 +5,7 @@ import os
 import re
 import shutil
 import subprocess
+import tempfile
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -73,7 +74,8 @@ def infer_dwi_acq(description):
 def build_bids_name(row):
 
     sub = f"sub-{row['PATNO']}"
-    ses = f"ses-{row['EVENT_ID']}"
+    # ses = f"ses-{row['EVENT_ID']}"
+    ses = f"ses-{row['Study Date']}"  # YYYYMMDD
     mod = row["BIDS_Modality"]
     desc = row["Description"]
 
@@ -155,58 +157,76 @@ def process_image(task):
     image_dir, row_dict, bids_name = task
 
     sub = f"sub-{row_dict['PATNO']}"
-    ses = f"ses-{row_dict['EVENT_ID']}"
+    ses = f"ses-{row_dict['Study Date']}"  # YYYYMMDD
     mod = row_dict["BIDS_Modality"]
 
+    # This is our final destination
     dest_dir = bids_root / sub / ses / mod
-    dest_dir.mkdir(parents=True, exist_ok=True)
 
-    cmd = [
-        "dcm2niix",
-        "-z",
-        "y",
-        "-f",
-        bids_name,
-        "-o",
-        str(dest_dir),
-        str(image_dir),
-    ]
+    # 1. Use a context manager for a truly isolated temporary directory
+    with tempfile.TemporaryDirectory() as tmp_work_dir:
+        tmp_path = Path(tmp_work_dir)
 
-    # try:
-    #     subprocess.run(cmd, check=True, capture_output=True, text=True)
-    # except subprocess.CalledProcessError as e:
-    #     print(f"Error converting {row_dict['Image ID']}: {e.stderr}")
+        cmd = [
+            "dcm2niix",
+            "-z",
+            "y",  # Compress
+            "-x",
+            "n",  # Do not crop (often causes unexpected output counts)
+            "-b",
+            "y",  # Ensure BIDS sidecar is generated
+            "-f",
+            bids_name,
+            "-o",
+            str(tmp_path),
+            str(image_dir),
+        ]
 
-    output_files = []
+        try:
+            # 2. Execute dcm2niix
+            subprocess.run(
+                cmd,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
 
-    try:
-        subprocess.run(
-            cmd,
-            check=True,
-            capture_output=True,
-            text=True,
-        )
+            # 3. Verify files were actually created in the temp dir
+            produced_files = list(tmp_path.glob("*"))
 
-        # Track expected outputs (adjust pattern if needed)
-        output_files = list(Path(dest_dir).glob(f"{bids_name}*.nii*"))
+            if not produced_files:
+                raise RuntimeError("dcm2niix completed but produced no files.")
 
-        if not output_files:
-            raise RuntimeError("No NIfTI files produced")
+            # 4. Success! Now create the destination and move files
+            dest_dir.mkdir(parents=True, exist_ok=True)
 
-    except Exception as e:
-        print(
-            f"Error converting {row_dict['Image ID']} with the expected bids name {bids_name}: {e}"
-        )
+            for file_path in produced_files:
+                # move(src, dst) handles cross-filesystem moves better than rename()
+                shutil.move(str(file_path), str(dest_dir / file_path.name))
 
-        # Remove potentially corrupted outputs
-        for f in output_files:
-            f.unlink(missing_ok=True)
+            # print(f"✅ Successfully processed {bids_name}")
 
-        # Optionally remove directory if empty
-        if Path(dest_dir).exists() and not any(Path(dest_dir).iterdir()):
-            shutil.rmtree(dest_dir)
+        except Exception as e:
+            # This catches subprocess errors, PermissionError, OSError, etc.
+            print(f"\n❌ CRITICAL ERROR for {bids_name}")
+            print(f"Source: {image_dir}")
+            print(f"Error Type: {type(e).__name__}")
+            print(f"Details: {str(e)}")
 
-        raise  # re-raise if you want upstream handling
+            # 1. Handle subprocess specifics if it was a dcm2niix failure
+            if isinstance(e, subprocess.CalledProcessError):
+                if e.stderr:
+                    print("dcm2niix STDERR:\n", e.stderr)
+
+            # 2. Nuclear Cleanup: Remove the destination directory if it's tainted
+            # We do this because a crash might have happened halfway through shutil.move
+            if dest_dir.exists():
+                print(f"Cleaning up partial output at: {dest_dir}")
+                shutil.rmtree(dest_dir, ignore_errors=True)
+
+            # 3. Optional: Re-raise if you want the whole script to stop,
+            # or return to let the next task in the loop run.
+            return
 
 
 # %% MAIN
@@ -248,6 +268,7 @@ if __name__ == "__main__":
     df["Image ID"] = (
         df["Image ID"].astype(str).str.strip().str.replace(r"\.0$", "", regex=True)
     )
+    df["Study Date"] = pd.to_datetime(df["Study Date"]).dt.strftime("%Y%m%d")
 
     # -----------------------------
     # PHASE 1 — BUILD TASKS (SEQUENTIAL)
@@ -256,6 +277,7 @@ if __name__ == "__main__":
 
     for subject_dir in tqdm(root.iterdir(), desc="Scanning subjects"):
         if not subject_dir.is_dir():
+            print(f"Skipping non-subject directory: {subject_dir}")
             continue
 
         subject = subject_dir.name
@@ -266,6 +288,7 @@ if __name__ == "__main__":
             for date_dir in seq_dir.iterdir():
                 for image_dir in date_dir.iterdir():
                     if not image_dir.name.startswith("I"):
+                        print(f"Skipping non-image directory: {image_dir}")
                         continue
 
                     image_id = image_dir.name[1:]
@@ -284,6 +307,10 @@ if __name__ == "__main__":
                     # compute bids_name HERE (sequential : necessay for correct run numbering)
                     bids_name = build_bids_name(row)
                     if bids_name is None:
+                        print(
+                            f"Could not build BIDS name for image ID {image_id} "
+                            f"(subject {subject}, description {description})"
+                        )
                         continue
 
                     tasks.append((image_dir, row_dict, bids_name))
