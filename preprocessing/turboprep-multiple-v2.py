@@ -301,6 +301,7 @@ if __name__ == "__main__":
             for _, seg in reg_seg_pairs:
                 f.write(seg + "\n")
 
+        qc_output_path = os.path.join(os.path.dirname(reg_seg_pairs[0][1]), "synthseg_qc.csv")
         subprocess.run(
             [
                 "mri_synthseg",
@@ -312,6 +313,7 @@ if __name__ == "__main__":
                 "--threads",
                 str(threads),
                 "--cpu",
+                "--qc", qc_output_path,  # <--- Added this line
             ],
             stdout=open(
                 os.path.join(os.path.dirname(reg_seg_pairs[0][1]), "synthseglog.txt"),
