@@ -433,7 +433,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
         mosaic_dir.mkdir(parents=True, exist_ok=True)
         generate_outlier_mosaics(df=df, output_dir=mosaic_dir)
 
-        print("✅ Done (reuse mode).")
+        print("Done (reuse mode).")
         return
 
     # -----------------------
@@ -525,7 +525,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
             )
 
         except Exception as e:
-            print(f"❌ Error: {mask_path} -> {e}")
+            print(f"Error: {mask_path} -> {e}")
             results.append(
                 {
                     "mask": mask_path,
@@ -538,7 +538,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
     # HANDLE EMPTY RESULTS
     # -----------------------
     if len(results) == 0:
-        raise RuntimeError("❌ No valid results computed.")
+        raise RuntimeError("No valid results computed.")
 
     df = pd.DataFrame(results)
 
@@ -551,7 +551,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
     # SAVE CSV
     # -----------------------
     df.to_csv(output_csv, index=False)
-    print(f"💾 CSV saved to {output_csv}")
+    print(f"CSV saved to {output_csv}")
 
     # -----------------------
     # PLOTS
@@ -565,7 +565,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
     mosaic_dir.mkdir(parents=True, exist_ok=True)
     generate_outlier_mosaics(df=df, output_dir=mosaic_dir)
 
-    print("✅ Done.")
+    print("Done.")
 
 
 if __name__ == "__main__":
