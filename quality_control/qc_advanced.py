@@ -159,10 +159,10 @@ def plot_metrics(results, output_html="qc_plots.html"):
 
 def main(source_root, mni_mask_path, output_csv, threshold=0.92):
 
-    print("🔍 Loading MNI mask...")
+    print("Loading MNI mask...")
     mni_mask, _ = load_nifti(mni_mask_path)
 
-    print("🔍 Searching for masks...")
+    print("Searching for masks...")
     mask_paths = find_masks(source_root)  # Limit to first 500 for testing
 
     results = []
@@ -174,7 +174,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
             seg_path = base + "segm.nii.gz"
 
             if not os.path.exists(brain_path) or not os.path.exists(seg_path):
-                print(f"⚠️ Missing files for {mask_path}")
+                print(f"Missing files for {mask_path}")
                 continue
 
             mask, _ = load_nifti(mask_path)
@@ -186,7 +186,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
             mni_bin = mni_mask > 0
 
             if mask.shape != mni_mask.shape:
-                print(f"⚠️ Shape mismatch: {mask_path}")
+                print(f"Shape mismatch: {mask_path}")
                 continue
 
             # -----------------------
@@ -293,7 +293,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
             print(f"❌ Error: {mask_path} -> {e}")
             results.append({"mask": mask_path, "dice": None, "flag": "ERROR"})
 
-    print(f"💾 Writing CSV to {output_csv}")
+    print(f"Writing CSV to {output_csv}")
 
     with open(output_csv, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=results[0].keys())

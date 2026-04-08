@@ -12,3 +12,4 @@ test_scripts/
 =4.2.0
 ppmi_clinical_imaging_merged_*
 tmp
+quality_control/qc_results/
