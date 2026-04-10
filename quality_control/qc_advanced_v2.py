@@ -147,8 +147,7 @@ def detect_outliers(df, dice_threshold=0.92, z_thresh=3.5):
         if mad < 1e-6:
             continue
 
-        # for normal distribution, MAD is about 0.67449 σ
-        # so
+        # for a normal distribution, MAD is about 0.67449 σ
         z = 0.67449 * (vals - median) / mad
         df.loc[np.abs(z) > z_thresh, "flag"] = f"OUTLIER_{metric.upper()}"
 
@@ -156,6 +155,11 @@ def detect_outliers(df, dice_threshold=0.92, z_thresh=3.5):
     df.loc[df["dice"].isna(), "flag"] = "OUTLIER_MISSING"
 
     return df
+
+
+# -----------------------
+# OUTLIER VIZUALISATION
+# -----------------------
 
 
 def create_mosaic(image, title="", save_path=None):
@@ -217,6 +221,45 @@ def generate_outlier_mosaics(df, output_dir="outliers_mosaic"):
 
         except Exception as e:
             print(f"Failed mosaic: {row['mask']} -> {e}")
+
+
+def plot_metrics(results, output_html="qc_plots.html"):
+    df = pd.DataFrame(results)
+
+    metrics = [
+        "dice",
+        "snr_wm",
+        "snr_gm",
+        "snr_csf",
+        "cnr",
+        "cjv",
+        # "efc",
+        "wm2max",
+    ]
+
+    figs = []
+
+    for metric in metrics:
+        if metric not in df.columns:
+            continue
+
+        fig = px.strip(
+            df,
+            y=metric,
+            hover_data=["mask"],
+            color="flag",
+            title=f"{metric} distribution",
+        )
+
+        fig.update_traces(jitter=0.4, marker=dict(size=8))
+        figs.append(fig)
+
+    # combine into one HTML
+    with open(output_html, "w") as f:
+        for fig in figs:
+            f.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+
+    print(f"Interactive QC plots saved to {output_html}")
 
 
 def create_html_gallery(df, mosaic_dir, output_html):
@@ -342,54 +385,73 @@ def create_html_gallery(df, mosaic_dir, output_html):
 
 
 def find_masks(root_dir):
-    matches = []
-    for dirpath, _, filenames in os.walk(root_dir):
-        for f in filenames:
-            if f.endswith("T1w_mask.nii.gz"):
-                matches.append(os.path.join(dirpath, f))
-    return matches
+    root = Path(root_dir)
+    return list(root.rglob("*T1w_mask.nii.gz"))
+    # return sorted(str(p) for p in root.rglob("*T1w_mask.nii.gz"))
 
 
-def plot_metrics(results, output_html="qc_plots.html"):
-    df = pd.DataFrame(results)
+def create_curated_symlinks(df, source_root, curated_dir):
+    source_root = Path(source_root).resolve()
+    curated_dir = Path(curated_dir).resolve()
+    curated_dir.mkdir(parents=True, exist_ok=True)
 
-    metrics = [
-        "dice",
-        "snr_wm",
-        "snr_gm",
-        "snr_csf",
-        "cnr",
-        "cjv",
-        # "efc",
-        "wm2max",
-    ]
+    # -----------------------
+    # BUILD PREFIXES TO EXCLUDE
+    # -----------------------
+    def get_prefix(mask_path):
+        name = Path(mask_path).name
+        return name.replace("_mask.nii.gz", "")
 
-    figs = []
+    outlier_prefixes = set(df[df["flag"] != "OK"]["mask"].apply(get_prefix))
 
-    for metric in metrics:
-        if metric not in df.columns:
-            continue
+    print(f"Excluding {len(outlier_prefixes)} acquisitions")
+    print(f"Creating curated dataset with symlinks in {curated_dir}...")
 
-        fig = px.strip(
-            df,
-            y=metric,
-            hover_data=["mask"],
-            color="flag",
-            title=f"{metric} distribution",
-        )
+    # -----------------------
+    # WALK SOURCE TREE
+    # -----------------------
+    for root, _, files in os.walk(source_root):
+        root_path = Path(root)
 
-        fig.update_traces(jitter=0.4, marker=dict(size=8))
-        figs.append(fig)
+        # recreate directory
+        rel_path = root_path.relative_to(source_root)
+        dst_dir = curated_dir / rel_path
+        dst_dir.mkdir(parents=True, exist_ok=True)
 
-    # combine into one HTML
-    with open(output_html, "w") as f:
-        for fig in figs:
-            f.write(fig.to_html(full_html=False, include_plotlyjs="cdn"))
+        for f in files:
+            src_file = root_path / f
+            dst_file = dst_dir / f
 
-    print(f"Interactive QC plots saved to {output_html}")
+            # -----------------------
+            # SKIP FILES MATCHING BAD PREFIX
+            # -----------------------
+            skip = False
+            for prefix in outlier_prefixes:
+                if f.startswith(prefix):
+                    skip = True
+                    break
+
+            if skip:
+                continue
+
+            # -----------------------
+            # CREATE SYMLINK
+            # -----------------------
+            try:
+                if not dst_file.exists():
+                    os.symlink(src_file.resolve(), dst_file)
+            except Exception as e:
+                print(f"⚠️ Symlink failed: {src_file} -> {e}")
 
 
-def main(source_root, mni_mask_path, output_csv, threshold=0.92):
+def main(
+    source_root,
+    mni_mask_path,
+    output_csv,
+    threshold=0.92,
+    curated_dir=None,
+    make_mosaics=False,
+):
 
     output_csv = Path(output_csv)
     output_html = output_csv.with_suffix(".html")
@@ -400,7 +462,6 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
     try:
         output_csv.parent.mkdir(parents=True, exist_ok=True)
 
-        # test write permission
         test_file = output_csv.parent / ".write_test"
         with open(test_file, "w") as f:
             f.write("test")
@@ -408,8 +469,33 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
 
     except Exception as e:
         raise RuntimeError(
-            f"❌ Cannot write to output directory: {output_csv.parent}\n{e}"
+            f"Cannot write to output directory: {output_csv.parent}\n{e}"
         )
+
+    # -----------------------
+    # HELPER: post-processing
+    # -----------------------
+    def postprocess(df):
+        # recompute outliers (always)
+        df = detect_outliers(df, threshold)
+
+        # save updated CSV
+        df.to_csv(output_csv, index=False)
+
+        # plots
+        plot_metrics(results=df.to_dict("records"), output_html=output_html)
+
+        # mosaics (optional)
+        if make_mosaics:
+            mosaic_dir = output_csv.parent / output_csv.stem
+            mosaic_dir.mkdir(parents=True, exist_ok=True)
+            generate_outlier_mosaics(df=df, output_dir=mosaic_dir)
+
+        # curated dataset (optional)
+        if curated_dir is not None:
+            create_curated_symlinks(df, source_root, curated_dir)
+
+        return df
 
     # -----------------------
     # SKIP IF EXISTS
@@ -419,19 +505,10 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
 
         df = pd.read_csv(output_csv)
 
-        # recompute outliers (in case logic changed)
-        df = detect_outliers(df, threshold)
+        if df.empty:
+            raise RuntimeError("Existing CSV is empty → cannot reuse.")
 
-        # overwrite CSV with updated flags
-        df.to_csv(output_csv, index=False)
-
-        # plots
-        plot_metrics(results=df.to_dict("records"), output_html=output_html)
-
-        # mosaics
-        mosaic_dir = output_csv.parent / output_csv.stem
-        mosaic_dir.mkdir(parents=True, exist_ok=True)
-        generate_outlier_mosaics(df=df, output_dir=mosaic_dir)
+        df = postprocess(df)
 
         print("Done (reuse mode).")
         return
@@ -439,7 +516,9 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
     # -----------------------
     # COMPUTE METRICS
     # -----------------------
+    print("No existing CSV + HTML found → computing metrics from scratch")
     print(f"Results will be saved in {output_csv} and {output_html}")
+
     print("Loading MNI mask...")
     mni_mask, _ = load_nifti(mni_mask_path)
 
@@ -450,20 +529,17 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
 
     for mask_path in tqdm(mask_paths):
         try:
+            mask_path = str(mask_path)
             base = mask_path.replace("mask.nii.gz", "")
             brain_path = base + "brain.nii.gz"
             seg_path = base + "segm.nii.gz"
 
             # -----------------------
-            # HANDLE MISSING FILES → OUTLIERS
+            # HANDLE MISSING FILES
             # -----------------------
             if not os.path.exists(brain_path) or not os.path.exists(seg_path):
                 results.append(
-                    {
-                        "mask": mask_path,
-                        "dice": np.nan,
-                        "flag": "MISSING_FILES",
-                    }
+                    {"mask": mask_path, "dice": np.nan, "flag": "MISSING_FILES"}
                 )
                 continue
 
@@ -473,11 +549,7 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
 
             if mask.shape != mni_mask.shape:
                 results.append(
-                    {
-                        "mask": mask_path,
-                        "dice": np.nan,
-                        "flag": "SHAPE_MISMATCH",
-                    }
+                    {"mask": mask_path, "dice": np.nan, "flag": "SHAPE_MISMATCH"}
                 )
                 continue
 
@@ -526,44 +598,17 @@ def main(source_root, mni_mask_path, output_csv, threshold=0.92):
 
         except Exception as e:
             print(f"Error: {mask_path} -> {e}")
-            results.append(
-                {
-                    "mask": mask_path,
-                    "dice": np.nan,
-                    "flag": "ERROR",
-                }
-            )
+            results.append({"mask": mask_path, "dice": np.nan, "flag": "ERROR"})
 
-    # -----------------------
-    # HANDLE EMPTY RESULTS
-    # -----------------------
     if len(results) == 0:
         raise RuntimeError("No valid results computed.")
 
     df = pd.DataFrame(results)
 
     # -----------------------
-    # OUTLIER DETECTION
+    # POSTPROCESS (shared)
     # -----------------------
-    df = detect_outliers(df, threshold)
-
-    # -----------------------
-    # SAVE CSV
-    # -----------------------
-    df.to_csv(output_csv, index=False)
-    print(f"CSV saved to {output_csv}")
-
-    # -----------------------
-    # PLOTS
-    # -----------------------
-    plot_metrics(results=df.to_dict("records"), output_html=output_html)
-
-    # -----------------------
-    # MOSAICS
-    # -----------------------
-    mosaic_dir = output_csv.parent / output_csv.stem
-    mosaic_dir.mkdir(parents=True, exist_ok=True)
-    generate_outlier_mosaics(df=df, output_dir=mosaic_dir)
+    postprocess(df)
 
     print("Done.")
 
@@ -576,9 +621,21 @@ if __name__ == "__main__":
         "--source", required=True, help="path of the root of the dataset"
     )
     parser.add_argument("--mni", required=True, help="MNI brain mask path")
-    parser.add_argument("--output", required=True, help="CSV full path with name")
+    parser.add_argument("--csv_output", required=True, help="CSV full path with name")
     parser.add_argument(
         "--threshold", type=float, default=0.92, help="MNI dice threshold"
+    )
+    parser.add_argument(
+        "--curated_dir",
+        type=str,
+        default=None,
+        help="Directory to create symlinked curated dataset (non-outliers only)",
+    )
+
+    parser.add_argument(
+        "--mosaics",
+        default=False,
+        help="Generate mosaic images (slower)",
     )
 
     args = parser.parse_args()
@@ -586,6 +643,8 @@ if __name__ == "__main__":
     main(
         source_root=args.source,
         mni_mask_path=args.mni,
-        output_csv=args.output,
+        output_csv=args.csv_output,
         threshold=args.threshold,
+        curated_dir=args.curated_dir,
+        make_mosaics=args.mosaics,
     )
