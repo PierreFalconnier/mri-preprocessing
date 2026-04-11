@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 from pathlib import Path
 
 import pandas as pd
@@ -18,21 +19,30 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    INPUT_DIR = Path(args.source)
-    OUTPUT_DIR = Path(args.output)
-    CSV_PATH = Path(args.csv)
+    INPUT_DIR = Path(args.source).expanduser()
+    OUTPUT_DIR = Path(args.output).expanduser()
+    CSV_PATH = Path(args.csv).expanduser()
 
     # -----------------------------
     # Load CSV
     # -----------------------------
     df = pd.read_csv(CSV_PATH)
 
-    df["image_id"] = df["image_id"].astype(str).str.strip()
+    # normalize image_id (IMPORTANT)
+    df["image_id"] = (
+        df["image_id"]
+        .astype(str)
+        .str.strip()
+        .str.replace(r"\.0$", "", regex=True)
+        .str.lstrip("0")
+    )
 
     # convert date column
     df["image_date"] = pd.to_datetime(
         df["image_date"], errors="coerce", format="mixed", dayfirst=False
     )
+
+    df = df.dropna(subset=["image_date"])
 
     df["ses"] = df["image_date"].dt.strftime("%Y%m%d")
 
@@ -48,16 +58,17 @@ if __name__ == "__main__":
             os.symlink(src, dst)
 
     # -----------------------------
-    # Iterate dataset
+    # FIRST PASS: group runs
     # -----------------------------
-    for folder in tqdm(INPUT_DIR.iterdir(), desc="Processing folders"):
+    runs_dict = defaultdict(list)
+
+    for folder in INPUT_DIR.iterdir():
         if not folder.is_dir():
             continue
 
-        # parse folder name
         parts = folder.name.split("_")
-        subject_id = "_".join(parts[:3])  # 002_S_0938
-        image_id = parts[3]
+        subject_id = "_".join(parts[:3])
+        image_id = parts[3].strip().lstrip("0")
 
         if image_id not in date_map:
             print(f"Skipping {folder.name}, no CSV match")
@@ -65,17 +76,25 @@ if __name__ == "__main__":
 
         ses = date_map[image_id]["ses"]
 
-        out_dir = OUTPUT_DIR / f"sub-{subject_id}" / f"ses-{ses}" / "anat"
+        runs_dict[(subject_id, ses)].append((image_id, folder))
 
-        # -----------------------------
-        # create BIDS-like filenames
-        # -----------------------------
-        for file in folder.iterdir():
-            if file.is_file():
-                out_name = f"sub-{subject_id}_ses-{ses}_T1w_{file.name}"
-                out_path = out_dir / out_name
+    # -----------------------------
+    # SECOND PASS: create symlinks with run-*
+    # -----------------------------
+    for (subject_id, ses), runs in tqdm(runs_dict.items(), desc="Creating symlinks"):
+        # ensure deterministic ordering
+        runs = sorted(runs, key=lambda x: x[0])
 
-                make_symlink(file.resolve(), out_path)
+        for i, (image_id, folder) in enumerate(runs, start=1):
+            run = f"{i:02d}"
 
-    print("Done.")
+            out_dir = OUTPUT_DIR / f"sub-{subject_id}" / f"ses-{ses}" / "anat"
+
+            for file in folder.iterdir():
+                if file.is_file():
+                    out_name = f"sub-{subject_id}_ses-{ses}_run-{run}_T1w_{file.name}"
+                    out_path = out_dir / out_name
+
+                    make_symlink(file.resolve(), out_path)
+
     print("Done.")

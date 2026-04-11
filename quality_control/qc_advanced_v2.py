@@ -531,7 +531,8 @@ def main(
         try:
             mask_path = str(mask_path)
             base = mask_path.replace("mask.nii.gz", "")
-            brain_path = base + "brain.nii.gz"
+            brain_path = base + "normalized.nii.gz"
+            # brain_path = base + "brain.nii.gz"
             seg_path = base + "segm.nii.gz"
 
             # -----------------------
