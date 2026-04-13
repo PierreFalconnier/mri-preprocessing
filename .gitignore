@@ -13,3 +13,4 @@ test_scripts/
 ppmi_clinical_imaging_merged_*
 tmp
 quality_control/qc_results/
+exploration_scripts/derivatives_nm/

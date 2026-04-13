@@ -15,7 +15,9 @@ from nilearn.image import mean_img, smooth_img
 # CONFIG
 # =========================
 data_dir = "/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/PPMI_anat_dwi_BIDS/sub-408632/ses-20241113/anat/"
-output_dir = "/home/falconnier/Documents/mri-preprocessing/derivatives_nm"
+output_dir = (
+    "/home/falconnier/Documents/mri-preprocessing/exploration_scripts/derivatives_nm"
+)
 os.makedirs(output_dir, exist_ok=True)
 
 subject = "sub-408632"
@@ -47,36 +49,19 @@ t1_file = glob.glob(
 print("T1 file:", t1_file)
 
 # =========================
-# STEP 2: REGISTER EACH NM → T1
+# STEP 2: MEAN NM (IN NATIVE SPACE)
 # =========================
-nm_to_t1_imgs = []
+nm_imgs = [nib.load(f) for f in nm_files]
 
-for i, nm in enumerate(nm_files):
-    prefix = os.path.join(output_dir, f"nm{i}_to_t1_")
+nm_mean = mean_img(nm_imgs)
 
-    run(f"""
-    antsRegistrationSyNQuick.sh \
-    -d 3 \
-    -f {t1_file} \
-    -m {nm} \
-    -o {prefix}
-    """)
+nm_mean_file = os.path.join(output_dir, "nm_mean_native.nii.gz")
+nm_mean.to_filename(nm_mean_file)
 
-    warped = prefix + "Warped.nii.gz"
-    nm_to_t1_imgs.append(nib.load(warped))
+print("Mean NM (native space) computed")
 
 # =========================
-# STEP 3: MEAN NM (IN T1 SPACE)
-# =========================
-nm_mean_t1 = mean_img(nm_to_t1_imgs)
-
-nm_mean_t1_file = os.path.join(output_dir, "nm_mean_t1.nii.gz")
-nm_mean_t1.to_filename(nm_mean_t1_file)
-
-print("Mean NM (T1 space) computed")
-
-# =========================
-# STEP 4: SYNTHSTRIP BRAIN EXTRACTION ON T1
+# STEP 3: SYNTHSTRIP ON T1
 # =========================
 t1_brain = os.path.join(output_dir, "t1_brain.nii.gz")
 t1_mask = os.path.join(output_dir, "t1_brain_mask.nii.gz")
@@ -89,12 +74,27 @@ mri_synthstrip \
 """)
 
 # =========================
-# STEP 5: APPLY T1 BRAIN MASK TO MEAN NM
+# STEP 4: REGISTER NM MEAN → T1
+# =========================
+nm_to_t1_prefix = os.path.join(output_dir, "nm_mean_to_t1_")
+
+run(f"""
+antsRegistrationSyNQuick.sh \
+-d 3 \
+-f {t1_file} \
+-m {nm_mean_file} \
+-o {nm_to_t1_prefix}
+""")
+
+nm_in_t1 = nm_to_t1_prefix + "Warped.nii.gz"
+
+# =========================
+# STEP 5: APPLY T1 MASK TO NM (IN T1 SPACE)
 # =========================
 nm_masked_t1 = os.path.join(output_dir, "nm_mean_t1_masked.nii.gz")
 
 run(f"""
-fslmaths {nm_mean_t1_file} -mas {t1_mask} {nm_masked_t1}
+fslmaths {nm_in_t1} -mas {t1_mask} {nm_masked_t1}
 """)
 
 # =========================
@@ -111,7 +111,7 @@ antsRegistrationSyNQuick.sh \
 """)
 
 # =========================
-# STEP 7: APPLY TRANSFORM TO MASKED NM
+# STEP 7: APPLY TRANSFORM TO NM
 # =========================
 nm_mni = os.path.join(output_dir, "nm_mean_mni.nii.gz")
 
@@ -121,12 +121,10 @@ antsApplyTransforms \
 -i {nm_masked_t1} \
 -r {mni_template} \
 -o {nm_mni} \
--t {t1_to_mni_prefix}1Warp.nii.gz \
--t {t1_to_mni_prefix}0GenericAffine.mat
 """)
 
 # =========================
-# STEP 8: OPTIONAL SMOOTHING
+# STEP 8: SMOOTHING
 # =========================
 smoothed = smooth_img(nm_mni, fwhm=2)
 smoothed.to_filename(os.path.join(output_dir, "nm_mean_mni_smooth.nii.gz"))
