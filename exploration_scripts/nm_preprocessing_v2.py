@@ -23,7 +23,7 @@ os.makedirs(output_dir, exist_ok=True)
 subject = "sub-408632"
 session = "ses-20241113"
 
-mni_template = "/home/falconnier/fsl/data/standard/MNI152_T1_1mm.nii.gz"
+mni_template = "/home/falconnier/fsl/data/standard/MNI152_T1_1mm_brain.nii.gz"
 
 
 # =========================
@@ -101,6 +101,11 @@ fslmaths {nm_in_t1} -mas {t1_mask} {nm_masked_t1}
 # STEP 6: REGISTER T1 → MNI
 # =========================
 t1_to_mni_prefix = os.path.join(output_dir, "t1_to_mni_")
+
+print(
+    "SHOULD USE THE BRAIN EXTRACTED T1 FOR THIS STEP, BUT USING THE WHOLE T1 INSTEAD (CHECK IF IT WORKS)"
+)
+exit()
 
 run(f"""
 antsRegistrationSyNQuick.sh \
