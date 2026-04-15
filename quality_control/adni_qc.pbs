@@ -10,4 +10,4 @@ uv run quality_control/qc_advanced_v2.py \
   --source ~/Documents/data/ADNI_bids_preprocessed_organized_v2 \
   --mni ./MNI_templates/MNI152_T1_1mm_brain_mask.nii.gz \
   --csv_output ./quality_control/qc_results/ADNI_T1w_qc_v3.csv \
-  --curated_dir ~/Documents/data/ADNI_curated_v3
+  --curated_dir ~/Documents/data/ADNI_curated_v4

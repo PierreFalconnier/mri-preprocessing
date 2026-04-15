@@ -532,7 +532,7 @@ def main(
             mask_path = str(mask_path)
             base = mask_path.replace("mask.nii.gz", "")
             # brain_path = base + "normalized.nii.gz"
-            brain_path = base + "brain.nii.gz"
+            brain_path = base + "brain.nii.gz"  # more correct but no impact on metrics
             seg_path = base + "segm.nii.gz"
 
             # -----------------------
