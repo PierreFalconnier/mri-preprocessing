@@ -1,3 +1,9 @@
+"""
+Docstring for preprocessing.normalized_to_brain
+useful for creating brain-masked images from normalized MRI,
+if the brain.nii.gz where not kept during turboprep but mask and normalized were
+"""
+
 import glob
 import os
 from multiprocessing import Pool, cpu_count
