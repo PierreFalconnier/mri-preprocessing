@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1,mem=32gb
+#PBS -l walltime=24:55:00
+
+echo "PBS script started"
+echo "Dataset: $DATASET_NAME"
+
+cd "$HOME/Documents/mri-preprocessing/"
+
+uv run quality_control/qc_advanced_v2.py \
+  --source "$SOURCE_DIR" \
+  --mni ./MNI_templates/MNI152_T1_1mm_brain_mask.nii.gz \
+  --csv_output "./quality_control/qc_results/${DATASET_NAME}_qc.csv" \
+  --curated_dir "$CURATED_DIR"
