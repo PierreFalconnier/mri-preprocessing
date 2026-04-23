@@ -462,7 +462,10 @@ def main(
     try:
         output_csv.parent.mkdir(parents=True, exist_ok=True)
 
-        test_file = output_csv.parent / ".write_test"
+        # write test is redundant since did mkdir
+        test_file = (
+            output_csv.parent / f".write_test_{os.getpid()}"
+        )  # add pid to avoid conflicts
         with open(test_file, "w") as f:
             f.write("test")
         test_file.unlink()
