@@ -9,6 +9,7 @@ cd "$HOME/Documents/mri-preprocessing/"
 
 uv run quality_control/qc_advanced_v2.py \
   --source "$SOURCE_DIR" \
-  --mni ./MNI_templates/MNI152_T1_1mm_brain_mask.nii.gz \
+  --mni ./MNI_templates/MNI152_T1_1mm_brain_mask_RAS.nii.gz \
+  # --mni ./MNI_templates/MNI152_T1_1mm_brain_mask.nii.gz \
   --csv_output "./quality_control/qc_results/${DATASET_NAME}_qc.csv" \
   --curated_dir "$CURATED_DIR"

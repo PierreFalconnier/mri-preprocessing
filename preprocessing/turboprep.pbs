@@ -18,4 +18,5 @@ export PYTHONUNBUFFERED=1
 uv run python -u $HOME/Documents/mri-preprocessing/preprocessing/turboprep-multiple-v2.py \
   --inputs "$IN_FILE" \
   --outputs "$OUT_FILE" \
-  --template $HOME/Documents/mri-preprocessing/MNI_templates/MNI152_T1_1mm_brain.nii.gz \
+  --template $HOME/Documents/mri-preprocessing/MNI_templates/MNI152_T1_1mm_brain_RAS.nii.gz \
+  # --template $HOME/Documents/mri-preprocessing/MNI_templates/MNI152_T1_1mm_brain.nii.gz \
