@@ -19,29 +19,78 @@ def get_middle_slices(volume):
     return axial, coronal, sagittal
 
 
+# def process_file(src_path: Path, dst_base: Path, root_src: Path):
+#     rel_path = src_path.relative_to(root_src)
+
+#     dst_dir = dst_base / rel_path.parent
+#     dst_dir.mkdir(parents=True, exist_ok=True)
+
+#     img = nib.load(str(src_path))
+
+#     # Get shape WITHOUT loading data
+#     x, y, z = img.shape
+
+#     proxy = img.dataobj  # ArrayProxy
+
+#     # only load required slices
+#     axial = np.asanyarray(proxy[:, :, z // 2])
+#     coronal = np.asanyarray(proxy[:, y // 2, :])
+#     sagittal = np.asanyarray(proxy[x // 2, :, :])
+
+#     base_name = src_path.name.replace("brain.npy", "")
+#     # base_name = src_path.name.replace("brain.nii.gz", "")
+
+#     np.save(dst_dir / f"{base_name}axial.npy", axial)
+#     np.save(dst_dir / f"{base_name}coronal.npy", coronal)
+#     np.save(dst_dir / f"{base_name}sagittal.npy", sagittal)
+
+
 def process_file(src_path: Path, dst_base: Path, root_src: Path):
     rel_path = src_path.relative_to(root_src)
 
     dst_dir = dst_base / rel_path.parent
     dst_dir.mkdir(parents=True, exist_ok=True)
 
-    img = nib.load(str(src_path))
+    if src_path.suffix == ".npy":
+        volume = np.load(src_path, mmap_mode="r")
+        x, y, z = volume.shape
 
-    # Get shape WITHOUT loading data
-    x, y, z = img.shape
+        axial = np.asarray(volume[:, :, z // 2])
+        coronal = np.asarray(volume[:, y // 2, :])
+        sagittal = np.asarray(volume[x // 2, :, :])
 
-    proxy = img.dataobj  # ArrayProxy
+        base_name = src_path.stem.replace("brain", "")
 
-    # only load required slices
-    axial = np.asanyarray(proxy[:, :, z // 2])
-    coronal = np.asanyarray(proxy[:, y // 2, :])
-    sagittal = np.asanyarray(proxy[x // 2, :, :])
+    elif src_path.suffix == ".gz" and src_path.name.endswith(".nii.gz"):
+        img = nib.load(str(src_path))
+        proxy = img.dataobj  # ArrayProxy
 
-    base_name = src_path.name.replace("brain.nii.gz", "")
+        x, y, z = img.shape
 
-    np.save(dst_dir / f"{base_name}axial.npy", axial)
-    np.save(dst_dir / f"{base_name}coronal.npy", coronal)
-    np.save(dst_dir / f"{base_name}sagittal.npy", sagittal)
+        axial = np.asanyarray(proxy[:, :, z // 2])
+        coronal = np.asanyarray(proxy[:, y // 2, :])
+        sagittal = np.asanyarray(proxy[x // 2, :, :])
+
+        base_name = src_path.name.replace(".nii.gz", "").replace("brain", "")
+
+    elif src_path.suffix == ".nii":
+        img = nib.load(str(src_path))
+        proxy = img.dataobj
+
+        x, y, z = img.shape
+
+        axial = np.asanyarray(proxy[:, :, z // 2])
+        coronal = np.asanyarray(proxy[:, y // 2, :])
+        sagittal = np.asanyarray(proxy[x // 2, :, :])
+
+        base_name = src_path.stem.replace("brain", "")
+
+    else:
+        raise ValueError(f"Unsupported file type: {src_path}")
+
+    np.save(dst_dir / f"{base_name}middle_axial.npy", axial)
+    np.save(dst_dir / f"{base_name}middle_coronal.npy", coronal)
+    np.save(dst_dir / f"{base_name}middle_sagittal.npy", sagittal)
 
 
 def convert_bids_dataset(src_dir, dst_dir):
@@ -50,7 +99,8 @@ def convert_bids_dataset(src_dir, dst_dir):
 
     for root, _, files in os.walk(src_dir):
         for f in files:
-            if f.endswith("brain.nii.gz"):
+            if f.endswith("brain.npy"):
+                # if f.endswith("brain.nii.gz"):
                 full_path = Path(root) / f
                 process_file(full_path, dst_dir, src_dir)
 
@@ -58,6 +108,7 @@ def convert_bids_dataset(src_dir, dst_dir):
 if __name__ == "__main__":
     import argparse
 
+    # to convert inplace, jsut use the same path for src and dst
     parser = argparse.ArgumentParser(
         description="Convert BIDS T1w brain.nii.gz to middle-slice .npy arrays (raw values)"
     )
