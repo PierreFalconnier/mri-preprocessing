@@ -14,10 +14,14 @@ from multiprocessing import Pool
 
 import nibabel as nib
 import numpy as np
-from tqdm import tqdm
-from yucca.functional.preprocessing import (
-    preprocess_case_for_training_without_label,
+from monai.transforms import (
+    Compose,
+    CropForeground,
+    ResizeWithPadOrCrop,
+    ScaleIntensityRangePercentiles,
 )
+from tqdm import tqdm
+from yucca.functional.preprocessing import preprocess_case_for_training_without_label
 
 
 # ------------------------------------------------------------
@@ -35,6 +39,13 @@ def nii_to_npy_path(path):
 # ------------------------------------------------------------
 # Yucca preprocessing wrapper
 # ------------------------------------------------------------
+transforms = Compose(
+    ScaleIntensityRangePercentiles(lower=0.01, upper=99.9, b_min=0.0, b_max=1.0),
+    CropForeground(),
+    ResizeWithPadOrCrop(spatial_size=[160, 192, 160]),
+)
+
+
 def preprocess_with_yucca(img: nib.Nifti1Image):
     """
     Apply:
@@ -55,6 +66,9 @@ def preprocess_with_yucca(img: nib.Nifti1Image):
         transpose=[0, 1, 2],
         allow_missing_modalities=False,
     )
+
+    image = images[0]
+    image = transforms(image)
 
     return images[0], props
 

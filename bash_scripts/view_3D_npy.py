@@ -5,8 +5,18 @@ import numpy as np
 
 
 def show_npy_3d(path):
-    vol = np.load(path)
+    # if nii, convertor to npy first using nibabel, then load the npy
+    if path.endswith(".nii") or path.endswith(".nii.gz"):
+        import nibabel as nib
 
+        nii = nib.load(path)
+        vol = nii.get_fdata()
+    else:
+        vol = np.load(path)
+    if vol.ndim == 4:
+        vol = vol[0]
+    if vol.ndim == 5:
+        vol = vol[0, 0]
     if vol.ndim != 3:
         raise ValueError(f"Expected a 3D array, got shape {vol.shape}")
 

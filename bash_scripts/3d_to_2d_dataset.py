@@ -19,32 +19,6 @@ def get_middle_slices(volume):
     return axial, coronal, sagittal
 
 
-# def process_file(src_path: Path, dst_base: Path, root_src: Path):
-#     rel_path = src_path.relative_to(root_src)
-
-#     dst_dir = dst_base / rel_path.parent
-#     dst_dir.mkdir(parents=True, exist_ok=True)
-
-#     img = nib.load(str(src_path))
-
-#     # Get shape WITHOUT loading data
-#     x, y, z = img.shape
-
-#     proxy = img.dataobj  # ArrayProxy
-
-#     # only load required slices
-#     axial = np.asanyarray(proxy[:, :, z // 2])
-#     coronal = np.asanyarray(proxy[:, y // 2, :])
-#     sagittal = np.asanyarray(proxy[x // 2, :, :])
-
-#     base_name = src_path.name.replace("brain.npy", "")
-#     # base_name = src_path.name.replace("brain.nii.gz", "")
-
-#     np.save(dst_dir / f"{base_name}axial.npy", axial)
-#     np.save(dst_dir / f"{base_name}coronal.npy", coronal)
-#     np.save(dst_dir / f"{base_name}sagittal.npy", sagittal)
-
-
 def process_file(src_path: Path, dst_base: Path, root_src: Path):
     rel_path = src_path.relative_to(root_src)
 
