@@ -2,6 +2,7 @@ from pathlib import Path
 
 import nibabel as nib
 import numpy as np
+from tqdm import tqdm
 
 
 def min_max_normalize(arr):
@@ -94,9 +95,10 @@ def convert_bids_dataset(src_dir, dst_dir):
     #             full_path = Path(root) / f
     #             process_file(full_path, dst_dir, src_dir)
 
-    for full_path in src_dir.rglob("*"):
-        if full_path.is_file() and full_path.name.endswith("brain.npy"):
-            process_file(full_path, dst_dir, src_dir)
+    files = list(src_dir.rglob("*brain.npy"))
+
+    for full_path in tqdm(files, desc="Processing files"):
+        process_file(full_path, dst_dir, src_dir)
 
 
 if __name__ == "__main__":
