@@ -77,8 +77,8 @@ def preprocess_with_yucca(img: nib.Nifti1Image):
 def process_file(nii_path):
     npy_path = nii_to_npy_path(nii_path)
 
-    # if os.path.exists(npy_path):
-    #     return f"[SKIP] Exists: {npy_path}"
+    if os.path.exists(npy_path):
+        return f"[SKIP] Exists: {npy_path}"
 
     try:
         img = nib.load(nii_path)
@@ -89,7 +89,7 @@ def process_file(nii_path):
 
         np.save(npy_path, arr)
 
-        return f"[OK] {npy_path} | shape={arr.shape}"
+        return f"[OK] {npy_path} | shape={arr.shape}, min={arr.min():.4f}, max={arr.max():.4f}"
 
     except Exception as e:
         return f"[ERROR] {nii_path}: {e}"

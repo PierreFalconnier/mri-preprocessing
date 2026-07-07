@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import nibabel as nib
@@ -88,12 +87,16 @@ def convert_bids_dataset(src_dir, dst_dir):
     src_dir = Path(src_dir)
     dst_dir = Path(dst_dir)
 
-    for root, _, files in os.walk(src_dir):
-        for f in files:
-            if f.endswith("brain.npy"):
-                # if f.endswith("brain.nii.gz"):
-                full_path = Path(root) / f
-                process_file(full_path, dst_dir, src_dir)
+    # for root, _, files in os.walk(src_dir):
+    #     for f in files:
+    #         if f.endswith("brain.npy"):
+    #             # if f.endswith("brain.nii.gz"):
+    #             full_path = Path(root) / f
+    #             process_file(full_path, dst_dir, src_dir)
+
+    for full_path in src_dir.rglob("*"):
+        if full_path.is_file() and full_path.name.endswith("brain.npy"):
+            process_file(full_path, dst_dir, src_dir)
 
 
 if __name__ == "__main__":
