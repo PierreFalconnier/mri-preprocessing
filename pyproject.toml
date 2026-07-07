@@ -15,4 +15,5 @@ dependencies = [
     "tqdm>=4.67.3",
     "upsetplot",
     "nilearn>=0.10.2",
+    "monai[all]>=1.6.0",
 ]

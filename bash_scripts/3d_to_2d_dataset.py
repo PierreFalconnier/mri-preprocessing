@@ -5,16 +5,33 @@ import nibabel as nib
 import numpy as np
 
 
-def get_middle_slices(volume):
+def min_max_normalize(arr):
+    lower = np.percentile(arr, 0.01)
+    upper = np.percentile(arr, 99.9)
+    arr = np.clip(arr, lower, upper)
+    if upper > lower:
+        arr = (arr - lower) / (upper - lower)
+    else:
+        arr = np.zeros_like(arr, dtype=np.float32)
+    arr = np.clip(arr, 0, 1)
+    return arr
+
+
+def get_middle_slices(volume, normalize=True):
     """
     volume shape assumed: (X, Y, Z)
-    Returns raw (no normalization) axial, coronal, sagittal slices
+    Returns raw (normlized) axial, coronal, sagittal slices
     """
     x, y, z = volume.shape
 
     axial = volume[:, :, z // 2]
     coronal = volume[:, y // 2, :]
     sagittal = volume[x // 2, :, :]
+
+    if normalize:
+        axial = min_max_normalize(axial)
+        coronal = min_max_normalize(coronal)
+        sagittal = min_max_normalize(sagittal)
 
     return axial, coronal, sagittal
 

@@ -14,12 +14,6 @@ from multiprocessing import Pool
 
 import nibabel as nib
 import numpy as np
-from monai.transforms import (
-    Compose,
-    CropForeground,
-    ResizeWithPadOrCrop,
-    ScaleIntensityRangePercentiles,
-)
 from tqdm import tqdm
 from yucca.functional.preprocessing import preprocess_case_for_training_without_label
 
@@ -39,11 +33,16 @@ def nii_to_npy_path(path):
 # ------------------------------------------------------------
 # Yucca preprocessing wrapper
 # ------------------------------------------------------------
-transforms = Compose(
-    ScaleIntensityRangePercentiles(lower=0.01, upper=99.9, b_min=0.0, b_max=1.0),
-    CropForeground(),
-    ResizeWithPadOrCrop(spatial_size=[160, 192, 160]),
-)
+def min_max_normalize(arr):
+    lower = np.percentile(arr, 0.01)
+    upper = np.percentile(arr, 99.9)
+    arr = np.clip(arr, lower, upper)
+    if upper > lower:
+        arr = (arr - lower) / (upper - lower)
+    else:
+        arr = np.zeros_like(arr, dtype=np.float32)
+    arr = np.clip(arr, 0, 1)
+    return arr
 
 
 def preprocess_with_yucca(img: nib.Nifti1Image):
@@ -62,16 +61,14 @@ def preprocess_with_yucca(img: nib.Nifti1Image):
         background_pixel_value=np.asanyarray(img.dataobj).min(),
         target_orientation="RAS",
         target_spacing=[1.0, 1.0, 1.0],
-        target_size=None,
+        # target_size=None,
+        target_size=[160, 192, 160],
         transpose=[0, 1, 2],
         allow_missing_modalities=False,
     )
 
-    image = images[0]
-    if transforms is not None:
-        image = transforms(image)
-
-    return images, props
+    image = min_max_normalize(images[0])
+    return image, props
 
 
 # ------------------------------------------------------------
@@ -80,8 +77,8 @@ def preprocess_with_yucca(img: nib.Nifti1Image):
 def process_file(nii_path):
     npy_path = nii_to_npy_path(nii_path)
 
-    if os.path.exists(npy_path):
-        return f"[SKIP] Exists: {npy_path}"
+    # if os.path.exists(npy_path):
+    #     return f"[SKIP] Exists: {npy_path}"
 
     try:
         img = nib.load(nii_path)
@@ -127,6 +124,8 @@ def main(root_dir, patterns, n_proc):
 
     if len(files) == 0:
         return
+
+    print(f"Using {n_proc} processes")
 
     with Pool(processes=n_proc) as pool:
         for msg in tqdm(pool.imap_unordered(process_file, files), total=len(files)):
