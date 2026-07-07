@@ -68,9 +68,10 @@ def preprocess_with_yucca(img: nib.Nifti1Image):
     )
 
     image = images[0]
-    image = transforms(image)
+    if transforms is not None:
+        image = transforms(image)
 
-    return images[0], props
+    return images, props
 
 
 # ------------------------------------------------------------
