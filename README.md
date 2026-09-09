@@ -1,3 +1,11 @@
+The file
+
+```
+/home/falconnier/Documents/mri-preprocessing/csv_exploration/others/modify_csv_content.ipynb
+```
+
+is used to modify the content of the csv to get only CN or AD for instance
+
 # FROM DOWNLOADING THE DATA TO TRAINING READY
 
 
