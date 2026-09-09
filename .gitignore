@@ -1,16 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# large intermediate/raw imaging & tabular outputs (dated exploration dumps,
+# qc scratch, etc.) -- canonical outputs live under data/<DATASET>/tabular/
+# and are tracked explicitly.
+legacy/csv_exploration/PPMI_explo/*.csv
+logs/
+tmp/
+qc_results_save/
+qc_outliers/
+quality_control/qc_results/
+
+# local/machine-specific
+.ppmi_config
 processing_old
 .~lock*
-test.py
-# qc_results/
-__pycache__/
-upload_girder.py
-qc_results_save
-qc_outliers
-logs
-test_scripts/
-.ppmi_config
-=4.2.0
-ppmi*.csv
-tmp
-quality_control/qc_results/
-exploration_scripts/derivatives_nm/

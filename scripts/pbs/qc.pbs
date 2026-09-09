@@ -1,0 +1,10 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1,mem=32gb
+#PBS -l walltime=24:55:00
+
+# Submitted with DATASET passed through `qsub -v DATASET=ppmi`.
+
+cd "$HOME/Documents/mri-preprocessing/"
+export PYTHONUNBUFFERED=1
+
+uv run mri-prep qc run --dataset "$DATASET" --curate

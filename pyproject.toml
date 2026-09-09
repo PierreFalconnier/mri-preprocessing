@@ -1,7 +1,7 @@
 [project]
-name = "mri-preprocessing"
-version = "0.1.0"
-description = "Add your description here"
+name = "mri-prep"
+version = "0.2.0"
+description = "MRI + tabular data pipeline (BIDS conversion, preprocessing, QC, export) for neurodegenerative disease progression modeling"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -16,4 +16,18 @@ dependencies = [
     "upsetplot",
     "nilearn>=0.10.2",
     "monai[all]>=1.6.0",
+    "nibabel>=3,<4",
+    "pyyaml>=6.0.2",
+    "pydantic>=2.8.0",
+    "typer>=0.12.5",
 ]
+
+[project.scripts]
+mri-prep = "mri_prep.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mri_prep"]

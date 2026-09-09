@@ -1,0 +1,31 @@
+# Config for the PPMI (Parkinson's Progression Markers Initiative) dataset.
+# Edit the paths below to match your machine (e.g. the external drive mount point).
+name: ppmi
+adapter: ppmi
+
+paths:
+  # extracted DICOMs as downloaded from ida.loni.usc.edu, before flattening
+  raw_dicom_root: ~/data/PPMI/raw_dicom
+  # output of `mri-prep bids flatten`
+  flattened_root: ~/data/PPMI/flattened
+  # BIDS dataset, output of `mri-prep bids convert`
+  bids_root: ~/data/PPMI/bids
+  # output of turboprep, output of `mri-prep preprocess turboprep`
+  preprocessed_root: ~/data/PPMI/bids_processed
+  # curated (QC-passed) subset, output of `mri-prep qc run --curate`
+  curated_root: ~/data/PPMI/bids_curated
+  # directory containing the raw PPMI CSVs (idaSearch export + study data downloads)
+  csv_root: data/PPMI/csv/ALL
+  qc_csv: ~/data/PPMI/qc/ppmi_qc.csv
+
+# paths below are relative to the repo root
+template: templates/MNI152_T1_1mm_brain_RAS.nii.gz
+template_mask: templates/MNI152_T1_1mm_brain_mask_RAS.nii.gz
+modality: t1
+
+extra:
+  # per-image metadata CSV (Image ID, PATNO, EVENT_ID, BIDS_Modality,
+  # Description, Acquisition Plane, ...), built interactively in
+  # notebooks/ppmi_imaging_exploration.ipynb. Consumed by
+  # `mri_prep.bids.convert` for BIDS filename generation.
+  merged_csv: data/PPMI/tabular/ppmi_imaging_metadata.csv

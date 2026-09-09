@@ -1,0 +1,100 @@
+import os
+from collections import defaultdict
+from pathlib import Path
+
+import pandas as pd
+from tqdm import tqdm
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--source", required=True, help="path of the root of the dataset"
+    )
+    parser.add_argument(
+        "--output", required=True, help="path of the root of the dataset"
+    )
+    parser.add_argument("--csv", required=True, help="path of the root of the dataset")
+
+    args = parser.parse_args()
+
+    INPUT_DIR = Path(args.source).expanduser()
+    OUTPUT_DIR = Path(args.output).expanduser()
+    CSV_PATH = Path(args.csv).expanduser()
+
+    # -----------------------------
+    # Load CSV
+    # -----------------------------
+    df = pd.read_csv(CSV_PATH)
+
+    # normalize image_id (IMPORTANT)
+    df["image_id"] = (
+        df["image_id"]
+        .astype(str)
+        .str.strip()
+        .str.replace(r"\.0$", "", regex=True)
+        .str.lstrip("0")
+    )
+
+    # convert date column
+    df["image_date"] = pd.to_datetime(
+        df["image_date"], errors="coerce", format="mixed", dayfirst=False
+    )
+
+    df = df.dropna(subset=["image_date"])
+
+    df["ses"] = df["image_date"].dt.strftime("%Y%m%d")
+
+    # index for fast lookup
+    date_map = df.set_index("image_id")[["subject_id", "ses"]].to_dict("index")
+
+    # -----------------------------
+    # Helper: create symlink safely
+    # -----------------------------
+    def make_symlink(src, dst):
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        if not dst.exists():
+            os.symlink(src, dst)
+
+    # -----------------------------
+    # FIRST PASS: group runs
+    # -----------------------------
+    runs_dict = defaultdict(list)
+
+    for folder in INPUT_DIR.iterdir():
+        if not folder.is_dir():
+            continue
+
+        parts = folder.name.split("_")
+        subject_id = "_".join(parts[:3])
+        image_id = parts[3].strip().lstrip("0")
+
+        if image_id not in date_map:
+            print(f"Skipping {folder.name}, no CSV match")
+            continue
+
+        ses = date_map[image_id]["ses"]
+
+        runs_dict[(subject_id, ses)].append((image_id, folder))
+
+    # -----------------------------
+    # SECOND PASS: create symlinks with run-*
+    # -----------------------------
+    for (subject_id, ses), runs in tqdm(runs_dict.items(), desc="Creating symlinks"):
+        # ensure deterministic ordering
+        runs = sorted(runs, key=lambda x: x[0])
+
+        for i, (image_id, folder) in enumerate(runs, start=1):
+            run = f"{i:02d}"
+
+            out_dir = OUTPUT_DIR / f"sub-{subject_id}" / f"ses-{ses}" / "anat"
+
+            for file in folder.iterdir():
+                if file.is_file():
+                    out_name = f"sub-{subject_id}_ses-{ses}_run-{run}_T1w_{file.name}"
+                    out_path = out_dir / out_name
+
+                    make_symlink(file.resolve(), out_path)
+
+    print("Done.")

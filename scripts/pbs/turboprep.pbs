@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -l nodes=1:ppn=1,mem=16gb
+#PBS -l walltime=5:55:00
+
+# Submitted via scripts/submit_turboprep_jobs.sh with IN_FILE/OUT_FILE/DATASET
+# passed through `qsub -v`.
+
+cd "$HOME/Documents/mri-preprocessing/"
+export PYTHONUNBUFFERED=1
+
+uv run mri-prep preprocess turboprep \
+  --dataset "$DATASET" \
+  --inputs "$IN_FILE" \
+  --outputs "$OUT_FILE" \
+  --threads "${PBS_NP:-1}"

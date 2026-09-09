@@ -1,0 +1,22 @@
+# Stub config for ADNI. The `adni` adapter (src/mri_prep/datasets/adni.py)
+# is not fully ported yet -- see legacy/bash_scripts/adni_turbo_prep_to_bids.py
+# for the reorganization logic used so far. Fill in paths and finish the
+# adapter's build_bids_name/iter_source_images before using `mri-prep bids convert`.
+name: adni
+adapter: adni
+
+paths:
+  raw_dicom_root: ~/data/ADNI/raw_dicom
+  flattened_root: ~/data/ADNI/flattened
+  bids_root: ~/data/ADNI/bids
+  preprocessed_root: ~/data/ADNI/bids_processed
+  curated_root: ~/data/ADNI/bids_curated
+  csv_root: ~/data/ADNI/csv
+  qc_csv: ~/data/ADNI/qc/adni_qc.csv
+
+template: templates/MNI152_T1_1mm_brain_RAS.nii.gz
+template_mask: templates/MNI152_T1_1mm_brain_mask_RAS.nii.gz
+modality: t1
+
+extra:
+  merged_csv: ~/data/ADNI/tabular/adni_imaging_metadata.csv

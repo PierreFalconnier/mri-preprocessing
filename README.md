@@ -1,52 +1,190 @@
-The file
+# mri-prep
+
+MRI + tabular data pipeline for neurodegenerative disease progression modeling
+(PhD project: longitudinal, multimodal representation learning for Parkinson's
+disease subtyping, PPMI-first). Turns raw ida.loni DICOM downloads and clinical
+CSV exports into a curated, BIDS-organized, QC'd imaging dataset plus a
+queryable merged tabular dataset -- both usable directly for exploration and
+for training ML/DL models.
+
+Everything dataset-specific (PPMI, ADNI, ...) lives behind a small adapter +
+a YAML config; the pipeline stages themselves (BIDS conversion, preprocessing,
+QC, export, tabular merge) are generic and shared.
+
+## Layout
 
 ```
-/home/falconnier/Documents/mri-preprocessing/csv_exploration/others/modify_csv_content.ipynb
+configs/datasets/<name>.yaml   one config per dataset: paths, template, adapter
+src/mri_prep/                  the package (installable, `mri-prep` CLI)
+  config.py                    DatasetConfig loading/resolution
+  datasets/                    per-dataset adapters (BIDS naming, raw layout, CSV loading)
+  bids/                        flatten -> convert -> index a BIDS tree
+  preprocess/                  turboprep (N4, SynthStrip, registration, SynthSeg, WhiteStripe), reorganize
+  qc/                          QC metrics, outlier detection, curated-subset symlinks
+  export/                      final npy export for training
+  tabular/                     ida.loni search exports, CSV merge, Cohort query API
+  cli.py                       `mri-prep <group> <command> --dataset <name>`
+data/<DATASET>/                tracked tabular data (raw CSVs, merged tables) -- imaging data itself
+                                lives outside the repo (see paths in the dataset config)
+templates/                     MNI152 templates (RAS-reoriented variants included)
+notebooks/                     interactive exploration (cohort/sequence selection, CSV QA)
+scripts/                       cluster job submission (PBS) wrapping the CLI
+legacy/                        pre-refactor scripts/notebooks, kept for reference until
+                                fully ported (see "What's not migrated yet" below)
 ```
 
-is used to modify the content of the csv to get only CN or AD for instance
+## Setup
 
-# FROM DOWNLOADING THE DATA TO TRAINING READY
+```bash
+uv sync
+uv run mri-prep --help
+```
 
+Requires `dcm2niix` on PATH for BIDS conversion, and ANTs +
+FreeSurfer (`N4BiasFieldCorrection`, `antsRegistrationSyNQuick.sh`,
+`mri_synthstrip`, `mri_synthseg`) on PATH for preprocessing.
 
-1. **Create a collection** on ida.loni with advanced research, or **explore in depth using the obtained csv** from the image research results and other metadata csv to extract the wanted image ids
+## Dataset configs
 
-mri-preprocessing/csv_exploration/PPMI_explo/PPMI_utlimate_exploration.ipynb
+Each dataset is one file in `configs/datasets/`, e.g. `configs/datasets/ppmi.yaml`:
 
+```yaml
+name: ppmi
+adapter: ppmi
+paths:
+  raw_dicom_root: ~/data/PPMI/raw_dicom
+  flattened_root: ~/data/PPMI/flattened
+  bids_root: ~/data/PPMI/bids
+  preprocessed_root: ~/data/PPMI/bids_processed
+  curated_root: ~/data/PPMI/bids_curated
+  csv_root: data/PPMI/csv/ALL      # relative paths resolve against the repo root
+  qc_csv: ~/data/PPMI/qc/ppmi_qc.csv
+template: templates/MNI152_T1_1mm_brain_RAS.nii.gz
+template_mask: templates/MNI152_T1_1mm_brain_mask_RAS.nii.gz
+modality: t1
+extra:
+  merged_csv: data/PPMI/tabular/ppmi_imaging_metadata.csv
+```
 
-2. **Download** as 10 compressed files using a download manager like jdownloader 2. Then **extract and merge** them all. Each folder is subject (eg "16")/sequence (eg "MPRAGE_ADNI_confirmed")/session(actually the date of the session, eg "2007-06-22_11_25_43.0")/image id (eg "I134760")/ all the dicoms (eg "AIBL_5_MR_MPRAGE_ADNI_confirmed__br_raw_20090128144239244_4_S62407_I134760.dcm")
-bash_scripts/ida_merge_extract_all.sh (not really necessary, can do this manually in file manager)
+Edit the `~/data/...` paths to wherever the actual imaging data lives on your
+machine/cluster (external drive, scratch space, ...) -- imaging data is never
+meant to live inside the git repo. Adding a new dataset = add a config +
+(if its raw layout / naming differs) a small adapter in `src/mri_prep/datasets/`
+implementing `build_bids_name` / `iter_source_images` / `load_tabular`
+(see `datasets/base.py` for the interface, `datasets/ppmi.py` for a full example).
 
-3. **Flatten** this, meaning organize as sub-*/ses-YYYYMMDD/sequence/dcm files so the organization is nice to convert to bids
- 
-bash_scripts/ida_flatten.sh
+## Selecting a cohort
 
-4. **Organize as BIDS** and convert dcm to nii.gz, either using BIDScoin with appropriate configuration (.bidscoin/4.6.2/templates and the main CLI commands 'bidsmapper -t template_name sourcefolder bidsfolder' and 'bidscoiner sourcefolder bidsfolder'), or an existing tool like clinica, or a custom python script like i did for PPMI. Conversion from dcm to nii.gz is done with dcm2niix
+These steps are interactive by design -- deciding which acquisitions and which
+clinical variables matter needs the study documentation and your judgment. The
+CLI/library here does the parsing and counting; the decisions stay yours.
 
-mri-preprocessing/PPMI_to_bids/ppmi_to_bids.py (based on csv exploration results and pattern recognition)
+1. **Search** on ida.loni (Advanced Image Search), tick the "display in result"
+   boxes you care about, and download the results CSV into `data/<DATASET>/csv/`.
+2. **Explore the export**:
 
+   ```bash
+   mri-prep ida summary   --csv data/ADNI/csv/idaSearch_2026.csv
+   mri-prep ida sequences --csv data/ADNI/csv/idaSearch_2026.csv --modality MRI
+   ```
 
-5. **Preprocess the T1w** on the cluster using turboprep run_turboprep_jobs.sh, give it <SRC_DIR> <DST_DIR> <NUM_JOBS> <TURBO_PREP_PBS>
-The transfert to the cluster can be done with a command like rsync -avhL --partial --info=progress2 --exclude="*foo.txt" source_folder destination_folder/
-The bash script launch many jobs in parallel, the PBS file is used to ask a job and run the python script turboprep-multiple-v2.py
-This python script takes as input a list of input image paths, the corresponding output path, and the MNI template to use. Use the  MNI152_T1_1mm_brain_RAS.nii.gz which is the template from fsl/data/standard/MNI152_T1_1mm_brain.nii.gz that as been reoriented to the RAS more conventional orientation, so that the preprocessed images are also RAS
+   `summary` gives subjects/visits/modalities/date range (and surfaces junk rows);
+   `sequences` lists every distinct acquisition `Description` with scan and
+   subject counts -- the table to read when mapping Descriptions to BIDS
+   suffixes. From Python, `mri_prep.tabular.ida.load_ida_search` also expands the
+   `Imaging Protocol` string into real columns (Field Strength, Manufacturer,
+   Slice Thickness, Acquisition Plane, ...) so you can filter on them.
+3. **Add the study documents** -- PDFs, data dictionaries, protocol descriptions --
+   to `data/<DATASET>/docs/`, and the subject tabular data to `data/<DATASET>/csv/`.
+4. **Pick the clinical variables** per subject and visit from those documents,
+   and merge them with `mri-prep tabular merge` (see below).
+5. **Get the images**: filter the export down to your selection in a notebook,
+   then
 
-mri-preprocessing/preprocessing/run_turboprep_jobs.sh
+   ```bash
+   mri-prep ida image-ids --csv my_selection.csv --out ids.txt
+   ```
 
-mri-preprocessing/preprocessing/turboprep-multiple-v2.py
+   emits comma-separated blocks to paste into the Advanced Search "Image ID"
+   field, which is how you build the download collection. Download it (a
+   download manager such as jDownloader handles the multi-part zips), and
+   extract.
 
-6. **Reorganize the preprocessed dataset**
-After preprocessing, the dataset looks like BIDS_datasets_selection_v2_processed/AABC_bids/sub-HCA6000030/ses-V1/anat/sub-HCA6000030_ses-V1_T1w/brain.nii.gz
-Run the python script to reorganize as BIDS_datasets_selection_v2_processed/AABC_bids/sub-HCA6000030/ses-V1/anat/sub-HCA6000030_ses-V1_T1w_brain.nii.gz
+## Processing images
 
-mri-preprocessing/bash_scripts/reorganize_preprocessed_dataset.py
+1. **Flatten**: `mri-prep bids flatten --dataset ppmi`
+   -- normalizes the nested ida.loni folder layout into `sub-*/ses-YYYYMMDD/<sequence>/`.
+2. **Build the per-image metadata table** driving BIDS naming (Image ID, subject,
+   visit, BIDS modality, description, acquisition params) and save it to
+   `data/<DATASET>/tabular/` as the `extra.merged_csv` named in the dataset
+   config. For PPMI this is `notebooks/ppmi_imaging_exploration.ipynb`.
+3. **Convert to BIDS**: `mri-prep bids convert --dataset ppmi`
+   -- walks the flattened tree, matches each image to its metadata row, asks
+   the dataset adapter for a BIDS filename, runs `dcm2niix`.
+4. **Preprocess T1w** (cluster): `scripts/submit_turboprep_jobs.sh ppmi <SRC> <DST> <NUM_JOBS>`
+   splits the file list and submits one `scripts/pbs/turboprep.pbs` job per
+   chunk, each running `mri-prep preprocess turboprep`. Locally / single node:
+   `mri-prep preprocess turboprep --dataset ppmi --inputs inputs.txt --outputs outputs.txt`.
+5. **Reorganize**: `mri-prep preprocess reorganize --dataset ppmi`
+   -- flattens turboprep's per-run subdirectories into prefixed files
+   (symlinks) so downstream code can glob by suffix directly.
+6. **QC**: `mri-prep qc run --dataset ppmi --curate [--mosaics]`
+   -- computes dice-vs-MNI-mask, tissue SNR/CNR/CJV/WM2MAX, flags outliers
+   (robust median/MAD), writes an interactive HTML report, and (with
+   `--curate`) symlinks a QC-passed subset into `paths.curated_root`.
+7. **Export for training**: `mri-prep export npy --dataset ppmi --pattern "*brain.nii.gz"`
+   -- RAS-orients, resamples to 1mm isotropic, crops to foreground, min-max
+   normalizes, saves `.npy` next to each source file.
 
-7. **Quality control**, use the following pbs, that will lauch qc_advanced_v2.py. The script takes as input the source dataset path, the mni template path MNI152_T1_1mm_brain_RAS.nii.gz, an output path for the csv and the output folder location
-It computes metrics (saved in the csv, and in html for visualisation) and detect outliers, and create symbolic links to the destination folder, selecting only retained images
+At any point: `mri-prep bids index --dataset ppmi --stage bids --out index.csv`
+builds a flat (subject, session, suffix, run, path) index of a BIDS/processed
+tree -- the basis for modality-availability queries.
 
-mri-preprocessing/quality_control/run_qc_job.pbs
+## Tabular data / cohort selection
 
-See also submit_all_qc.sh
+```bash
+mri-prep tabular merge --dataset ppmi --out data/PPMI/tabular/ppmi_clinical_merged.csv
+```
 
-8. Given the curated dataset and patterns, **final preprocessing** that, orient to RAS, crop background based on minimal value and save as npy the volume, at the same location as the source nii.gz files but with .npy extension
-mri-preprocessing/bash_scripts/add_npy_from_nii.py
+merges every raw clinical CSV under `paths.csv_root` into one wide table,
+keyed on subject id (+ visit id for visit-level tables, left-joined for
+subject-level ones). From Python:
+
+```python
+from mri_prep.tabular.cohort import Cohort
+
+cohort = (
+    Cohort.from_dataset("ppmi")
+    .where(COHORT="Parkinson's Disease")
+    .with_min_visits(3)
+    .with_modality("T1w", bids_root="~/data/PPMI/bids_curated")
+)
+cohort.subjects        # matching PATNOs
+cohort.table           # filtered merged DataFrame
+cohort.to_csv("my_cohort.csv")
+```
+
+`Cohort` is the intended one-stop way to go from "I want PD subjects with
+>=3 visits and a usable T1w at every visit" to an exact subject/row list,
+without hand-rolling pandas joins each time.
+
+## What's not migrated yet
+
+`legacy/` holds everything from before this refactor, kept for reference:
+
+- `legacy/bash_scripts/` -- 2D slicing (`3d_to_2d_dataset.py`), simple npy
+  export without yucca, npy viewers, ADNI-specific reorganization script.
+  Port into `src/mri_prep/export/` / `src/mri_prep/datasets/adni.py` as
+  ADNI work resumes (see the stub in `src/mri_prep/datasets/adni.py`).
+- `legacy/exploration_scripts/` -- ad hoc RAS-orientation and 3D
+  visualization scripts.
+- `legacy/csv_exploration/` -- prior exploration notebooks and dated CSV
+  snapshots (the canonical output is now `data/PPMI/tabular/ppmi_imaging_metadata.csv`
+  + `notebooks/ppmi_imaging_exploration.ipynb`).
+- `legacy/PPMI_to_bids/`, `legacy/preprocessing/`, `legacy/quality_control/` --
+  fully superseded by `src/mri_prep/bids`, `src/mri_prep/preprocess`,
+  `src/mri_prep/qc`; kept only until the new code has been exercised on a
+  full re-run.
+
+Once you've run the new pipeline end-to-end on PPMI and are confident it
+reproduces the old outputs, `legacy/` can be deleted.
