@@ -38,9 +38,33 @@ which acquisition Descriptions map to which BIDS suffix, choosing the clinical
 variables -- requires domain judgment and the study documentation. Do **not**
 try to automate those away behind a single command. The right contribution is
 reusable parsing/querying helpers (`mri_prep.tabular.ida`, which is
-study-agnostic because the ida.loni export schema is identical across studies)
-plus notebooks to drive them. Steps 6-7 (imaging pipeline, final dataset
-assembly) are the ones that should be fully automated and config-driven.
+study-agnostic because the ida.loni export schema is identical across studies
+-- `load_ida_search`, `summarize`, `describe_sequences`, `filter_images`,
+`subjects_with_categories`) plus notebooks to drive them. These return plain
+DataFrames precisely so any filter beyond what's named -- on `Imaging
+Protocol` fields, dates, anything -- is just pandas boolean indexing on the
+result, the same as before this package existed; don't grow `filter_images`
+into a query DSL that tries to cover every case. Steps 6-7 (imaging pipeline,
+final dataset assembly) are the ones that should be fully automated and
+config-driven.
+
+## Curated Description->modality mappings are code, not data
+
+A dataset's own `Modality`/`Description` columns on ida.loni are often not
+trustworthy for BIDS classification -- for PPMI, `Modality` collapses raw
+scans and derived/reconstructed maps into the same three buckets, and
+`Description` is inconsistent free text across sites/scanners/years. Where an
+adapter needs a hand-curated Description->category mapping to compensate
+(PPMI: `src/mri_prep/datasets/ppmi_description_categories.json` +
+`ppmi_ignored_descriptions.csv`), that mapping is versioned **next to the
+adapter**, not under `data/` -- it is curated code (built by reviewing
+`mri-prep ida sequences` output and deciding, by hand, what each Description
+is), not a download or a generated table. Extend the mapping files as new
+Descriptions turn up in fresh exports; don't special-case unmapped
+Descriptions in the classification logic itself. Any such mapping that is
+`lru_cache`d for load performance needs a `reload_*()` function (see
+`ppmi.reload_description_resources`) so edits take effect mid-notebook-session
+without a kernel restart.
 
 ## Where data files go
 
@@ -53,9 +77,10 @@ Per dataset, under `data/<DATASET>/`:
 | `docs/` | PDFs, protocol and dataset-description documents |
 | `tabular/` | **generated** outputs only (merged tables, per-image metadata) |
 
-`data/PPMI/csv/{ALL,CLINICAL,OTHERS}` is the pre-refactor layout (overlapping
-copies, image search export mixed in with clinical CSVs) and is being retired;
-`paths.csv_root` still points there until the fresh downloads land.
+`data/` is entirely gitignored: redistribution of ida.loni downloads is
+restricted by each study's data use agreement, and the files are large. Keep
+the data itself local (or on a separately-managed backup) -- never `git add`
+under `data/`.
 
 ## Working conventions
 
@@ -66,10 +91,11 @@ copies, image search export mixed in with clinical CSVs) and is being retired;
   (`N4BiasFieldCorrection`, `antsRegistrationSyNQuick.sh`, `mri_synthstrip`,
   `mri_synthseg`) for preprocessing. They may be absent locally; code must fail
   with a clear message rather than half-run.
-- **Verify on real data**, not just on imports. The PPMI tables and a search
-  export are in the repo: run `mri-prep tabular merge --dataset ppmi` or
-  `mri-prep ida summary --csv ...` and check the counts are plausible before
-  claiming a stage works.
+- **Verify on real data**, not just on imports. PPMI's clinical CSVs
+  (`data/PPMI/study/`) and a search export (`data/PPMI/search/`) are on disk
+  locally (gitignored, see above): run `mri-prep tabular merge --dataset ppmi`
+  or `mri-prep ida summary --csv ... --dataset ppmi` and check the counts are
+  plausible before claiming a stage works.
 - **Long-running stages are resumable.** Preprocessing and QC run over tens of
   thousands of scans on a PBS cluster; skip work whose output already exists,
   and make sure that skip path does not reference variables only set on the
