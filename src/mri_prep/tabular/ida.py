@@ -131,6 +131,64 @@ def load_ida_search(
     return df
 
 
+def filter_images(
+    df: pd.DataFrame,
+    *,
+    category: str | list[str] | None = None,
+    modality: str | list[str] | None = None,
+    image_type: str | None = None,
+    description_contains: str | None = None,
+    date_from: str | pd.Timestamp | None = None,
+    date_to: str | pd.Timestamp | None = None,
+    drop_ignored: bool = True,
+) -> pd.DataFrame:
+    """Row-level filters for a (optionally category-annotated) search export,
+    the common ones named directly -- chain with plain pandas boolean
+    indexing (`df[df["Field Strength"] >= 3]`, ...) for anything not covered
+    here, the `expand_imaging_protocol` columns included.
+
+    `category` filters on the `category` column added by an adapter's
+    `annotate_categories` (e.g. `mri_prep.datasets.ppmi.annotate_categories`,
+    see `TYPE_COL`'s docstring for why raw `Modality`/`Description` are not
+    reliable enough on their own for PPMI); `drop_ignored` drops rows an
+    adapter flagged as not a usable acquisition, and is a no-op if the export
+    was never annotated (no `ignored` column).
+    """
+    if drop_ignored and "ignored" in df.columns:
+        df = df[~df["ignored"]]
+    if category is not None:
+        wanted = [category] if isinstance(category, str) else list(category)
+        df = df[df["category"].isin(wanted)]
+    if modality is not None:
+        wanted = [modality] if isinstance(modality, str) else list(modality)
+        df = df[df[MODALITY_COL].isin(wanted)]
+    if image_type is not None and TYPE_COL in df.columns:
+        df = df[df[TYPE_COL] == image_type]
+    if description_contains is not None:
+        df = df[df[DESCRIPTION_COL].str.contains(description_contains, case=False, na=False)]
+    if date_from is not None:
+        df = df[df[DATE_COL] >= pd.Timestamp(date_from)]
+    if date_to is not None:
+        df = df[df[DATE_COL] <= pd.Timestamp(date_to)]
+    return df
+
+
+def subjects_with_categories(
+    df: pd.DataFrame, categories: str | list[str], require_all: bool = True
+) -> pd.Index:
+    """Subject IDs that have at least one image in every one of `categories`
+    (or in any of them, with `require_all=False`) -- the filter for a
+    multimodal cohort, e.g. "subjects with both a T1w and a DWI".
+
+    Apply any other filtering (date range, image_type, ...) with
+    `filter_images` first; this only looks at `category` and `Subject ID`.
+    """
+    wanted = {categories} if isinstance(categories, str) else set(categories)
+    have = df.groupby(SUBJECT_COL)["category"].agg(lambda s: set(s.dropna()))
+    mask = have.apply(wanted.issubset) if require_all else have.apply(lambda s: bool(s & wanted))
+    return have[mask].index
+
+
 def describe_sequences(
     df: pd.DataFrame,
     by: tuple[str, ...] = (MODALITY_COL, DESCRIPTION_COL),
