@@ -32,6 +32,11 @@ MODALITY_COL = "Modality"
 DESCRIPTION_COL = "Description"
 IMAGE_ID_COL = "Image ID"
 PROTOCOL_COL = "Imaging Protocol"
+# "Original" (raw scanner DICOM) vs "Pre-processed" (a derived/reconstructed
+# image, e.g. a SPECT reconstruction or eddy-corrected DTI) -- both are
+# separately downloadable images with their own Image ID, so they are never
+# deduplicated here, only counted separately by summarize()/describe_sequences().
+TYPE_COL = "Type"
 
 DATE_COLUMNS = ("Study Date", "Archive Date")
 NUMERIC_COLUMNS = ("Age", "Weight")
@@ -127,7 +132,9 @@ def load_ida_search(
 
 
 def describe_sequences(
-    df: pd.DataFrame, by: tuple[str, ...] = (MODALITY_COL, DESCRIPTION_COL)
+    df: pd.DataFrame,
+    by: tuple[str, ...] = (MODALITY_COL, DESCRIPTION_COL),
+    image_type: str | None = None,
 ) -> pd.DataFrame:
     """One row per distinct acquisition Description: how many scans, how many
     subjects, and the date range it spans.
@@ -135,7 +142,15 @@ def describe_sequences(
     This is the table to read when deciding which Descriptions map to which BIDS
     modality/suffix -- study Descriptions are free text and notoriously
     inconsistent, so the counts tell you what is worth handling.
+
+    `image_type` restricts to "Original" or "Pre-processed" (see `TYPE_COL`)
+    when that column is present -- without it, counts mix raw scanner DICOMs
+    with derived/reconstructed images (e.g. SPECT reconstructions), which is
+    rarely what you want when scoping a download.
     """
+    if image_type is not None and TYPE_COL in df.columns:
+        df = df[df[TYPE_COL] == image_type]
+
     group_cols = [c for c in by if c in df.columns]
     if not group_cols:
         raise ValueError(f"None of {by} present in the export")
@@ -192,6 +207,10 @@ def summarize(df: pd.DataFrame) -> dict:
         summary["subjects_longitudinal"] = int((counts > 1).sum())
     if MODALITY_COL in df.columns:
         summary["modalities"] = df[MODALITY_COL].value_counts().to_dict()
+    if TYPE_COL in df.columns:
+        # Original (raw DICOM) vs Pre-processed (derived/reconstructed) --
+        # both count as "images" above, this breaks that total down.
+        summary["image_types"] = df[TYPE_COL].value_counts().to_dict()
     if DESCRIPTION_COL in df.columns:
         summary["distinct_descriptions"] = df[DESCRIPTION_COL].nunique()
     if DATE_COL in df.columns and df[DATE_COL].notna().any():

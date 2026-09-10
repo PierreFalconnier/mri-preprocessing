@@ -67,6 +67,9 @@ def ida_summary(csv: Path = typer.Option(..., help="Advanced Search export CSV")
 def ida_sequences(
     csv: Path = typer.Option(..., help="Advanced Search export CSV"),
     modality: str = typer.Option(None, help="restrict to one modality, e.g. MRI"),
+    type: str = typer.Option(
+        None, help="restrict to one Type, e.g. Original or 'Pre-processed'"
+    ),
     top: int = typer.Option(40, help="how many descriptions to show"),
     out: Path = typer.Option(None, help="optional CSV to write the full table to"),
 ):
@@ -80,7 +83,7 @@ def ida_sequences(
     if modality:
         df = df[df[MODALITY_COL] == modality]
 
-    table = describe_sequences(df)
+    table = describe_sequences(df, image_type=type)
     with pd.option_context("display.max_rows", None, "display.width", 200):
         typer.echo(table.head(top).to_string(index=False))
     if len(table) > top:
