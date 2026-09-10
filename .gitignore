@@ -3,9 +3,11 @@ __pycache__/
 *.pyc
 .venv/
 
-# large intermediate/raw imaging & tabular outputs (dated exploration dumps,
-# qc scratch, etc.) -- canonical outputs live under data/<DATASET>/tabular/
-# and are tracked explicitly.
+# dataset downloads + generated tabular data: redistribution is restricted by
+# each study's data use agreement, and it's large -- never git-tracked.
+# See AGENTS.md / README.md for the data/<DATASET>/{search,study,docs,tabular}
+# layout; keep the data itself local (or on a separately-managed backup).
+data/
 legacy/csv_exploration/PPMI_explo/*.csv
 logs/
 tmp/
