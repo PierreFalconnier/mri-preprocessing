@@ -194,7 +194,15 @@ def modality_availability(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def summarize(df: pd.DataFrame) -> dict:
-    """Headline numbers for a search export, for a quick sanity check."""
+    """Headline numbers for a search export, for a quick sanity check.
+
+    If the DataFrame carries `category`/`ignored` columns (the convention
+    used by adapters that curate their own Description -> modality mapping,
+    e.g. `mri_prep.datasets.ppmi.annotate_categories` -- PPMI's `Modality`/
+    `Description` columns are not trustworthy on their own), the summary
+    breaks images down by category and flags how many are ignored or still
+    unmapped by the curated list.
+    """
     summary: dict = {"rows": len(df)}
     if IMAGE_ID_COL in df.columns:
         summary["images"] = df[IMAGE_ID_COL].nunique()
@@ -218,6 +226,12 @@ def summarize(df: pd.DataFrame) -> dict:
             str(df[DATE_COL].min().date()),
             str(df[DATE_COL].max().date()),
         )
+    if "ignored" in df.columns:
+        summary["ignored"] = int(df["ignored"].sum())
+    if "category" in df.columns:
+        classified = df if "ignored" not in df.columns else df[~df["ignored"]]
+        summary["categories"] = classified["category"].value_counts(dropna=False).to_dict()
+        summary["uncategorized"] = int(classified["category"].isna().sum())
     return summary
 
 

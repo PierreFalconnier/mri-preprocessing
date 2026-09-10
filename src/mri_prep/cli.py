@@ -48,12 +48,37 @@ def datasets_cmd():
 # -- ida ----------------------------------------------------------------
 
 
+def _annotate_with_adapter(df, dataset: str):
+    """Apply the dataset adapter's Description classification (`category`/
+    `ignored` columns), if it has one -- see e.g.
+    `mri_prep.datasets.ppmi.PPMIAdapter.annotate_categories`. Falls back to
+    the export unchanged for adapters that don't curate their own mapping."""
+    from mri_prep.datasets import get_adapter
+
+    cfg = load_dataset_config(dataset)
+    adapter = get_adapter(cfg.adapter)
+    annotate = getattr(adapter, "annotate_categories", None)
+    if annotate is None:
+        typer.echo(f"(dataset '{dataset}' has no Description classification -- using raw Modality/Description)")
+        return df
+    return annotate(df)
+
+
 @ida_app.command("summary")
-def ida_summary(csv: Path = typer.Option(..., help="Advanced Search export CSV")):
+def ida_summary(
+    csv: Path = typer.Option(..., help="Advanced Search export CSV"),
+    dataset: str = typer.Option(
+        None, help="apply the dataset adapter's Description classification, if it has one"
+    ),
+):
     """Headline numbers for a search export: subjects, visits, modalities, dates."""
     from mri_prep.tabular.ida import load_ida_search, summarize
 
-    info = summarize(load_ida_search(csv))
+    df = load_ida_search(csv)
+    if dataset:
+        df = _annotate_with_adapter(df, dataset)
+
+    info = summarize(df)
     for key, value in info.items():
         if isinstance(value, dict):
             typer.echo(f"{key}:")
@@ -70,6 +95,12 @@ def ida_sequences(
     type: str = typer.Option(
         None, help="restrict to one Type, e.g. Original or 'Pre-processed'"
     ),
+    dataset: str = typer.Option(
+        None,
+        help="apply the dataset adapter's Description classification, if it "
+        "has one, and group by (category, Description) instead of "
+        "(Modality, Description)",
+    ),
     top: int = typer.Option(40, help="how many descriptions to show"),
     out: Path = typer.Option(None, help="optional CSV to write the full table to"),
 ):
@@ -77,13 +108,19 @@ def ida_sequences(
     the starting point for mapping Descriptions to BIDS modalities."""
     import pandas as pd
 
-    from mri_prep.tabular.ida import MODALITY_COL, describe_sequences, load_ida_search
+    from mri_prep.tabular.ida import DESCRIPTION_COL, MODALITY_COL, describe_sequences, load_ida_search
 
     df = load_ida_search(csv)
     if modality:
         df = df[df[MODALITY_COL] == modality]
 
-    table = describe_sequences(df, image_type=type)
+    by = (MODALITY_COL, DESCRIPTION_COL)
+    if dataset:
+        df = _annotate_with_adapter(df, dataset)
+        if "category" in df.columns:
+            by = ("category", DESCRIPTION_COL)
+
+    table = describe_sequences(df, by=by, image_type=type)
     with pd.option_context("display.max_rows", None, "display.width", 200):
         typer.echo(table.head(top).to_string(index=False))
     if len(table) > top:

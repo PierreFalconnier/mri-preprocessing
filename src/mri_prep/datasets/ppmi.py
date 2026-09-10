@@ -8,13 +8,20 @@ vocabulary, diagnosis codebooks); everything else in the pipeline is generic.
 
 from __future__ import annotations
 
+import csv
+import json
 import re
 from collections import defaultdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Iterator
 
 import numpy as np
 import pandas as pd
+
+_RESOURCES_DIR = Path(__file__).parent
+_DESCRIPTION_CATEGORIES_PATH = _RESOURCES_DIR / "ppmi_description_categories.json"
+_IGNORED_DESCRIPTIONS_PATH = _RESOURCES_DIR / "ppmi_ignored_descriptions.csv"
 
 # -----------------------------------------------------------------------
 # BIDS naming
@@ -61,6 +68,85 @@ def infer_dwi_dir(description: str) -> str | None:
 
 def infer_dwi_acq(description: str) -> str | None:
     return DWI_DESCRIPTION_ACQ_MAP.get(description)
+
+
+# -----------------------------------------------------------------------
+# Description -> category classification
+# -----------------------------------------------------------------------
+#
+# PPMI's own `Modality`/`Description` columns on ida.loni cannot be trusted
+# for BIDS classification: `Modality` collapses everything to "MRI" (a raw
+# T1w and a derived DTI-FA map both come back as MRI), and `Description` is
+# free text entered per site/scanner/year, so the same acquisition shows up
+# under dozens of spellings while unrelated things (localizers, calibration
+# scans, DTI-derived ADC/FA/TRACEW maps) show up mixed in with usable scans.
+# `ppmi_description_categories.json` and `ppmi_ignored_descriptions.csv` are
+# a hand-curated mapping from the actual PPMI Description vocabulary to a
+# trustworthy category, built by manually reviewing `mri-prep ida sequences`
+# output; extend them (not the classification logic here) as new
+# Descriptions turn up in fresh search exports.
+
+
+@lru_cache(maxsize=1)
+def _description_categories() -> dict[str, str]:
+    """{Description: category}, category one of 'dwi', 'func', or
+    'anat/<suffix>' (e.g. 'anat/T1w', 'anat/FLAIR')."""
+    raw = json.loads(_DESCRIPTION_CATEGORIES_PATH.read_text())
+    mapping: dict[str, str] = {}
+    for description in raw.get("dwi", []):
+        mapping[description] = "dwi"
+    for description in raw.get("func", []):
+        mapping[description] = "func"
+    for suffix, descriptions in raw.get("anat", {}).items():
+        for description in descriptions:
+            mapping[description] = f"anat/{suffix}"
+    return mapping
+
+
+@lru_cache(maxsize=1)
+def _ignored_descriptions() -> frozenset[str]:
+    """Descriptions that are not a usable acquisition at all (localizers,
+    scanner calibration, derived ADC/FA/TRACEW maps, ...) and should be
+    dropped rather than classified."""
+    with _IGNORED_DESCRIPTIONS_PATH.open(newline="") as f:
+        return frozenset(
+            row["Description"].strip()
+            for row in csv.DictReader(f)
+            if row["Description"].strip()
+        )
+
+
+def classify_description(description: str) -> str | None:
+    """Map a raw ida.loni `Description` to a curated category, or None if it
+    should be excluded (in `ppmi_ignored_descriptions.csv`) or is not yet
+    covered by `ppmi_description_categories.json`.
+
+    Callers cannot tell "ignored" apart from "not yet curated" from this
+    return value alone; use `is_ignored_description` first if that
+    distinction matters (e.g. to report new/unmapped Descriptions instead of
+    silently treating them as ignored).
+    """
+    if not isinstance(description, str):
+        return None
+    description = description.strip()
+    if description in _ignored_descriptions():
+        return None
+    return _description_categories().get(description)
+
+
+def is_ignored_description(description: str) -> bool:
+    return isinstance(description, str) and description.strip() in _ignored_descriptions()
+
+
+def annotate_categories(df: pd.DataFrame, description_col: str = "Description") -> pd.DataFrame:
+    """Add a `category` column (see `classify_description`) and an `ignored`
+    flag to a search-export DataFrame, without dropping any rows -- rows
+    where `category` is null and `ignored` is False are Descriptions not yet
+    covered by the curated mapping, worth reviewing and adding."""
+    df = df.copy()
+    df["ignored"] = df[description_col].map(is_ignored_description)
+    df["category"] = df[description_col].map(classify_description)
+    return df
 
 
 class PPMIAdapter:
@@ -139,6 +225,12 @@ class PPMIAdapter:
         from mri_prep.tabular.io import load_dataset_csvs
 
         return load_dataset_csvs(csv_root)
+
+    def annotate_categories(self, df: pd.DataFrame, description_col: str = "Description") -> pd.DataFrame:
+        """See module-level `annotate_categories` -- exposed on the adapter so
+        generic callers (e.g. the CLI) can apply PPMI's curated Description
+        classification without importing PPMI-specific names directly."""
+        return annotate_categories(df, description_col=description_col)
 
 
 # -----------------------------------------------------------------------
