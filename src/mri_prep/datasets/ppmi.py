@@ -151,14 +151,31 @@ def reload_description_resources() -> None:
     _ignored_descriptions.cache_clear()
 
 
+def split_category(category: str | None) -> tuple[str | None, str | None]:
+    """Split a curated `category` ("dwi", "func", "anat/T1w", ...) into the
+    (BIDS_Modality, Advanced_Modality) columns `PPMIAdapter.build_bids_name`
+    and `mri_prep.bids.convert` expect: `BIDS_Modality` is the top-level
+    modality the BIDS tree is grouped by; `Advanced_Modality` is the anat
+    suffix (e.g. "T1w"), only meaningful when `BIDS_Modality == "anat"`."""
+    if not isinstance(category, str):
+        return None, None
+    if category.startswith("anat/"):
+        return "anat", category.removeprefix("anat/")
+    return category, None
+
+
 def annotate_categories(df: pd.DataFrame, description_col: str = "Description") -> pd.DataFrame:
-    """Add a `category` column (see `classify_description`) and an `ignored`
-    flag to a search-export DataFrame, without dropping any rows -- rows
-    where `category` is null and `ignored` is False are Descriptions not yet
+    """Add `category`/`ignored` columns (see `classify_description`) plus the
+    `BIDS_Modality`/`Advanced_Modality` split (see `split_category`) to a
+    search-export DataFrame, without dropping any rows -- rows where
+    `category` is null and `ignored` is False are Descriptions not yet
     covered by the curated mapping, worth reviewing and adding."""
     df = df.copy()
     df["ignored"] = df[description_col].map(is_ignored_description)
     df["category"] = df[description_col].map(classify_description)
+    split = df["category"].map(split_category)
+    df["BIDS_Modality"] = split.map(lambda t: t[0])
+    df["Advanced_Modality"] = split.map(lambda t: t[1])
     return df
 
 
