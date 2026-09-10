@@ -138,6 +138,19 @@ def is_ignored_description(description: str) -> bool:
     return isinstance(description, str) and description.strip() in _ignored_descriptions()
 
 
+def reload_description_resources() -> None:
+    """Clear the cached Description->category/ignored mappings.
+
+    `_description_categories`/`_ignored_descriptions` are read once and
+    cached, so edits made to `ppmi_description_categories.json` /
+    `ppmi_ignored_descriptions.csv` mid-session (e.g. while curating new
+    Descriptions in a notebook) are invisible until this is called -- or the
+    kernel is restarted.
+    """
+    _description_categories.cache_clear()
+    _ignored_descriptions.cache_clear()
+
+
 def annotate_categories(df: pd.DataFrame, description_col: str = "Description") -> pd.DataFrame:
     """Add a `category` column (see `classify_description`) and an `ignored`
     flag to a search-export DataFrame, without dropping any rows -- rows
