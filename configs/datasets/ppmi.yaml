@@ -14,8 +14,10 @@ paths:
   preprocessed_root: ~/data/PPMI/bids_processed
   # curated (QC-passed) subset, output of `mri-prep qc run --curate`
   curated_root: ~/data/PPMI/bids_curated
-  # directory containing the raw PPMI CSVs (idaSearch export + study data downloads)
-  csv_root: data/PPMI/csv/ALL
+  # directory containing the PPMI Study Data downloads (clinical/assessment
+  # CSVs, keyed on PATNO/EVENT_ID). The Advanced Image Search export lives
+  # separately in data/PPMI/search/ -- see mri_prep.tabular.ida.
+  csv_root: data/PPMI/study
   qc_csv: ~/data/PPMI/qc/ppmi_qc.csv
 
 # paths below are relative to the repo root
