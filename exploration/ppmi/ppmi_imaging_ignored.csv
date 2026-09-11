@@ -1,0 +1,80 @@
+Description
+2D GRE_MT
+2D T2  FLAIR
+2D T2 FLAIR
+2D T2 FLAIR..
+3 PLANE LOC
+3 Plane Localizer
+3 plane
+AX DE TSE
+AX DUAL_TSE
+AX PD  5/1
+AX T1 FLAIR
+Anon
+Ax T1 FLAIR
+Axial oblique 2D T1w Neuromelanin
+Axial oblique 2D T2 FLAIR
+B0map_v1
+B0rf Map
+COR
+COR T2 loc
+Cal Head 24
+Coronal
+DTI (30Axis)
+DTI Sequence_ADC
+DTI Sequence_FA
+DTI Sequence_TRACEW
+DTI_ADC
+DTI_B1000_64dir_PA_ADC
+DTI_B1000_64dir_PA_TRACEW
+DTI_B700_64dir_PA_ADC
+DTI_B700_64dir_PA_TRACEW
+DTI_FA
+DTI_LR_ADC
+DTI_LR_ColFA
+DTI_LR_FA
+DTI_LR_TRACEW
+DTI_PHANTOM
+DTI_RL_ADC
+DTI_RL_ColFA
+DTI_RL_FA
+DTI_RL_TRACEW
+DTI_TRACEW
+DTI_gated AC-PC LINE_FA
+DTI_gated AC-PC LINE_TRACEW
+DTI_gated_ADC
+DTI_gated_FA
+DTI_gated_TRACEW
+DTI_phantom
+DUAL_TSE
+DW_SSh separate
+Double_TSE
+Field_mapping
+GRE
+GRE B0
+GRE B0 map
+HighResHippo
+IsoADC
+LOCALIZER
+MIDLINE SAG LOC
+MODIFIED 2D GRE MT MTC-NO 2 DYN COND IMPLANT
+MPR - SmartBrain
+MPRAGE Phantom GRAPPA2
+MoCoSeries
+SAG
+SAG SPGR
+SURVEY
+Sag T1 FLAIR
+TRA
+TRA/DUAL
+Transverse
+ax t1 reformat
+dDW_SSh ADC
+dDW_SSh SENSE
+eDW_SSh SENSE
+localizer
+rsfMRI_PA_Do Not Use
+sag
+t2_localizer
+t2_tirm_tra_dark-fluid NO BLADE
+t2_tirm_tra_dark-fluid_

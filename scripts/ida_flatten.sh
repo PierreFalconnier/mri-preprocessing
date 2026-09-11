@@ -3,7 +3,7 @@ set -euo pipefail
 
 SRC_DIR="$1" # exctracted full dataset
 
-DST=$(dirname "$SRC_DIR")/flattened
+DST="${SRC_DIR}_flattened"
 mkdir -p "$DST"
 
 SUB_PREFIX="sub-"

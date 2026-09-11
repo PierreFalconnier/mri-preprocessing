@@ -1,5 +1,6 @@
 # %% IMPORTS AND PATHS
 
+import argparse
 import re
 import subprocess
 from collections import defaultdict
@@ -8,14 +9,14 @@ from pathlib import Path
 import pandas as pd
 from tqdm import tqdm
 
-root = Path("/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/extracted/raw/")
-csv_path = Path(
-    "/home/falconnier/Documents/mri-preprocessing/csv_exploration/PPMI_explo/ppmi_clinical_imaging_merged_20260325_155504.csv"
-)
+# root = Path("/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/extracted/raw/")
+# csv_path = Path(
+#     "/home/falconnier/Documents/mri-preprocessing/csv_exploration/PPMI_explo/ppmi_clinical_imaging_merged_20260325_155504.csv"
+# )
 
-bids_root = Path(
-    "/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/test_PPMI_BIDS"
-)
+# bids_root = Path(
+#     "/run/media/falconnier/bb9ecfb7-b58f-41e9-a37d-fda12951eb4e/test_PPMI_BIDS"
+# )
 
 # -----------------------------
 # GLOBALS
@@ -165,6 +166,31 @@ def build_bids_name(row):
 # %% CREATE INDEXING
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Convert PPMI DICOM images to BIDS format using dcm2niix"
+    )
+    parser.add_argument(
+        "raw_data",
+        type=Path,
+        help="Path to the raw DICOM data directory",
+    )
+    parser.add_argument(
+        "csv_file",
+        type=Path,
+        help="Path to the CSV file with clinical and imaging metadata",
+    )
+    parser.add_argument(
+        "output_dir",
+        type=Path,
+        help="Destination directory for BIDS-formatted data",
+    )
+
+    args = parser.parse_args()
+
+    root = args.raw_data
+    csv_path = args.csv_file
+    bids_root = args.output_dir
+
     RUN_COUNTERS = defaultdict(int)
 
     df = pd.read_csv(csv_path, dtype=str)
@@ -181,9 +207,11 @@ if __name__ == "__main__":
 
         for seq_dir in subject_dir.iterdir():
             description = seq_dir.name
+            print(f"Processing subject {subject}, description {description}")
 
             for date_dir in seq_dir.iterdir():
                 for image_dir in date_dir.iterdir():
+                    print(f"Processing image directory: {image_dir} of date {date_dir}")
                     if not image_dir.name.startswith("I"):
                         continue
 
@@ -225,6 +253,8 @@ if __name__ == "__main__":
                         str(dest_dir),
                         image_dir,
                     ]
+
+                    print(dest_dir)
 
                     # Execute and catch errors
                     try:
