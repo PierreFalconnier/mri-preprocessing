@@ -16,3 +16,5 @@ exploration_scripts/derivatives_nm/
 data/ppmi/study/
 trash/
 outputs/
+*.nii.gz
+*.png

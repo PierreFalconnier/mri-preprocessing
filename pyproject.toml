@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "antspyx>=0.6.2",
-    "intensity-normalization==2.2.4",
+    "intensity-normalization>=4,<5",
     "pandas>=2.2.2",
     "nbformat>=5.10.4",
     "openpyxl>=3.1.5",
@@ -16,4 +16,8 @@ dependencies = [
     "upsetplot",
     "nilearn>=0.10.2",
     "monai[all]>=1.6.0",
+    "dipy>=1.10",
+    "boto3>=1.43.93",
+    "ipywidgets>=8.1.9",
+    "fury>=2.0.0",
 ]

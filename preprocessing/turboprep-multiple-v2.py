@@ -10,8 +10,7 @@ from multiprocessing import Pool
 
 import nibabel as nib
 import numpy as np
-from intensity_normalization.normalize.whitestripe import WhiteStripeNormalize
-from intensity_normalization.typing import Modality
+from intensity_normalization import whitestripe
 from tqdm import tqdm
 
 logging.basicConfig(
@@ -367,24 +366,26 @@ if __name__ == "__main__":
             except Exception as e:
                 print("brain extraction failed for", reg_path, "with error", e)
                 return
+        else:
+            mask = nib.load(mask_path)
+            mask_arr = mask.get_fdata().astype(bool)
 
         if not os.path.exists(norm_path):
             try:
-                ws_norm = WhiteStripeNormalize()
-                normalized_arr = ws_norm(
-                    reg_arr, mask_arr, modality=Modality.from_string(modality)
-                )
-                normalized = nib.Nifti1Image(normalized_arr, reg.affine, reg.header)
+                # v4 accepts and returns NIfTI images, preserving affine and header data.
+                normalized = whitestripe(reg, mask, modality=modality)
                 normalized.to_filename(norm_path)
             except Exception as e:
                 print("normalization failed for", reg_path, "with error", e)
                 return
+        else:
+            normalized = nib.load(norm_path)
 
         if not os.path.exists(brain_path):
             try:
-                brain_arr = normalized_arr.copy()
+                brain_arr = normalized.get_fdata().copy()
                 brain_arr[mask_arr == 0.0] = brain_arr.min()
-                brain = nib.Nifti1Image(brain_arr, reg.affine, reg.header)
+                brain = nib.Nifti1Image(brain_arr, normalized.affine, normalized.header)
                 brain.to_filename(brain_path)
             except Exception as e:
                 print("brain extraction failed for", reg_path, "with error", e)
