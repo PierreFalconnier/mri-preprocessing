@@ -54,7 +54,8 @@ import numpy as np
 from dipy.align import motion_correction
 from dipy.core.gradients import gradient_table
 from dipy.denoise.gibbs import gibbs_removal
-from dipy.denoise.localpca import mppca
+from dipy.denoise.nlmeans import nlmeans
+from dipy.denoise.noise_estimate import estimate_sigma
 from dipy.reconst import dti, fwdti
 from dipy.segment.mask import median_otsu
 
@@ -136,13 +137,40 @@ print(f"Gradient table: {gtab}")
 # print number of b=0 volumes
 print(f"Number of b=0 volumes: {np.sum(gtab.b0s_mask)}")
 
+
 ###############################################################################
-# Denoise the raw DWI signal before fitting any tensor model. MP-PCA exploits
-# redundancy across diffusion volumes within local patches to separate signal
-# from noise and estimates the noise level automatically, so no manual sigma
-# is required.
-data, sigma = mppca(data, patch_radius=2, return_sigma=True)
-print(f"Denoised with MP-PCA; median estimated noise sigma: {np.median(sigma):.4g}")
+# The free water DTI model can take some minutes to process the full data set.
+# Estimate a brain mask from the b=0 images instead of requiring a separate
+# pre-processing mask. ``median_otsu`` returns the masked DWI and a 3-D bool
+# mask in the native DWI grid.
+b0_idx = np.flatnonzero(gtab.b0s_mask)
+_, mask = median_otsu(data, vol_idx=b0_idx, median_radius=2, numpass=1, dilate=1)
+mask = mask.astype(bool, copy=False)
+if not mask.any():
+    raise RuntimeError("Automatic mask estimation produced an empty mask.")
+nib.save(
+    nib.Nifti1Image(mask.astype(np.uint8), img.affine, img.header),
+    args.output_dir / "brain_mask_auto.nii.gz",
+)
+print(f"DWI shape: {data.shape}; estimated mask: {mask.sum()} voxels")
+
+###############################################################################
+# Denoise the raw DWI signal before fitting any tensor model. NLMEANS
+# (blockwise algorithm) is used here with all available OpenMP threads
+# (``num_threads=-1``) for maximum parallelization. The noise level is
+# estimated per-volume from the data itself.
+print("Denoising...")
+sigma = estimate_sigma(data, N=0)
+data = nlmeans(
+    data,
+    sigma=sigma,
+    mask=mask,
+    method="blockwise",
+    num_threads=-1,
+)
+print(
+    f"Denoised with NLMEANS (blockwise); median estimated noise sigma: {np.median(sigma):.4g}"
+)
 
 ###############################################################################
 # Remove Gibbs (truncation) ringing artefacts, which appear as spurious
@@ -160,22 +188,6 @@ reg_img, reg_affines = motion_correction(data, gtab, img.affine)
 data = np.asarray(reg_img.get_fdata(), dtype=np.float32)
 print("Applied motion correction.")
 
-
-###############################################################################
-# The free water DTI model can take some minutes to process the full data set.
-# Estimate a brain mask from the b=0 images instead of requiring a separate
-# pre-processing mask. ``median_otsu`` returns the masked DWI and a 3-D bool
-# mask in the native DWI grid.
-b0_idx = np.flatnonzero(gtab.b0s_mask)
-_, mask = median_otsu(data, vol_idx=b0_idx, median_radius=2, numpass=1, dilate=1)
-mask = mask.astype(bool, copy=False)
-if not mask.any():
-    raise RuntimeError("Automatic mask estimation produced an empty mask.")
-nib.save(
-    nib.Nifti1Image(mask.astype(np.uint8), img.affine, img.header),
-    args.output_dir / "brain_mask_auto.nii.gz",
-)
-print(f"DWI shape: {data.shape}; estimated mask: {mask.sum()} voxels")
 
 ###############################################################################
 # The fit below is performed over the entire 3-D volume. ``slice_index`` is
