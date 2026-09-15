@@ -81,6 +81,9 @@ bvals, bvecs = read_bvals_bvecs(hardi_bval_fname, hardi_bvec_fname)
 gtab = gradient_table(bvals, bvecs=bvecs)
 
 print(f"data.shape {data.shape}")
+print(f"gtab.bvals.shape {gtab.bvals.shape}")
+print(f"gtab.bvecs.shape {gtab.bvecs.shape}")
+exit()
 
 ###############################################################################
 # data.shape ``(81, 106, 76, 160)``

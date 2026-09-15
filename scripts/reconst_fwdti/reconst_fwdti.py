@@ -51,7 +51,10 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import nibabel as nib
 import numpy as np
+from dipy.align import motion_correction
 from dipy.core.gradients import gradient_table
+from dipy.denoise.gibbs import gibbs_removal
+from dipy.denoise.localpca import mppca
 from dipy.reconst import dti, fwdti
 from dipy.segment.mask import median_otsu
 
@@ -126,6 +129,38 @@ if not np.any(gtab.b0s_mask):
 
 args.output_dir.mkdir(parents=True, exist_ok=True)
 
+# print shapes and basic info
+print(f"DWI shape: {data.shape}; b-values: {np.unique(gtab.bvals)}")
+# print gtab info
+print(f"Gradient table: {gtab}")
+# print number of b=0 volumes
+print(f"Number of b=0 volumes: {np.sum(gtab.b0s_mask)}")
+
+###############################################################################
+# Denoise the raw DWI signal before fitting any tensor model. MP-PCA exploits
+# redundancy across diffusion volumes within local patches to separate signal
+# from noise and estimates the noise level automatically, so no manual sigma
+# is required.
+data, sigma = mppca(data, patch_radius=2, return_sigma=True)
+print(f"Denoised with MP-PCA; median estimated noise sigma: {np.median(sigma):.4g}")
+
+###############################################################################
+# Remove Gibbs (truncation) ringing artefacts, which appear as spurious
+# oscillations near sharp intensity edges (e.g. CSF/tissue boundaries) due to
+# finite k-space sampling. Applied after denoising, on the volume axis.
+data = gibbs_removal(data, slice_axis=2, num_processes=-1)
+print("Applied Gibbs ringing removal.")
+
+###############################################################################
+# Correct for subject motion by registering each volume to the b0 reference
+# (progressively through center-of-mass, translation, rigid, and affine
+# transforms). This does not correct for eddy-current-induced distortions,
+# which require a dedicated tool (e.g. FSL eddy).
+reg_img, reg_affines = motion_correction(data, gtab, img.affine)
+data = np.asarray(reg_img.get_fdata(), dtype=np.float32)
+print("Applied motion correction.")
+
+
 ###############################################################################
 # The free water DTI model can take some minutes to process the full data set.
 # Estimate a brain mask from the b=0 images instead of requiring a separate
@@ -156,6 +191,7 @@ if not mask[:, :, args.slice_index].any():
 ###############################################################################
 # The free water elimination model fit can then be initialized by instantiating
 # a FreeWaterTensorModel class object:
+# but multishell is needed to fit the free water elimination model. We check if the data has at least two non-zero b-value shells before fitting the model.
 
 nonzero_shells = np.unique(np.round(gtab.bvals[~gtab.b0s_mask], decimals=0))
 can_fit_fwdti = len(nonzero_shells) >= 2
@@ -198,10 +234,13 @@ dtifit = dtimodel.fit(data, mask=mask)
 
 dti_FA = dtifit.fa
 dti_MD = dtifit.md
+dti_AD = dtifit.ad
+dti_RD = dtifit.rd
 dti_tensor = dti.lower_triangular(dtifit.quadratic_form)
 # Direction-encoded colour (DEC): the principal eigenvector is encoded as
 # R/LR, G/AP, B/IS and modulated by fractional anisotropy.
 dti_rgb = np.clip(dti.color_fa(dti_FA, dtifit.evecs) * 255, 0, 255).astype(np.uint8)
+
 
 # Save the full 3-D standard-DTI maps and the six unique tensor elements.
 # All outputs retain the affine and voxel grid of the source DWI image.
@@ -217,10 +256,12 @@ def save_dti_volume(filename, volume, dtype=np.float32):
 save_dti_volume("dti_tensor_lower_triangular.nii.gz", dti_tensor)
 save_dti_volume("dti_fa.nii.gz", dti_FA)
 save_dti_volume("dti_md.nii.gz", dti_MD)
+save_dti_volume("dti_ad.nii.gz", dti_AD)
+save_dti_volume("dti_rd.nii.gz", dti_RD)
 save_dti_volume("dti_rgb.nii.gz", dti_rgb, dtype=np.uint8)
 print(
     "Saved full-volume standard-DTI outputs: dti_tensor_lower_triangular.nii.gz, "
-    "dti_fa.nii.gz, dti_md.nii.gz, dti_rgb.nii.gz"
+    "dti_fa.nii.gz, dti_md.nii.gz, dti_ad.nii.gz, dti_rd.nii.gz, dti_rgb.nii.gz"
 )
 
 ###############################################################################
@@ -236,14 +277,18 @@ fig1, ax = plt.subplots(2, 4, figsize=(12, 6), subplot_kw={"xticks": [], "yticks
 
 fig1.subplots_adjust(hspace=0.3, wspace=0.05)
 if FA is not None:
-    ax.flat[0].imshow(FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1)
+    ax.flat[0].imshow(
+        FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1
+    )
     ax.flat[0].set_title("A) fwDTI FA")
 else:
     ax.flat[0].text(
         0.5, 0.5, "fwDTI unavailable\n(single-shell data)", ha="center", va="center"
     )
     ax.flat[0].set_title("A) fwDTI FA")
-ax.flat[1].imshow(dti_FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1)
+ax.flat[1].imshow(
+    dti_FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1
+)
 ax.flat[1].set_title("B) standard DTI FA")
 
 if FA is not None:
@@ -256,14 +301,18 @@ else:
 ax.flat[3].axis("off")
 
 if MD is not None:
-    ax.flat[4].imshow(MD[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=2.5e-3)
+    ax.flat[4].imshow(
+        MD[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=2.5e-3
+    )
     ax.flat[4].set_title("D) fwDTI MD")
 else:
     ax.flat[4].text(
         0.5, 0.5, "fwDTI unavailable\n(single-shell data)", ha="center", va="center"
     )
     ax.flat[4].set_title("D) fwDTI MD")
-ax.flat[5].imshow(dti_MD[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=2.5e-3)
+ax.flat[5].imshow(
+    dti_MD[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=2.5e-3
+)
 ax.flat[5].set_title("E) standard DTI MD")
 
 if MD is not None:
@@ -275,7 +324,9 @@ else:
 
 F = fwdtifit.f if fwdtifit is not None else None
 if F is not None:
-    ax.flat[7].imshow(F[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1)
+    ax.flat[7].imshow(
+        F[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1
+    )
     ax.flat[7].set_title("G) free water volume")
 else:
     ax.flat[7].axis("off")
@@ -320,9 +371,13 @@ if FA is not None:
         1, 3, figsize=(9, 3), subplot_kw={"xticks": [], "yticks": []}
     )
     fig1.subplots_adjust(hspace=0.3, wspace=0.05)
-    ax.flat[0].imshow(FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1)
+    ax.flat[0].imshow(
+        FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1
+    )
     ax.flat[0].set_title("A) fwDTI FA")
-    ax.flat[1].imshow(dti_FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1)
+    ax.flat[1].imshow(
+        dti_FA[:, :, args.slice_index].T, origin="lower", cmap="gray", vmin=0, vmax=1
+    )
     ax.flat[1].set_title("B) standard DTI FA")
     FAdiff = abs(FA[:, :, args.slice_index] - dti_FA[:, :, args.slice_index])
     ax.flat[2].imshow(FAdiff.T, cmap="gray", origin="lower", vmin=0, vmax=1)
