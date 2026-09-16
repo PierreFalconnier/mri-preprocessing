@@ -42,6 +42,8 @@ Let's start by importing the relevant modules:
 """
 
 import argparse
+import shutil
+import subprocess
 import warnings
 from pathlib import Path
 
@@ -54,8 +56,6 @@ import numpy as np
 from dipy.align import motion_correction
 from dipy.core.gradients import gradient_table
 from dipy.denoise.gibbs import gibbs_removal
-from dipy.denoise.nlmeans import nlmeans
-from dipy.denoise.noise_estimate import estimate_sigma
 from dipy.reconst import dti, fwdti
 from dipy.segment.mask import median_otsu
 
@@ -114,7 +114,34 @@ if len(dwi_files) != 1 or len(bval_files) != 1 or len(bvec_files) != 1:
         f"{args.dwi_path}; found {len(dwi_files)}, {len(bval_files)}, and {len(bvec_files)}."
     )
 
-img = nib.load(dwi_files[0])
+args.output_dir.mkdir(parents=True, exist_ok=True)
+
+###############################################################################
+# Denoise the raw DWI signal before fitting any tensor model, using MRtrix3's
+# ``dwidenoise`` (MP-PCA denoising, :footcite:p:`Veraart2016b`) rather than
+# dipy's implementation.
+if shutil.which("dwidenoise") is None:
+    raise RuntimeError(
+        "dwidenoise (MRtrix3) was not found on PATH; install MRtrix3 or "
+        "activate an environment that provides it."
+    )
+
+denoised_path = args.output_dir / "dwi_denoised.nii.gz"
+noise_map_path = args.output_dir / "dwi_noise_sigma.nii.gz"
+print("Denoising with MRtrix3 dwidenoise...")
+subprocess.run(
+    [
+        "dwidenoise",
+        str(dwi_files[0]),
+        str(denoised_path),
+        "-noise",
+        str(noise_map_path),
+        "-force",
+    ],
+    check=True,
+)
+
+img = nib.load(denoised_path)
 gtab = gradient_table(bval_files[0], bvecs=bvec_files[0])
 data = np.asarray(img.dataobj, dtype=np.float32)
 
@@ -127,8 +154,6 @@ if not np.any(gtab.b0s_mask):
     raise ValueError(
         "No b=0 volumes were found; a b=0 image is required to estimate a mask."
     )
-
-args.output_dir.mkdir(parents=True, exist_ok=True)
 
 # print shapes and basic info
 print(f"DWI shape: {data.shape}; b-values: {np.unique(gtab.bvals)}")
@@ -153,24 +178,6 @@ nib.save(
     args.output_dir / "brain_mask_auto.nii.gz",
 )
 print(f"DWI shape: {data.shape}; estimated mask: {mask.sum()} voxels")
-
-###############################################################################
-# Denoise the raw DWI signal before fitting any tensor model. NLMEANS
-# (blockwise algorithm) is used here with all available OpenMP threads
-# (``num_threads=-1``) for maximum parallelization. The noise level is
-# estimated per-volume from the data itself.
-print("Denoising...")
-sigma = estimate_sigma(data, N=0)
-data = nlmeans(
-    data,
-    sigma=sigma,
-    mask=mask,
-    method="blockwise",
-    num_threads=-1,
-)
-print(
-    f"Denoised with NLMEANS (blockwise); median estimated noise sigma: {np.median(sigma):.4g}"
-)
 
 ###############################################################################
 # Remove Gibbs (truncation) ringing artefacts, which appear as spurious
