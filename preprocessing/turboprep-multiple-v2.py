@@ -97,15 +97,15 @@ if __name__ == "__main__":
     print("🚀 reading input files")
 
     with open(inp_file, "r") as f:
-        inp_list = [line.strip() for line in f.readlines()]
+        inp_list = [line.strip() for line in f]
 
     with open(out_file, "r") as f:
-        out_list = [line.strip() for line in f.readlines()]
+        out_list = [line.strip() for line in f]
 
     nbc_list = set()
     if nbc_file is not None:
         with open(nbc_file, "r") as f:
-            nbc_list = set([line.strip() for line in f.readlines()])
+            nbc_list = set([line.strip() for line in f])
 
     print("🚀 creating output dictionary")
 
@@ -293,14 +293,14 @@ if __name__ == "__main__":
             os.remove(temp_output)
 
         with open(temp_input, "w") as f:
-            for reg, _ in reg_seg_pairs:
-                f.write(reg + "\n")
+            f.writelines(reg + "\n" for reg, _ in reg_seg_pairs)
 
         with open(temp_output, "w") as f:
-            for _, seg in reg_seg_pairs:
-                f.write(seg + "\n")
+            f.writelines(seg + "\n" for _, seg in reg_seg_pairs)
 
-        qc_output_path = os.path.join(os.path.dirname(reg_seg_pairs[0][1]), "synthseg_qc.csv")
+        qc_output_path = os.path.join(
+            os.path.dirname(reg_seg_pairs[0][1]), "synthseg_qc.csv"
+        )
         subprocess.run(
             [
                 "mri_synthseg",
@@ -312,7 +312,8 @@ if __name__ == "__main__":
                 "--threads",
                 str(threads),
                 "--cpu",
-                "--qc", qc_output_path,  # <--- Added this line
+                "--qc",
+                qc_output_path,  # <--- Added this line
             ],
             stdout=open(
                 os.path.join(os.path.dirname(reg_seg_pairs[0][1]), "synthseglog.txt"),
