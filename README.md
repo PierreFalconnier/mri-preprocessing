@@ -27,6 +27,20 @@ mri-preprocessing/preprocessing/run_turboprep_jobs.sh
 
 mri-preprocessing/preprocessing/turboprep-multiple-v2.py
 
+The preprocessing options are in `preprocessing/conf/turboprep.yaml`. Set
+`inputs`, `outputs`, and `template` there, or override them when launching:
+
+```bash
+uv run python preprocessing/turboprep-multiple-v2.py \
+  inputs=/path/to/inputs.txt outputs=/path/to/outputs.txt \
+  template=/path/to/MNI152_T1_1mm_brain_RAS.nii.gz
+```
+
+The PBS launcher passes its input and output chunk paths as Hydra overrides.
+Other options use the same syntax, for example `threads=2 keep=true`.
+The command exits with a nonzero status when a scan fails; individual command
+logs are written in that scan's output directory.
+
 6. **Reorganize the preprocessed dataset**
 After preprocessing, the dataset looks like BIDS_datasets_selection_v2_processed/AABC_bids/sub-HCA6000030/ses-V1/anat/sub-HCA6000030_ses-V1_T1w/brain.nii.gz
 Run the python script to reorganize as BIDS_datasets_selection_v2_processed/AABC_bids/sub-HCA6000030/ses-V1/anat/sub-HCA6000030_ses-V1_T1w_brain.nii.gz
