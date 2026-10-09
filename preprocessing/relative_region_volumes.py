@@ -113,7 +113,7 @@ def export_volumes(
     processed = 0
     with output.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(
-            stream, fieldnames=["subject_id", "session_id", *regions]
+            stream, fieldnames=["subject", "session", *regions]
         )
         writer.writeheader()
         for subject in sorted(dataset.glob("sub-*")):
