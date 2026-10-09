@@ -168,7 +168,7 @@ def create_mosaic(image, title="", save_path=None):
     """
     z, y, x = np.array(image.shape) // 2
 
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(12, 4))  # noqa: RUF059
 
     axes[0].imshow(image[z, :, :].T, cmap="gray", origin="lower")
     axes[0].set_title("Axial")
@@ -219,7 +219,7 @@ def generate_outlier_mosaics(df, output_dir="outliers_mosaic"):
                 save_path=save_path,
             )
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Failed mosaic: {row['mask']} -> {e}")
 
 
@@ -251,7 +251,7 @@ def plot_metrics(results, output_html="qc_plots.html"):
             title=f"{metric} distribution",
         )
 
-        fig.update_traces(jitter=0.4, marker=dict(size=8))
+        fig.update_traces(jitter=0.4, marker=dict(size=8))  # noqa: C408
         figs.append(fig)
 
     # combine into one HTML
@@ -440,7 +440,7 @@ def create_curated_symlinks(df, source_root, curated_dir):
             try:
                 if not dst_file.exists():
                     os.symlink(src_file.resolve(), dst_file)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(f"⚠️ Symlink failed: {src_file} -> {e}")
 
 
@@ -470,7 +470,7 @@ def main(
             f.write("test")
         test_file.unlink()
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001
         raise RuntimeError(
             f"Cannot write to output directory: {output_csv.parent}\n{e}"
         )
@@ -600,7 +600,7 @@ def main(
                 }
             )
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"Error: {mask_path} -> {e}")
             results.append({"mask": mask_path, "dice": np.nan, "flag": "ERROR"})
 
