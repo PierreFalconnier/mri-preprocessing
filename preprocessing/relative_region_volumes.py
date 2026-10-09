@@ -122,7 +122,10 @@ def export_volumes(
             for session in sorted(subject.glob("ses-*")):
                 if not session.is_dir():
                     continue
-                row = {"subject_id": subject.name, "session_id": session.name}
+                row = {
+                    "subject": subject.name.replace("sub-", ""),
+                    "session": session.name.replace("ses-", ""),
+                }
                 masks = sorted(
                     path
                     for path in (session / "anat").rglob("*T1w_segm.nii.gz")
