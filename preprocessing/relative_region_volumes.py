@@ -3,6 +3,8 @@
 Total brain volume is all nonzero mask voxels, including CSF and ventricles.
 Because every voxel in a mask has the same volume, voxel-count ratios equal
 physical-volume ratios. Background (label 0) is excluded from the CSV.
+The 15 requested regions combine left and right labels where applicable.
+CSF includes only label 24; ventricles are reported separately.
 
 Usage:
     python preprocessing/relative_region_volumes.py /path/to/dataset \
@@ -11,39 +13,72 @@ Usage:
 
 import argparse
 import csv
-import re
 import sys
 from pathlib import Path
 
 import nibabel as nib
 import numpy as np
 
-DEFAULT_LABELS = (
-    Path(__file__).resolve().parents[1] / "quality_control/labels table.txt"
-)
+# SynthSeg/FreeSurfer labels from quality_control/labels table.txt.
+# Background (0) is omitted because it is excluded from brain volume.
+REGION_LABELS: dict[int, str] = {
+    2: "left cerebral white matter",
+    3: "left cerebral cortex",
+    4: "left lateral ventricle",
+    5: "left inferior lateral ventricle",
+    7: "left cerebellum white matter",
+    8: "left cerebellum cortex",
+    10: "left thalamus",
+    11: "left caudate",
+    12: "left putamen",
+    13: "left pallidum",
+    14: "3rd ventricle",
+    15: "4th ventricle",
+    16: "brain-stem",
+    17: "left hippocampus",
+    18: "left amygdala",
+    26: "left accumbens area",
+    24: "CSF",
+    28: "left ventral DC",
+    41: "right cerebral white matter",
+    42: "right cerebral cortex",
+    43: "right lateral ventricle",
+    44: "right inferior lateral ventricle",
+    46: "right cerebellum white matter",
+    47: "right cerebellum cortex",
+    49: "right thalamus",
+    50: "right caudate",
+    51: "right putamen",
+    52: "right pallidum",
+    53: "right hippocampus",
+    54: "right amygdala",
+    58: "right accumbens area",
+    60: "right ventral DC",
+}
 
 
-def read_labels(path: Path) -> dict[int, str]:
-    """Read numeric label rows, ignoring the table's introductory text."""
-    labels = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"^\s*(\d+)\s+(.+?)\s*$", line)
-        if match:
-            value, name = int(match[1]), match[2]
-            if value in labels:
-                raise ValueError(f"Duplicate label {value} in {path}")
-            if value != 0:
-                labels[value] = name
-    if not labels:
-        raise ValueError(f"No region labels found in {path}")
-    if len(set(labels.values())) != len(labels):
-        raise ValueError(f"Duplicate region names in {path}")
-    if {"subject_id", "session_id"} & set(labels.values()):
-        raise ValueError(f"Region names conflict with CSV identifier columns in {path}")
-    return labels
+REGION_GROUPS: dict[str, tuple[int, ...]] = {
+    "hippocampus": (17, 53),
+    "amygdala": (18, 54),
+    "lateral ventricles": (4, 43),
+    "cerebral cortex": (3, 42),
+    "inferior lateral ventricle": (5, 44),
+    "cerebellum cortex": (8, 47),
+    "thalamus": (10, 49),
+    "caudate": (11, 50),
+    "putamen": (12, 51),
+    "pallidum": (13, 52),
+    "accumbens": (26, 58),
+    "ventral DC": (28, 60),
+    "3rd ventricle": (14,),
+    "4th ventricle": (15,),
+    "csf": (24,),
+}
 
 
-def relative_volumes(mask_path: Path, labels: dict[int, str]) -> dict[str, float]:
+def relative_volumes(
+    mask_path: Path, regions: dict[str, tuple[int, ...]]
+) -> dict[str, float]:
     image = nib.load(mask_path)
     if len(image.shape) != 3:
         raise ValueError(f"Expected a 3D segmentation, got shape {image.shape}")
@@ -57,23 +92,28 @@ def relative_volumes(mask_path: Path, labels: dict[int, str]) -> dict[str, float
     total = sum(count for value, count in voxel_counts.items() if value != 0)
     if total == 0:
         raise ValueError("Segmentation contains only background")
-    unknown = sorted(set(voxel_counts) - {0} - set(labels))
+    unknown = sorted(set(voxel_counts) - {0} - set(REGION_LABELS))
     if unknown:
         print(
             f"WARNING: {mask_path}: unmapped labels {unknown}; "
             "included in total volume but have no CSV columns",
             file=sys.stderr,
         )
-    return {name: voxel_counts.get(value, 0) / total for value, name in labels.items()}
+    return {
+        name: sum(voxel_counts.get(value, 0) for value in values) / total
+        for name, values in regions.items()
+    }
 
 
-def export_volumes(dataset: Path, output: Path, labels: dict[int, str]) -> None:
+def export_volumes(
+    dataset: Path, output: Path, regions: dict[str, tuple[int, ...]]
+) -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     rows = 0
     processed = 0
     with output.open("w", newline="", encoding="utf-8") as stream:
         writer = csv.DictWriter(
-            stream, fieldnames=["subject_id", "session_id", *labels.values()]
+            stream, fieldnames=["subject_id", "session_id", *regions]
         )
         writer.writeheader()
         for subject in sorted(dataset.glob("sub-*")):
@@ -100,7 +140,7 @@ def export_volumes(dataset: Path, output: Path, labels: dict[int, str]) -> None:
                             file=sys.stderr,
                         )
                     try:
-                        row.update(relative_volumes(masks[0], labels))
+                        row.update(relative_volumes(masks[0], regions))
                         processed += 1
                     except (
                         OSError,
@@ -132,20 +172,13 @@ def main() -> None:
         type=Path,
         help="Output CSV (default: DATASET/relative_region_volumes.csv)",
     )
-    parser.add_argument(
-        "--labels", type=Path, default=DEFAULT_LABELS, help="Label table path"
-    )
     args = parser.parse_args()
     if not args.dataset.is_dir():
         parser.error(f"Dataset directory does not exist: {args.dataset}")
-    try:
-        labels = read_labels(args.labels)
-    except (OSError, ValueError) as error:
-        parser.error(str(error))
     export_volumes(
         args.dataset,
         args.output or args.dataset / "relative_region_volumes.csv",
-        labels,
+        REGION_GROUPS,
     )
 
 
